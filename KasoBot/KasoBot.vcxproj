@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp" />
+    <ClCompile Include="source\Expansion.cpp" />
     <ClCompile Include="Source\libs\BWEB\Block.cpp" />
     <ClCompile Include="Source\libs\BWEB\BWEB.cpp" />
     <ClCompile Include="Source\libs\BWEB\PathFind.cpp" />
@@ -114,8 +115,13 @@
     <ClCompile Include="Source\libs\BWEM\tiles.cpp" />
     <ClCompile Include="Source\libs\BWEM\utils.cpp" />
     <ClCompile Include="Source\MainModule.cpp" />
+    <ClCompile Include="source\ProductionModule.cpp" />
+    <ClCompile Include="source\Unit.cpp" />
+    <ClCompile Include="source\Worker.cpp" />
+    <ClCompile Include="source\WorkersModule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Expansion.h" />
     <ClInclude Include="Source\libs\BWEB\Block.h" />
     <ClInclude Include="Source\libs\BWEB\BWEB.h" />
     <ClInclude Include="Source\libs\BWEB\JPS.h" />
@@ -140,6 +146,10 @@
     <ClInclude Include="Source\libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\libs\Profiler\Profiler.hpp" />
     <ClInclude Include="Source\MainModule.h" />
+    <ClInclude Include="source\ProductionModule.h" />
+    <ClInclude Include="source\Unit.h" />
+    <ClInclude Include="source\Worker.h" />
+    <ClInclude Include="source\WorkersModule.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BWAPILIB\BWAPILIB.vcxproj">

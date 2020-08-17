@@ -60,6 +60,11 @@
     <ClCompile Include="Source\libs\BWEB\Wall.cpp">
       <Filter>libs\BWEB</Filter>
     </ClCompile>
+    <ClCompile Include="source\WorkersModule.cpp" />
+    <ClCompile Include="source\Unit.cpp" />
+    <ClCompile Include="source\Worker.cpp" />
+    <ClCompile Include="source\Expansion.cpp" />
+    <ClCompile Include="source\ProductionModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -132,6 +137,11 @@
     <ClInclude Include="Source\libs\BWEB\Wall.h">
       <Filter>libs\BWEB</Filter>
     </ClInclude>
+    <ClInclude Include="source\WorkersModule.h" />
+    <ClInclude Include="source\Unit.h" />
+    <ClInclude Include="source\Worker.h" />
+    <ClInclude Include="source\Expansion.h" />
+    <ClInclude Include="source\ProductionModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

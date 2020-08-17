@@ -1,15 +1,19 @@
 #include "MainModule.h"
+#include "WorkersModule.h"
+#include "ProductionModule.h"
 #include <iostream>
 
 using namespace BWAPI;
-using namespace Filter;
+using namespace KasoBot;
 
 void MainModule::onStart()
 {  
-	Broodwar->sendText("Good Fun, have Luck!");
+	BWAPI::Broodwar->sendText("Good Fun, have Luck!");
 
 	// Enable the UserInput flag, which allows us to control the bot and type messages.
 	Broodwar->enableFlag(Flag::UserInput);
+
+	WorkersModule::Instance()->OnStart();
 }
 
 void MainModule::onEnd(bool isWinner)
@@ -22,6 +26,8 @@ void MainModule::onFrame()
 
   // Display the game frame rate as text in the upper left area of the screen
   Broodwar->drawTextScreen(200, 0,  "FPS: %d", Broodwar->getFPS() );
+
+  WorkersModule::Instance()->OnFrame();
 }
 
 void MainModule::onSendText(std::string text)
@@ -88,4 +94,31 @@ void MainModule::onSaveGame(std::string gameName)
 
 void MainModule::onUnitComplete(BWAPI::Unit unit)
 {
+	if (unit->getPlayer() == Broodwar->self())
+	{
+		//add new units to lists
+		if (unit->getType().isBuilding())
+		{			
+			if (unit->getType().isResourceDepot())
+			{
+				WorkersModule::Instance()->ExpansionCreated(unit);
+			}
+			else
+			{
+				ProductionModule::Instance()->AddBuilding(unit);
+			}
+		}
+		else
+		{
+			if (unit->getType().isWorker())
+			{
+				WorkersModule::Instance()->NewWorker(unit);
+			}
+			else
+			{
+				ProductionModule::Instance()->AddUnit(unit);
+			}
+		}
+	}
+	
 }
