@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source\Dll.cpp" />
+    <ClCompile Include="Source\MainModule.cpp" />
+    <ClCompile Include="Source\libs\BWEM\area.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\base.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\bwapiExt.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\bwem.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\cp.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\graph.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\gridMap.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\map.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\mapDrawer.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\mapImpl.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\mapPrinter.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\neutral.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\tiles.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEM\utils.cpp">
+      <Filter>libs\BWEM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEB\Block.cpp">
+      <Filter>libs\BWEB</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEB\BWEB.cpp">
+      <Filter>libs\BWEB</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEB\PathFind.cpp">
+      <Filter>libs\BWEB</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEB\Station.cpp">
+      <Filter>libs\BWEB</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\libs\BWEB\Wall.cpp">
+      <Filter>libs\BWEB</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\MainModule.h" />
+    <ClInclude Include="Source\libs\nlohmann\json.hpp">
+      <Filter>libs\json</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\area.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\base.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\bwapiExt.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\bwem.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\cp.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\defs.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\graph.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\gridMap.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\map.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\mapDrawer.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\mapImpl.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\mapPrinter.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\neutral.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\tiles.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEM\utils.h">
+      <Filter>libs\BWEM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\Profiler\Profiler.hpp">
+      <Filter>libs\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\Block.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\BWEB.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\JPS.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\PathFind.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\Station.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\libs\BWEB\Wall.h">
+      <Filter>libs\BWEB</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="libs">
+      <UniqueIdentifier>{240011a5-09fe-4c4f-b0aa-7d9e4414d3a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\json">
+      <UniqueIdentifier>{0db39c09-6dae-4458-92bc-00726b76b447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\BWEM">
+      <UniqueIdentifier>{2af87ec5-4445-447c-83c8-13dca6877bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\Profiler">
+      <UniqueIdentifier>{fa2cdb7e-c37b-42de-9eba-102ad63861a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\BWEB">
+      <UniqueIdentifier>{9abceec3-4864-4c80-ab5f-0d66ce2e05ea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
