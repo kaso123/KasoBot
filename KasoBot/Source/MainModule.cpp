@@ -1,6 +1,7 @@
 #include "MainModule.h"
 #include "WorkersModule.h"
 #include "ProductionModule.h"
+#include "MapModule.h"
 #include "ArmyModule.h"
 #include <iostream>
 
@@ -14,6 +15,7 @@ void MainModule::onStart()
 	// Enable the UserInput flag, which allows us to control the bot and type messages.
 	Broodwar->enableFlag(Flag::UserInput);
 
+	Map::Global::Initialize();
 	WorkersModule::Instance()->OnStart();
 }
 
@@ -79,6 +81,32 @@ void MainModule::onUnitCreate(BWAPI::Unit unit)
 
 void MainModule::onUnitDestroy(BWAPI::Unit unit)
 {
+	if (unit->getPlayer() == Broodwar->self())
+	{
+		//remove unit from lists
+		if (unit->getType().isBuilding())
+		{
+			if (unit->getType().isResourceDepot())
+			{
+				WorkersModule::Instance()->ExpansionDestroyed(unit);
+			}
+			else
+			{
+				ProductionModule::Instance()->RemoveBuilding(unit);
+			}
+		}
+		else
+		{
+			if (unit->getType().isWorker())
+			{
+				WorkersModule::Instance()->RemoveWorker(unit);
+			}
+			else
+			{
+				ProductionModule::Instance()->RemoveUnit(unit);
+			}
+		}
+	}
 }
 
 void MainModule::onUnitMorph(BWAPI::Unit unit)
@@ -120,6 +148,5 @@ void MainModule::onUnitComplete(BWAPI::Unit unit)
 				ProductionModule::Instance()->AddUnit(unit);
 			}
 		}
-	}
-	
+	}	
 }

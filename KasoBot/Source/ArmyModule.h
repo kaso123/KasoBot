@@ -23,6 +23,9 @@ namespace KasoBot {
 		std::vector<std::shared_ptr<Worker>> GetFreeWorkers(int max);
 
 		void AddWorker(std::shared_ptr<Worker> worker);
+
+		//@return true if killed worker was from army units
+		bool WorkerKilled(BWAPI::Unit unit);
 	};
 }
 

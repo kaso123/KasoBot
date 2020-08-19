@@ -93,6 +93,15 @@ void WorkersModule::NewWorker(BWAPI::Unit unit)
 
 void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 {
+	//check if worker was from any expansion and remove him
+	for (auto exp : _expansionList)
+	{
+		if (exp->RemoveWorker(unit))
+			return;
+	}
+
+	//if worker was not removed, it is part of army
+	_ASSERT(ArmyModule::Instance()->WorkerKilled(unit));
 }
 
 void WorkersModule::ExpansionCreated(BWAPI::Unit unit)
@@ -103,4 +112,10 @@ void WorkersModule::ExpansionCreated(BWAPI::Unit unit)
 
 void WorkersModule::ExpansionDestroyed(BWAPI::Unit unit)
 {
+	_expansionList.erase(std::remove_if(_expansionList.begin(), _expansionList.end(),
+		[unit](auto& x) 
+		{
+			return unit == x->GetPointer();
+		}
+	),_expansionList.end());
 }

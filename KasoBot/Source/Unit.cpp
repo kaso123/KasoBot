@@ -3,8 +3,8 @@
 using namespace KasoBot;
 
 Unit::Unit(BWAPI::Unit unit)
+	:_pointer(unit)
 {
-	_pointer = unit;
 }
 
 Unit::~Unit()

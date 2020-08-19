@@ -1,4 +1,5 @@
 #include "ArmyModule.h"
+#include "Worker.h"
 
 using namespace KasoBot;
 
@@ -54,4 +55,19 @@ std::vector<std::shared_ptr<Worker>> KasoBot::ArmyModule::GetFreeWorkers(int max
 void ArmyModule::AddWorker(std::shared_ptr<Worker> worker)
 {
 	_workers.emplace_back(worker);
+}
+
+bool ArmyModule::WorkerKilled(BWAPI::Unit unit)
+{
+	int before = _workers.size();
+
+	_workers.erase(std::remove_if(_workers.begin(), _workers.end(),
+		[unit](auto& x)
+		{
+			return unit == x->GetPointer();
+		}
+	), _workers.end());
+
+	//check if worker was removed from list
+	return before > _workers.size();
 }

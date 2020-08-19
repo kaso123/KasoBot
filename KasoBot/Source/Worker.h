@@ -2,7 +2,7 @@
 #include "Unit.h"
 
 namespace KasoBot {
-	class Worker : public Unit
+	class Worker : public KasoBot::Unit
 	{
 	private:
 	public:

@@ -23,6 +23,9 @@ namespace KasoBot {
 
 		void AddUnit(BWAPI::Unit unit);
 		void AddBuilding(BWAPI::Unit unit);
+
+		void RemoveUnit(BWAPI::Unit unit);
+		void RemoveBuilding(BWAPI::Unit unit);
 	};
 }
 

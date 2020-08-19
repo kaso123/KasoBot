@@ -66,6 +66,7 @@
     <ClCompile Include="source\Expansion.cpp" />
     <ClCompile Include="source\ProductionModule.cpp" />
     <ClCompile Include="source\ArmyModule.cpp" />
+    <ClCompile Include="Source\MapModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="source\Expansion.h" />
     <ClInclude Include="source\ProductionModule.h" />
     <ClInclude Include="source\ArmyModule.h" />
+    <ClInclude Include="Source\MapModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

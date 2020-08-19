@@ -1,6 +1,10 @@
 #pragma once
 #include <BWAPI.h>
 
+namespace BWEB {
+	class Station;
+}
+
 namespace KasoBot {
 	
 	class Worker;
@@ -9,6 +13,7 @@ namespace KasoBot {
 	{
 	private:
 		BWAPI::Unit _pointer;
+		BWEB::Station* _station;
 
 		std::vector<std::shared_ptr<Worker>> _workerList;
 	public:
@@ -17,7 +22,9 @@ namespace KasoBot {
 
 		void AddWorker(BWAPI::Unit unit);
 		void AddWorker(std::shared_ptr<Worker> worker);
-		void RemoveWorker(BWAPI::Unit unit);
+		
+		//@return true if worker was from this expansion
+		bool RemoveWorker(BWAPI::Unit unit);
 
 		//@return true if all minerals and gases are saturated on ideal value from config
 		bool IsSaturated();

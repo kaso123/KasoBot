@@ -10,6 +10,12 @@ namespace KasoBot {
 	public:
 		Unit(BWAPI::Unit unit);
 		virtual ~Unit();
+
+
+		
+		//getters and setters
+
+		BWAPI::Unit GetPointer() { return _pointer; };
 	};
 }
 
