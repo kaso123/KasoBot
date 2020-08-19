@@ -1,6 +1,7 @@
 #include "MainModule.h"
 #include "WorkersModule.h"
 #include "ProductionModule.h"
+#include "ArmyModule.h"
 #include <iostream>
 
 using namespace BWAPI;

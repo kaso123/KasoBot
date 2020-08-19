@@ -65,6 +65,7 @@
     <ClCompile Include="source\Worker.cpp" />
     <ClCompile Include="source\Expansion.cpp" />
     <ClCompile Include="source\ProductionModule.cpp" />
+    <ClCompile Include="source\ArmyModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="source\Worker.h" />
     <ClInclude Include="source\Expansion.h" />
     <ClInclude Include="source\ProductionModule.h" />
+    <ClInclude Include="source\ArmyModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

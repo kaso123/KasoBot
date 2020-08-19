@@ -42,6 +42,12 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\Starcraft\bwapi-data\AI\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\Starcraft\bwapi-data\AI\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -93,6 +99,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\ArmyModule.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="source\Expansion.cpp" />
     <ClCompile Include="Source\libs\BWEB\Block.cpp" />
@@ -121,6 +128,7 @@
     <ClCompile Include="source\WorkersModule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ArmyModule.h" />
     <ClInclude Include="source\Expansion.h" />
     <ClInclude Include="Source\libs\BWEB\Block.h" />
     <ClInclude Include="Source\libs\BWEB\BWEB.h" />

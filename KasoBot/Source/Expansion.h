@@ -16,7 +16,18 @@ namespace KasoBot {
 		~Expansion();
 
 		void AddWorker(BWAPI::Unit unit);
+		void AddWorker(std::shared_ptr<Worker> worker);
 		void RemoveWorker(BWAPI::Unit unit);
+
+		//@return true if all minerals and gases are saturated on ideal value from config
+		bool IsSaturated();
+
+		//@return true if all minerals and gases are saturated on max value from config
+		bool IsFull();
+		
+		//getters and setters
+
+		BWAPI::Unit GetPointer() { return _pointer; };
 	};
 }
 

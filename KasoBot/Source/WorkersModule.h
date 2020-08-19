@@ -14,6 +14,12 @@ namespace KasoBot {
 
 		std::vector<std::shared_ptr<Expansion>> _expansionList;
 
+		//@return closest expansion that is not saturated or nullptr if worker should be added to military
+		std::shared_ptr<Expansion> FindExpansionForWorker(BWAPI::Unit unit);
+
+		//get workers from army or from saturated bases and transfer them here
+		void AssignIdleWorkers(std::shared_ptr<Expansion> exp);
+
 	public:
 		static WorkersModule* Instance();
 		void OnStart();
