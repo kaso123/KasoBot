@@ -101,7 +101,8 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 	}
 
 	//if worker was not removed, it is part of army
-	_ASSERT(ArmyModule::Instance()->WorkerKilled(unit));
+	auto temp = ArmyModule::Instance()->WorkerKilled(unit);
+	_ASSERT(temp); //every worker has to be in WorkerModule or army
 }
 
 void WorkersModule::ExpansionCreated(BWAPI::Unit unit)

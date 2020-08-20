@@ -15,7 +15,15 @@ namespace KasoBot {
 		BWAPI::Unit _pointer;
 		BWEB::Station* _station;
 
+		BWAPI::Unit _refinery;
+
 		std::vector<std::shared_ptr<Worker>> _workerList;
+		int _workersMinerals;
+		int _workersGas;
+
+		//used in debug to check that worker numbers are solid
+		bool VerifyWorkers();
+
 	public:
 		Expansion(BWAPI::Unit unit);
 		~Expansion();
@@ -34,7 +42,8 @@ namespace KasoBot {
 		
 		//getters and setters
 
-		BWAPI::Unit GetPointer() { return _pointer; };
+		BWAPI::Unit GetPointer() const { return _pointer; };
+		BWEB::Station* GetStation() const { return _station; };
 	};
 }
 

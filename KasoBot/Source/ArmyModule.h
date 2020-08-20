@@ -20,7 +20,7 @@ namespace KasoBot {
 
 		//@param max = max amount of workers needed
 		//@return vector of workers from army
-		std::vector<std::shared_ptr<Worker>> GetFreeWorkers(int max);
+		std::vector<std::shared_ptr<Worker>> GetFreeWorkers(size_t max);
 
 		void AddWorker(std::shared_ptr<Worker> worker);
 

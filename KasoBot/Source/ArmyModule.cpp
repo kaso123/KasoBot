@@ -21,7 +21,7 @@ ArmyModule* ArmyModule::Instance()
 	return _instance;
 }
 
-std::vector<std::shared_ptr<Worker>> KasoBot::ArmyModule::GetFreeWorkers(int max)
+std::vector<std::shared_ptr<Worker>> KasoBot::ArmyModule::GetFreeWorkers(size_t max)
 {
 	std::vector<std::shared_ptr<Worker>> workers = {};
 
@@ -59,7 +59,7 @@ void ArmyModule::AddWorker(std::shared_ptr<Worker> worker)
 
 bool ArmyModule::WorkerKilled(BWAPI::Unit unit)
 {
-	int before = _workers.size();
+	size_t before = _workers.size();
 
 	_workers.erase(std::remove_if(_workers.begin(), _workers.end(),
 		[unit](auto& x)
