@@ -57,6 +57,13 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	_ASSERT(VerifyWorkers());
 }
 
+void Expansion::AddRefinery(BWAPI::Unit unit)
+{
+	_refinery = unit;
+
+	//TODO check if workers can be assigned to gas mining
+}
+
 bool Expansion::RemoveWorker(BWAPI::Unit unit)
 {
 	size_t before = _workerList.size();

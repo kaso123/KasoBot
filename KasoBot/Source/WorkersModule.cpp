@@ -1,5 +1,6 @@
 #include "WorkersModule.h"
 #include "ArmyModule.h"
+#include "MapModule.h"
 
 #include "Worker.h"
 #include "Expansion.h"
@@ -119,4 +120,23 @@ void WorkersModule::ExpansionDestroyed(BWAPI::Unit unit)
 			return unit == x->GetPointer();
 		}
 	),_expansionList.end());
+}
+
+void WorkersModule::RefineryCreated(BWAPI::Unit unit)
+{
+	//find which BWEB::Station this belongs to
+	BWEB::Station* refineryStation = Map::GetStation(unit->getTilePosition());
+	_ASSERT(refineryStation);
+
+	for (auto exp : _expansionList)
+	{
+		if (exp->GetStation() == refineryStation)
+		{
+			exp->AddRefinery(unit);
+			return;
+		}
+	}
+
+	//if base is not taken then add to unassigned refineries
+	_unassignedRefineries.emplace_back(unit);
 }

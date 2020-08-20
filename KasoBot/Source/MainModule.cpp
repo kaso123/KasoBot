@@ -135,6 +135,10 @@ void MainModule::onUnitComplete(BWAPI::Unit unit)
 			{
 				WorkersModule::Instance()->ExpansionCreated(unit);
 			}
+			else if (unit->getType().isRefinery())
+			{
+				WorkersModule::Instance()->RefineryCreated(unit);
+			}
 			else
 			{
 				ProductionModule::Instance()->AddBuilding(unit);

@@ -13,6 +13,7 @@ namespace KasoBot {
 		static WorkersModule* _instance;
 
 		std::vector<std::shared_ptr<Expansion>> _expansionList;
+		std::vector<BWAPI::Unit> _unassignedRefineries; //keeping a list of refineries without an expansion
 
 		//@return closest expansion that is not saturated or nullptr if worker should be added to military
 		std::shared_ptr<Expansion> FindExpansionForWorker(BWAPI::Unit unit);
@@ -34,6 +35,10 @@ namespace KasoBot {
 		void ExpansionCreated(BWAPI::Unit unit);
 
 		void ExpansionDestroyed(BWAPI::Unit unit);
+
+		void RefineryCreated(BWAPI::Unit unit);
+
+		void RefineryDestroyed(BWAPI::Unit unit);
 	};
 }
 
