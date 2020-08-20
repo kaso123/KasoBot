@@ -35,10 +35,14 @@ void ConfigModule::Init()
 		_maxWorkersPerMineral = j["workers"].contains("maxPerMineral") ? j["workers"]["maxPerMineral"] : _maxWorkersPerMineral;
 		_maxWorkersPerGas = j["workers"].contains("maxPerGas") ? j["workers"]["maxPerGas"] : _maxWorkersPerGas;
 		_maxWorkersTotal = j["workers"].contains("max") ? j["workers"]["max"] : _maxWorkersTotal;
+		_saturatedMineral = j["workers"].contains("saturatedMineral") ? j["workers"]["saturatedMineral"] : _saturatedMineral;
+		_saturatedGas = j["workers"].contains("saturatedGas") ? j["workers"]["saturatedGas"] : _saturatedGas;
 	}
 }
 
 
-int Config::Workers::MaxGlobal() { return ConfigModule::Instance()->MaxWorkersTotal(); };
-int Config::Workers::MaxPerMineral() { return ConfigModule::Instance()->MaxWorkersPerMineral(); };
-int Config::Workers::MaxPerGas() { return ConfigModule::Instance()->MaxWorkersPerGas(); };
+int Config::Workers::MaxGlobal() { return ConfigModule::Instance()->MaxWorkersTotal(); }
+int Config::Workers::MaxPerMineral() { return ConfigModule::Instance()->MaxWorkersPerMineral(); }
+int Config::Workers::MaxPerGas() { return ConfigModule::Instance()->MaxWorkersPerGas(); }
+int Config::Workers::SaturationPerMineral() { return ConfigModule::Instance()->SaturatedMineral(); }
+int Config::Workers::SaturationPerGas() { return ConfigModule::Instance()->SaturatedGas(); }

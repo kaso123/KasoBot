@@ -72,6 +72,7 @@ bool Expansion::RemoveWorker(BWAPI::Unit unit)
 		else _workersMinerals--;
 
 		_workerList.erase(it);
+		break;
 	}
 
 	_ASSERT(VerifyWorkers());
@@ -82,12 +83,22 @@ bool Expansion::RemoveWorker(BWAPI::Unit unit)
 
 bool Expansion::IsSaturated()
 {
-	//TODO implement IsSaturated
-	return false;
+	if (!_refinery || _workersGas < Config::Workers::SaturationPerGas())
+		return false;
+
+	if ((int)_station->getBase()->Minerals().size() * Config::Workers::SaturationPerMineral() > _workersMinerals)
+		return false;
+
+	return true;
 }
 
 bool Expansion::IsFull()
 {
-	//TODO implement IsFull
-	return false;
+	if (!_refinery || _workersGas < Config::Workers::MaxPerGas())
+		return false;
+
+	if ((int)_station->getBase()->Minerals().size() * Config::Workers::MaxPerMineral() > _workersMinerals)
+		return false;
+
+	return true;
 }

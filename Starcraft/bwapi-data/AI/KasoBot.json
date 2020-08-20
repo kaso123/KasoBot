@@ -1,6 +1,9 @@
 {
   "workers": {
-    "max": 55,
-    "maxPerGas": 5
+    "max": 80,
+    "saturatedMineral": 2,
+    "maxPerMineral": 3,
+    "saturatedGas": 3,
+    "maxPerGas": 3
   }
 }

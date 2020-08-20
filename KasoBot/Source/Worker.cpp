@@ -10,10 +10,22 @@ Worker::Worker(BWAPI::Unit unit)
 
 Worker::~Worker()
 {
+	if (_mineral) //remove self from mineral
+	{
+		_mineral->SetData(_mineral->Data() - 1);
+		_ASSERT(_mineral->Data() >= 0);
+	}
 }
 
 void Worker::AssignRoleMinerals(BWEM::Mineral* mineral)
 {
+	if (_mineral)
+	{
+		//decrease number of workers for previous mineral
+		_mineral->SetData(_mineral->Data() - 1);
+		_ASSERT(_mineral->Data() >= 0);
+	}
+
 	_refinery = nullptr;
 	_mineral = mineral;
 	_workerRole = Workers::Role::MINERALS;
