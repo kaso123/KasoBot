@@ -260,7 +260,13 @@ paket-files/
 __pycache__/
 *.pyc
 
-/Starcraft
+/Starcraft/*
+!/Starcraft/bwapi-data
+/Starcraft/bwapi-data/*
+!/Starcraft/bwapi-data/AI
+/Starcraft/bwapi-data/AI/*
+!/Starcraft/bwapi-data/AI/KasoBot.json
+
 /MPQDraft
 /ExampleTournamentModule
 /ExampleAIModule
@@ -270,3 +276,4 @@ __pycache__/
 /AIModuleLoader
 /Chaoslauncher
 /Shared
+/Starcraft/APM_check

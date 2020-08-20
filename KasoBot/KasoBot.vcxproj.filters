@@ -67,6 +67,7 @@
     <ClCompile Include="source\ProductionModule.cpp" />
     <ClCompile Include="source\ArmyModule.cpp" />
     <ClCompile Include="Source\MapModule.cpp" />
+    <ClCompile Include="Source\Config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="source\ProductionModule.h" />
     <ClInclude Include="source\ArmyModule.h" />
     <ClInclude Include="Source\MapModule.h" />
+    <ClInclude Include="Source\Config.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">
@@ -163,5 +165,13 @@
     <Filter Include="libs\BWEB">
       <UniqueIdentifier>{9abceec3-4864-4c80-ab5f-0d66ce2e05ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{6772294d-7fd2-4388-8725-c693aebf283c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Starcraft\bwapi-data\AI\KasoBot.json">
+      <Filter>config</Filter>
+    </None>
   </ItemGroup>
 </Project>

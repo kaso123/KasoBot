@@ -1,0 +1,6 @@
+{
+  "workers": {
+    "max": 55,
+    "maxPerGas": 5
+  }
+}

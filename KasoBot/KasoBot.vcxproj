@@ -100,6 +100,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\ArmyModule.cpp" />
+    <ClCompile Include="Source\Config.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="source\Expansion.cpp" />
     <ClCompile Include="Source\libs\BWEB\Block.cpp" />
@@ -130,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ArmyModule.h" />
+    <ClInclude Include="Source\Config.h" />
     <ClInclude Include="source\Expansion.h" />
     <ClInclude Include="Source\libs\BWEB\Block.h" />
     <ClInclude Include="Source\libs\BWEB\BWEB.h" />
@@ -166,7 +168,15 @@
       <Project>{843656fd-9bfd-47bf-8460-7bfe9710ea2c}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Starcraft\bwapi-data\AI\KasoBot.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -3,6 +3,7 @@
 #include "ProductionModule.h"
 #include "MapModule.h"
 #include "ArmyModule.h"
+#include "Config.h"
 #include <iostream>
 
 using namespace BWAPI;
@@ -16,6 +17,8 @@ void MainModule::onStart()
 	Broodwar->enableFlag(Flag::UserInput);
 
 	Map::Global::Initialize();
+	ConfigModule::Instance()->Init();
+
 	WorkersModule::Instance()->OnStart();
 }
 
