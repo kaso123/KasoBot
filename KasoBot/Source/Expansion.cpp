@@ -22,6 +22,7 @@ Expansion::Expansion(BWAPI::Unit unit)
 Expansion::~Expansion()
 {
 	//TODO transfer workers to another expansion / army
+	//TODO add refinery to _unassignedRefineries in WorkersModule
 }
 
 void Expansion::AddWorker(BWAPI::Unit unit)
@@ -86,6 +87,18 @@ bool Expansion::RemoveWorker(BWAPI::Unit unit)
 
 	//check if worker was removed from list
 	return before > _workerList.size();
+}
+
+bool Expansion::RemoveRefinery(BWAPI::Unit unit)
+{
+	if (_refinery == unit)
+	{
+		_refinery = nullptr;
+		//TODO transfer workers to minerals
+		return true;
+	}
+
+	return false;
 }
 
 bool Expansion::IsSaturated()

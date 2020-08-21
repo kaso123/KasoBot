@@ -114,6 +114,12 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 
 void MainModule::onUnitMorph(BWAPI::Unit unit)
 {
+	//refinery destroyed
+	if (unit->getType() == UnitTypes::Resource_Vespene_Geyser)
+	{
+		//TODO check if enemy gas was destroyed
+		WorkersModule::Instance()->RefineryDestroyed(unit);
+	}
 }
 
 void MainModule::onUnitRenegade(BWAPI::Unit unit)

@@ -37,6 +37,9 @@ namespace KasoBot {
 		//@return true if worker was from this expansion
 		bool RemoveWorker(BWAPI::Unit unit);
 
+		//@return true if refinery was from this expansion
+		bool RemoveRefinery(BWAPI::Unit unit);
+
 		//@return true if all minerals and gases are saturated on ideal value from config
 		bool IsSaturated();
 
