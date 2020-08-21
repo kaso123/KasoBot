@@ -21,7 +21,7 @@ ArmyModule* ArmyModule::Instance()
 	return _instance;
 }
 
-std::vector<std::shared_ptr<Worker>> KasoBot::ArmyModule::GetFreeWorkers(size_t max)
+std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
 {
 	std::vector<std::shared_ptr<Worker>> workers = {};
 

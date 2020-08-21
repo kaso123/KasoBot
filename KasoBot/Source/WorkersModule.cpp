@@ -19,24 +19,24 @@ WorkersModule::~WorkersModule()
 	delete(_instance);
 }
 
-std::shared_ptr<Expansion> WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
+Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 {
-	std::shared_ptr<Expansion> closestFree = nullptr;
-	std::shared_ptr<Expansion> closest = nullptr;
+	Expansion* closestFree = nullptr;
+	Expansion* closest = nullptr;
 	int distFree = INT_MAX;
 	int dist = INT_MAX;
 
-	for (const auto exp : _expansionList)
+	for (const auto& exp : _expansionList)
 	{
 		int currDist = unit->getDistance(exp->GetPointer());
 		if (currDist < dist && !exp->IsFull())
 		{
-			closest = exp;
+			closest = exp.get();
 			dist = unit->getDistance(exp->GetPointer());
 		}
 		if (currDist < distFree && !exp->IsSaturated())
 		{
-			closestFree = exp;
+			closestFree = exp.get();
 			distFree = unit->getDistance(exp->GetPointer());
 		}
 	}
@@ -48,14 +48,14 @@ std::shared_ptr<Expansion> WorkersModule::FindExpansionForWorker(BWAPI::Unit uni
 	return closest;
 }
 
-void WorkersModule::AssignIdleWorkers(std::shared_ptr<Expansion> exp)
+void WorkersModule::AssignIdleWorkers(Expansion& exp)
 {
 	//get workers from army
 	auto list = ArmyModule::Instance()->GetFreeWorkers(INT_MAX); //TODO add real limit
 
 	for (auto worker : list)
 	{
-		exp->AddWorker(worker);
+		exp.AddWorker(worker);
 	}
 	
 	//TODO if not enough, get workers from oversaturated bases
@@ -81,7 +81,7 @@ void WorkersModule::OnFrame()
 void WorkersModule::NewWorker(BWAPI::Unit unit)
 {
 	//select expansion for worker
-	std::shared_ptr<Expansion> closest = FindExpansionForWorker(unit);
+	Expansion* closest = FindExpansionForWorker(unit);
 	if (!closest)
 	{
 		//send worker to military
@@ -95,7 +95,7 @@ void WorkersModule::NewWorker(BWAPI::Unit unit)
 void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 {
 	//check if worker was from any expansion and remove him
-	for (auto exp : _expansionList)
+	for (auto& exp : _expansionList)
 	{
 		if (exp->RemoveWorker(unit))
 			return;
@@ -109,7 +109,7 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 void WorkersModule::ExpansionCreated(BWAPI::Unit unit)
 {
 	//create new expansion object and assign workers from army or oversaturated bases
-	AssignIdleWorkers(_expansionList.emplace_back(std::make_shared<Expansion>(unit)));
+	AssignIdleWorkers(*(_expansionList.emplace_back(std::make_unique<Expansion>(unit))));
 }
 
 void WorkersModule::ExpansionDestroyed(BWAPI::Unit unit)
@@ -130,7 +130,7 @@ void WorkersModule::RefineryCreated(BWAPI::Unit unit, bool unassign /*= false*/)
 		BWEB::Station* refineryStation = Map::GetStation(unit->getTilePosition());
 		_ASSERT(refineryStation);
 
-		for (auto exp : _expansionList)
+		for (auto& exp : _expansionList)
 		{
 			if (exp->GetStation() == refineryStation)
 			{
@@ -146,7 +146,7 @@ void WorkersModule::RefineryCreated(BWAPI::Unit unit, bool unassign /*= false*/)
 
 void WorkersModule::RefineryDestroyed(BWAPI::Unit unit)
 {
-	for (auto exp : _expansionList)
+	for (auto& exp : _expansionList)
 	{
 		if (exp->RemoveRefinery(unit))
 			return;
