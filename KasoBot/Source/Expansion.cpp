@@ -1,5 +1,6 @@
 #include "Expansion.h"
 #include "MapModule.h"
+#include "WorkersModule.h"
 #include "Worker.h"
 #include "Config.h"
 
@@ -22,7 +23,13 @@ Expansion::Expansion(BWAPI::Unit unit)
 Expansion::~Expansion()
 {
 	//TODO transfer workers to another expansion / army
-	//TODO add refinery to _unassignedRefineries in WorkersModule
+
+	if (_refinery)
+	{
+		//add refinery to _unassignedRefineries in WorkersModule
+		WorkersModule::Instance()->RefineryCreated(_refinery, true);
+		_refinery = nullptr;
+	}
 }
 
 void Expansion::AddWorker(BWAPI::Unit unit)

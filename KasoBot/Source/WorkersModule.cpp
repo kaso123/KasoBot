@@ -122,21 +122,24 @@ void WorkersModule::ExpansionDestroyed(BWAPI::Unit unit)
 	),_expansionList.end());
 }
 
-void WorkersModule::RefineryCreated(BWAPI::Unit unit)
+void WorkersModule::RefineryCreated(BWAPI::Unit unit, bool unassign /*= false*/)
 {
-	//find which BWEB::Station this belongs to
-	BWEB::Station* refineryStation = Map::GetStation(unit->getTilePosition());
-	_ASSERT(refineryStation);
-
-	for (auto exp : _expansionList)
+	if (!unassign)
 	{
-		if (exp->GetStation() == refineryStation)
+		//find which BWEB::Station this belongs to
+		BWEB::Station* refineryStation = Map::GetStation(unit->getTilePosition());
+		_ASSERT(refineryStation);
+
+		for (auto exp : _expansionList)
 		{
-			exp->AddRefinery(unit);
-			return;
+			if (exp->GetStation() == refineryStation)
+			{
+				exp->AddRefinery(unit);
+				return;
+			}
 		}
 	}
-
+	
 	//if base is not taken then add to unassigned refineries
 	_unassignedRefineries.emplace_back(unit);
 }

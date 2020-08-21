@@ -36,7 +36,8 @@ namespace KasoBot {
 
 		void ExpansionDestroyed(BWAPI::Unit unit);
 
-		void RefineryCreated(BWAPI::Unit unit);
+		//@param unassign - set to true if adding refinery from destroyed expansion, it skips checking the expansions list
+		void RefineryCreated(BWAPI::Unit unit, bool unassign = false);
 
 		void RefineryDestroyed(BWAPI::Unit unit);
 	};
