@@ -20,7 +20,7 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 	
 	for (auto patch : base->Minerals()) //one worker for every mineral patch first
 	{
-		if (!patch->Unit())
+		if (!patch->Unit() || patch->Amount() <= 0)
 			continue;
 
 		int currDist = patch->Unit()->getDistance(base->Center());
@@ -39,7 +39,7 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 		dist = 0; //start saturating from the farthest mineral patch
 		for (auto patch : base->Minerals())
 		{
-			if (!patch->Unit())
+			if (!patch->Unit() || patch->Amount() <= 0)
 				continue;
 
 			int currDist = patch->Unit()->getDistance(base->Center());

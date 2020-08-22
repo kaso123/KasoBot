@@ -33,6 +33,8 @@ namespace KasoBot {
 		//send worker to mine gas and assign refinery
 		void AssignRoleGas(BWAPI::Unit refinery);
 
+		//check if worker has this mineral assigned
+		bool IsMiningMineral(BWAPI::Unit mineral);
 
 		//getters and setters
 		Workers::Role GetWorkerRole() { return _workerRole; };

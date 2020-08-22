@@ -1,6 +1,10 @@
 #pragma once
 #include <BWAPI.h>
 
+namespace BWEM {
+	class Mineral;
+}
+
 namespace BWEB {
 	class Station;
 }
@@ -45,6 +49,10 @@ namespace KasoBot {
 
 		//@return true if all minerals and gases are saturated on max value from config
 		bool IsFull();
+
+		//check if mineral is from this expansion and reassign workers if they were mining it
+		//@return true if mineral was from this expansion
+		bool CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outToRemove);
 		
 		//getters and setters
 

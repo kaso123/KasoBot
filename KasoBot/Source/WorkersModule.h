@@ -40,6 +40,9 @@ namespace KasoBot {
 		void RefineryCreated(BWAPI::Unit unit, bool unassign = false);
 
 		void RefineryDestroyed(BWAPI::Unit unit);
+
+		//find workers that were mining this mineral and reassign them, also send message to BWEM
+		void MineralDestroyed(BWAPI::Unit unit);
 	};
 }
 

@@ -165,3 +165,19 @@ void WorkersModule::RefineryDestroyed(BWAPI::Unit unit)
 
 	_ASSERT(false); //we should never get here
 }
+
+void WorkersModule::MineralDestroyed(BWAPI::Unit unit)
+{
+	std::vector<BWAPI::Unit> workersToReassign;
+
+	for (auto& exp : _expansionList)
+	{
+		if (exp->CheckMineral(unit, workersToReassign))
+			break;
+	}
+
+	BWEM::Map::Instance().OnMineralDestroyed(unit); //remove mineral from BWEM::Map
+	
+	for(auto worker : workersToReassign)
+		NewWorker(worker); //calling NewWorker from here instead of Expansion in case last mineral was mined, then workers should be transfered to another base
+}

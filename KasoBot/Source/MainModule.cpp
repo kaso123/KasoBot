@@ -84,6 +84,13 @@ void MainModule::onUnitCreate(BWAPI::Unit unit)
 
 void MainModule::onUnitDestroy(BWAPI::Unit unit)
 {
+	//mined out minerals
+	if (unit->getType().isMineralField())
+	{
+		WorkersModule::Instance()->MineralDestroyed(unit);
+		return;
+	}
+
 	if (unit->getPlayer() == Broodwar->self())
 	{
 		//remove unit from lists

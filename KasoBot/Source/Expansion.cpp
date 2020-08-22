@@ -129,3 +129,25 @@ bool Expansion::IsFull()
 
 	return true;
 }
+
+bool Expansion::CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outToRemove)
+{
+	//mineral is not from this base
+	if (BWEM::Map::Instance().GetNearestArea(mineral->getTilePosition()) != _station->getBase()->GetArea())
+		return false;
+
+	//select workers to reassign
+	for (auto& worker : _workerList)
+	{
+		if (worker->IsMiningMineral(mineral))
+		{
+			outToRemove.emplace_back(worker->GetPointer());
+		}
+	}
+
+	//reassign workers that had this mineral
+	for (auto worker : outToRemove)
+		RemoveWorker(worker);
+
+	return true;
+}

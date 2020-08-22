@@ -46,3 +46,11 @@ void Worker::AssignRoleGas(BWAPI::Unit refinery)
 	_refinery = refinery;
 	_workerRole = Workers::Role::GAS;
 }
+
+bool Worker::IsMiningMineral(BWAPI::Unit mineral)
+{
+	if (mineral == _mineral->Unit())
+		return true;
+
+	return false;
+}
