@@ -15,6 +15,8 @@ namespace KasoBot {
 		int _maxWorkersPerGas = 3;
 		int _saturatedMineral = 2;
 		int _saturatedGas = 3;
+		int _startGasAt = 10;
+		int _startGasAtBase = 5;
 
 	public:
 		static ConfigModule* Instance();
@@ -26,6 +28,7 @@ namespace KasoBot {
 		int MaxWorkersPerGas() { return _maxWorkersPerGas; }
 		int SaturatedMineral() { return _saturatedMineral; }
 		int SaturatedGas() { return _saturatedGas; }
+		int StartGasAt() { return _startGasAt; };
 	};
 
 	namespace Config {
@@ -45,6 +48,9 @@ namespace KasoBot {
 
 			//ideal number of workers per one refinery
 			int SaturationPerGas();
+
+			//number of workers mining minerals when gas mining should start in this expansion
+			int StartGasAt();
 		}
 	}
 }

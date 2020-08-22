@@ -42,7 +42,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	_workerList.emplace_back(worker);
 
 	//refinery not saturated
-	if (_refinery && _workersGas < Config::Workers::MaxPerGas())
+	if (_refinery && _workersGas < Config::Workers::MaxPerGas() && _workersMinerals >= Config::Workers::StartGasAt())
 	{
 		//assign role to worker / assign refinery
 		worker->AssignRoleGas(_refinery);
@@ -69,7 +69,33 @@ void Expansion::AddRefinery(BWAPI::Unit unit)
 {
 	_refinery = unit;
 
-	//TODO check if workers can be assigned to gas mining
+	//only add workers to gas if we have enough mineral workers and don't add more than specified in config
+	int toGas = std::max(_workersMinerals - Config::Workers::StartGasAt(), Config::Workers::MaxPerGas());
+	if (toGas < 0)
+		return;
+
+	std::vector<BWAPI::Unit> workersToGas;
+
+	//select workers for gas mining
+	for (toGas; toGas >= 0; toGas--) //only send workers above limit
+	{
+		//loop from back
+		for (auto it = _workerList.rbegin(); it != _workerList.rend(); ++it)
+		{
+			if ((*it)->GetWorkerRole() == Workers::Role::MINERALS)
+			{
+				workersToGas.emplace_back(_workerList.back()->GetPointer());
+				RemoveWorker((*it)->GetPointer());
+				break;
+			}
+		}
+	}
+
+	//add workers back to expansion
+	for (auto worker : workersToGas)
+	{
+		AddWorker(worker);
+	}
 }
 
 bool Expansion::RemoveWorker(BWAPI::Unit unit)
@@ -101,7 +127,23 @@ bool Expansion::RemoveRefinery(BWAPI::Unit unit)
 	if (_refinery == unit)
 	{
 		_refinery = nullptr;
-		//TODO transfer workers to minerals
+		
+		if(_workersGas <= 0) //no workers in gas
+			return true;
+
+		std::vector<BWAPI::Unit> toReassign;
+
+		for (auto it = _workerList.begin(); it != _workerList.end(); it++)
+		{
+			if ((*it)->GetWorkerRole() == Workers::Role::GAS)
+				toReassign.emplace_back((*it)->GetPointer());
+		}
+
+		for (auto worker : toReassign)
+		{
+			RemoveWorker(worker);
+			WorkersModule::Instance()->NewWorker(worker); //going through workersModule in case expansion is full
+		}
 		return true;
 	}
 

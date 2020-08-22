@@ -52,6 +52,7 @@ namespace KasoBot {
 
 		//check if mineral is from this expansion and reassign workers if they were mining it
 		//@return true if mineral was from this expansion
+		//#param outToRemove - returning list of workers to reassign after the mineral was removed from BWEM
 		bool CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outToRemove);
 		
 		//getters and setters
