@@ -28,6 +28,9 @@ Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 
 	for (const auto& exp : _expansionList)
 	{
+		if (!exp->GetPointer()->exists()) //this can happen when we are reassigning workers in expansion destructor
+			break;
+
 		int currDist = unit->getDistance(exp->GetPointer());
 		if (currDist < dist && !exp->IsFull())
 		{
@@ -51,7 +54,7 @@ Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 void WorkersModule::AssignIdleWorkers(Expansion& exp)
 {
 	//get workers from army
-	auto list = ArmyModule::Instance()->GetFreeWorkers(INT_MAX); //TODO add real limit
+	auto list = ArmyModule::Instance()->GetFreeWorkers(exp.IdealWorkerCount());
 
 	for (auto worker : list)
 	{

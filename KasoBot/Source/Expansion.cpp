@@ -22,7 +22,14 @@ Expansion::Expansion(BWAPI::Unit unit)
 
 Expansion::~Expansion()
 {
-	//TODO transfer workers to another expansion / army
+	//transfer workers to another expansion / army
+	for (auto worker : _workerList)
+	{
+		//add new worker, it should not add them back to this expansion (handled in WorkersModule)
+		//no need to delete workers, they get deleted automatically
+		WorkersModule::Instance()->NewWorker(worker->GetPointer());
+	}
+
 
 	if (_refinery)
 	{
@@ -192,4 +199,12 @@ bool Expansion::CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outT
 		RemoveWorker(worker);
 
 	return true;
+}
+
+size_t Expansion::IdealWorkerCount()
+{
+	if (!_station)
+		return 0;
+
+	return _station->getBase()->Minerals().size() * Config::Workers::SaturationPerMineral() + (_refinery ? Config::Workers::SaturationPerGas() : 0);
 }

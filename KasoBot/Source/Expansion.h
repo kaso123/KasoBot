@@ -54,6 +54,9 @@ namespace KasoBot {
 		//@return true if mineral was from this expansion
 		//#param outToRemove - returning list of workers to reassign after the mineral was removed from BWEM
 		bool CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outToRemove);
+
+		//@return number of workers we want this base to currently have
+		size_t IdealWorkerCount();
 		
 		//getters and setters
 
