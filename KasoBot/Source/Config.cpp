@@ -39,6 +39,14 @@ void ConfigModule::Init()
 		_saturatedGas = j["workers"].contains("saturatedGas") ? j["workers"]["saturatedGas"] : _saturatedGas;
 		_startGasAt = j["workers"].contains("startGasAt") ? j["workers"]["startGasAt"] : _startGasAt;	
 	}
+	if (j.contains("debug"))
+	{
+		_debugMap = j["debug"].contains("map") ? j["debug"]["map"] : _debugMap;
+		_debugWorkers = j["debug"].contains("workers") ? j["debug"]["workers"] : _debugWorkers;
+		_debugArmy = j["debug"].contains("army") ? j["debug"]["army"] : _debugArmy;
+		_debugBuildOrder = j["debug"].contains("build") ? j["debug"]["build"] : _debugBuildOrder;
+		_debugStrategy = j["debug"].contains("strategy") ? j["debug"]["strategy"] : _debugStrategy;
+	}
 }
 
 
@@ -48,3 +56,9 @@ int Config::Workers::MaxPerGas() { return ConfigModule::Instance()->MaxWorkersPe
 int Config::Workers::SaturationPerMineral() { return ConfigModule::Instance()->SaturatedMineral(); }
 int Config::Workers::SaturationPerGas() { return ConfigModule::Instance()->SaturatedGas(); }
 int Config::Workers::StartGasAt() { return ConfigModule::Instance()->StartGasAt(); }
+
+bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
+bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }
+bool Config::Debug::Army() { return ConfigModule::Instance()->DebugArmy(); }
+bool Config::Debug::BuildOrder() { return ConfigModule::Instance()->DebugBuildOrder(); }
+bool Config::Debug::Strategy() { return ConfigModule::Instance()->DebugStrategy(); }

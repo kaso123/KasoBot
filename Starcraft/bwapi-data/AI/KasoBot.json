@@ -7,5 +7,12 @@
     "maxPerGas": 3,
     "startGasAt": 10,
     "startGasAtBase": 5
+  },
+  "debug": {
+    "map": true,
+    "workers": true,
+    "army": true,
+    "build": true,
+    "strategy": true
   }
 }

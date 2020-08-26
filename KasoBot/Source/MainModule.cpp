@@ -4,6 +4,7 @@
 #include "MapModule.h"
 #include "ArmyModule.h"
 #include "Config.h"
+#include "DebugModule.h"
 #include <iostream>
 
 using namespace BWAPI;
@@ -34,6 +35,8 @@ void MainModule::onFrame()
   Broodwar->drawTextScreen(200, 0,  "FPS: %d", Broodwar->getFPS() );
 
   WorkersModule::Instance()->OnFrame();
+
+  DebugModule::Instance()->DrawDebug();
 }
 
 void MainModule::onSendText(std::string text)

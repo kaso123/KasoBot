@@ -18,6 +18,12 @@ namespace KasoBot {
 		int _startGasAt = 10;
 		int _startGasAtBase = 5;
 
+		bool _debugMap = false;
+		bool _debugWorkers = false;
+		bool _debugArmy = false;
+		bool _debugBuildOrder = false;
+		bool _debugStrategy = false;
+
 	public:
 		static ConfigModule* Instance();
 
@@ -28,7 +34,13 @@ namespace KasoBot {
 		int MaxWorkersPerGas() { return _maxWorkersPerGas; }
 		int SaturatedMineral() { return _saturatedMineral; }
 		int SaturatedGas() { return _saturatedGas; }
-		int StartGasAt() { return _startGasAt; };
+		int StartGasAt() { return _startGasAt; }
+
+		bool DebugMap() { return _debugMap; }
+		bool DebugWorkers() { return _debugWorkers; }
+		bool DebugArmy() { return _debugArmy; }
+		bool DebugBuildOrder() { return _debugBuildOrder; }
+		bool DebugStrategy() { return _debugStrategy; }
 	};
 
 	namespace Config {
@@ -51,6 +63,24 @@ namespace KasoBot {
 
 			//number of workers mining minerals when gas mining should start in this expansion
 			int StartGasAt();
+		}
+
+		namespace Debug {
+
+			//@return whether to draw map debug info on screen
+			bool Map();
+
+			//@return whether to draw worker debug info on screen
+			bool Workers();
+
+			//@return whether to draw unit debug info on screen
+			bool Army();
+
+			//@return whether to draw build order debug info on screen
+			bool BuildOrder();
+
+			//@return whether to draw strategy debug info on screen
+			bool Strategy();
 		}
 	}
 }
