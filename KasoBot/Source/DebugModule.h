@@ -3,6 +3,10 @@
 
 namespace KasoBot {
 
+	namespace Workers {
+		enum Role;
+	}
+
 	class DebugModule
 	{
 	private:
@@ -15,6 +19,12 @@ namespace KasoBot {
 		bool _drawArmy;
 		bool _drawBuildOrder;
 		bool _drawStrategy;
+
+		void DrawMap();
+		void DrawWorkers();
+
+		//@return string representation of worker role enum
+		const char* WorkerRoleString(Workers::Role role);
 	public:
 		static DebugModule* Instance();
 

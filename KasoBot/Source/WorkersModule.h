@@ -43,6 +43,10 @@ namespace KasoBot {
 
 		//find workers that were mining this mineral and reassign them, also send message to BWEM
 		void MineralDestroyed(BWAPI::Unit unit);
+
+
+		//getters and setters
+		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }
 	};
 }
 

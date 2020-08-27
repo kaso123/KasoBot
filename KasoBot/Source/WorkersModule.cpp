@@ -53,6 +53,8 @@ Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 
 void WorkersModule::AssignIdleWorkers(Expansion& exp)
 {
+	//TODO check if refinery is in this base and assign it
+
 	//get workers from army
 	auto list = ArmyModule::Instance()->GetFreeWorkers(exp.IdealWorkerCount());
 

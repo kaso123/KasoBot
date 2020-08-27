@@ -5,8 +5,7 @@
     "maxPerMineral": 3,
     "saturatedGas": 3,
     "maxPerGas": 3,
-    "startGasAt": 10,
-    "startGasAtBase": 5
+    "startGasAfter": 10
   },
   "debug": {
     "map": true,

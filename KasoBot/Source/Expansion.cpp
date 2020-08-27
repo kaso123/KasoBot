@@ -49,7 +49,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	_workerList.emplace_back(worker);
 
 	//refinery not saturated
-	if (_refinery && _workersGas < Config::Workers::MaxPerGas() && _workersMinerals >= Config::Workers::StartGasAt())
+	if (_refinery && _workersGas < Config::Workers::MaxPerGas() && _workersMinerals >= Config::Workers::StartGasAfter())
 	{
 		//assign role to worker / assign refinery
 		worker->AssignRoleGas(_refinery);
@@ -77,7 +77,7 @@ void Expansion::AddRefinery(BWAPI::Unit unit)
 	_refinery = unit;
 
 	//only add workers to gas if we have enough mineral workers and don't add more than specified in config
-	int toGas = std::max(_workersMinerals - Config::Workers::StartGasAt(), Config::Workers::MaxPerGas());
+	int toGas = std::max(_workersMinerals - Config::Workers::StartGasAfter(), Config::Workers::MaxPerGas());
 	if (toGas < 0)
 		return;
 

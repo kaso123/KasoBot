@@ -37,7 +37,7 @@ void ConfigModule::Init()
 		_maxWorkersTotal = j["workers"].contains("max") ? j["workers"]["max"] : _maxWorkersTotal;
 		_saturatedMineral = j["workers"].contains("saturatedMineral") ? j["workers"]["saturatedMineral"] : _saturatedMineral;
 		_saturatedGas = j["workers"].contains("saturatedGas") ? j["workers"]["saturatedGas"] : _saturatedGas;
-		_startGasAt = j["workers"].contains("startGasAt") ? j["workers"]["startGasAt"] : _startGasAt;	
+		_startGasAfter = j["workers"].contains("startGasAfter") ? j["workers"]["startGasAfter"] : _startGasAfter;	
 	}
 	if (j.contains("debug"))
 	{
@@ -55,7 +55,7 @@ int Config::Workers::MaxPerMineral() { return ConfigModule::Instance()->MaxWorke
 int Config::Workers::MaxPerGas() { return ConfigModule::Instance()->MaxWorkersPerGas(); }
 int Config::Workers::SaturationPerMineral() { return ConfigModule::Instance()->SaturatedMineral(); }
 int Config::Workers::SaturationPerGas() { return ConfigModule::Instance()->SaturatedGas(); }
-int Config::Workers::StartGasAt() { return ConfigModule::Instance()->StartGasAt(); }
+int Config::Workers::StartGasAfter() { return ConfigModule::Instance()->StartGasAfter(); }
 
 bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
 bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }

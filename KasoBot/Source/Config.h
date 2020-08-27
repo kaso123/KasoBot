@@ -15,8 +15,7 @@ namespace KasoBot {
 		int _maxWorkersPerGas = 3;
 		int _saturatedMineral = 2;
 		int _saturatedGas = 3;
-		int _startGasAt = 10;
-		int _startGasAtBase = 5;
+		int _startGasAfter = 10;
 
 		bool _debugMap = false;
 		bool _debugWorkers = false;
@@ -34,7 +33,7 @@ namespace KasoBot {
 		int MaxWorkersPerGas() { return _maxWorkersPerGas; }
 		int SaturatedMineral() { return _saturatedMineral; }
 		int SaturatedGas() { return _saturatedGas; }
-		int StartGasAt() { return _startGasAt; }
+		int StartGasAfter() { return _startGasAfter; }
 
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
@@ -62,7 +61,7 @@ namespace KasoBot {
 			int SaturationPerGas();
 
 			//number of workers mining minerals when gas mining should start in this expansion
-			int StartGasAt();
+			int StartGasAfter();
 		}
 
 		namespace Debug {

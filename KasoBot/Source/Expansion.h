@@ -62,6 +62,7 @@ namespace KasoBot {
 
 		BWAPI::Unit GetPointer() const { return _pointer; }
 		BWEB::Station* GetStation() const { return _station; }
+		const std::vector<std::shared_ptr<Worker>>& Workers() { return _workerList; }
 	};
 }
 

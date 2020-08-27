@@ -37,8 +37,10 @@ namespace KasoBot {
 		bool IsMiningMineral(BWAPI::Unit mineral);
 
 		//getters and setters
-		Workers::Role GetWorkerRole() { return _workerRole; };
+		Workers::Role GetWorkerRole() const { return _workerRole; };
 		void SetWorkerRole(Workers::Role newRole) { _workerRole = newRole; };
+		const BWEM::Mineral* GetMineral() const { return _mineral; }
+		const BWAPI::Unit GetRefinery() const { return _refinery; }
 	};
 }
 

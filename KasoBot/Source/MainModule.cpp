@@ -103,6 +103,10 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 			{
 				WorkersModule::Instance()->ExpansionDestroyed(unit);
 			}
+			else if (unit->getType().isRefinery())
+			{
+				WorkersModule::Instance()->RefineryDestroyed(unit);
+			}
 			else
 			{
 				ProductionModule::Instance()->RemoveBuilding(unit);
@@ -124,12 +128,6 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 
 void MainModule::onUnitMorph(BWAPI::Unit unit)
 {
-	//refinery destroyed
-	if (unit->getType() == UnitTypes::Resource_Vespene_Geyser)
-	{
-		//TODO check if enemy gas was destroyed
-		WorkersModule::Instance()->RefineryDestroyed(unit);
-	}
 }
 
 void MainModule::onUnitRenegade(BWAPI::Unit unit)
