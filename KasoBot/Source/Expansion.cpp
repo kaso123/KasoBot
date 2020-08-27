@@ -39,6 +39,14 @@ Expansion::~Expansion()
 	}
 }
 
+void Expansion::OnFrame()
+{
+	for (auto& worker : _workerList)
+	{
+		worker->Work();
+	}
+}
+
 void Expansion::AddWorker(BWAPI::Unit unit)
 {
 	AddWorker(std::make_shared<Worker>(unit));

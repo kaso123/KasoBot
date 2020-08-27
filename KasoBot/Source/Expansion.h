@@ -32,6 +32,8 @@ namespace KasoBot {
 		Expansion(BWAPI::Unit unit);
 		~Expansion();
 
+		void OnFrame();
+
 		void AddWorker(BWAPI::Unit unit);
 		void AddWorker(std::shared_ptr<Worker> worker);
 

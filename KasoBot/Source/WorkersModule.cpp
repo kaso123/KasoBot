@@ -94,7 +94,10 @@ void WorkersModule::OnStart()
 
 void WorkersModule::OnFrame()
 {
-
+	for (auto& exp : _expansionList)
+	{
+		exp->OnFrame();
+	}
 }
 
 void WorkersModule::NewWorker(BWAPI::Unit unit)
