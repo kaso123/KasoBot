@@ -53,7 +53,8 @@ Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 
 void WorkersModule::AssignIdleWorkers(Expansion& exp)
 {
-	//TODO check if refinery is in this base and assign it
+	//check if refinery is in this base and assign it
+	AssignRefinery(exp);
 
 	//get workers from army
 	auto list = ArmyModule::Instance()->GetFreeWorkers(exp.IdealWorkerCount());
@@ -64,6 +65,19 @@ void WorkersModule::AssignIdleWorkers(Expansion& exp)
 	}
 	
 	//TODO if not enough, get workers from oversaturated bases
+}
+
+void WorkersModule::AssignRefinery(Expansion& exp)
+{
+	for (auto it = _unassignedRefineries.begin(); it != _unassignedRefineries.end(); it++)
+	{
+		if (BWEM::Map::Instance().GetNearestArea((*it)->getTilePosition()) == exp.GetStation()->getBase()->GetArea())
+		{
+			exp.AddRefinery(*it);
+			_unassignedRefineries.erase(it);
+			break;
+		}
+	}
 }
 
 WorkersModule* WorkersModule::Instance()

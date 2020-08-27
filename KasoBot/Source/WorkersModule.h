@@ -21,6 +21,9 @@ namespace KasoBot {
 		//get workers from army or from saturated bases and transfer them here
 		void AssignIdleWorkers(Expansion& exp);
 
+		//check if there is built refinery for this expansion and assign it
+		void AssignRefinery(Expansion& exp);
+
 	public:
 		static WorkersModule* Instance();
 		void OnStart();
