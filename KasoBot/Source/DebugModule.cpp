@@ -11,7 +11,7 @@ DebugModule* DebugModule::_instance = 0;
 
 DebugModule::DebugModule()
 	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
-	, _drawBuildOrder(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy())
+	, _drawBuildOrder(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
 {
 }
 
@@ -39,6 +39,14 @@ void DebugModule::DrawWorkers()
 				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), worker->GetMineral()->Pos(), BWAPI::Colors::Blue);
 			if (worker->GetRefinery())
 				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), worker->GetRefinery()->getPosition(), BWAPI::Colors::Green);
+
+			//draw worker game order
+			if (_drawOrders)
+			{
+				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(25, 10), worker->GetPointer()->getOrder().getName().c_str());
+				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::max(BWAPI::Broodwar->getFrameCount() - worker->GetPointer()->getLastCommandFrame(),999));
+			}
+				
 		}
 	}
 }

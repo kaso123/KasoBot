@@ -7,11 +7,15 @@
     "maxPerGas": 3,
     "startGasAfter": 10
   },
+  "units": {
+    "orderDelay": 7
+  },
   "debug": {
     "map": true,
     "workers": true,
     "army": true,
     "build": true,
-    "strategy": true
+    "strategy": true,
+    "orders": true
   }
 }

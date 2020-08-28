@@ -1,5 +1,6 @@
 #include "Worker.h"
 #include "MapModule.h"
+#include "BehaviourWorker.h"
 
 using namespace KasoBot;
 
@@ -53,4 +54,10 @@ bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 		return true;
 
 	return false;
+}
+
+void Worker::Work()
+{
+	_ASSERT(_behaviour);
+	_behaviour->Work(*this);
 }

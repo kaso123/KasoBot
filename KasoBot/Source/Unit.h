@@ -8,7 +8,7 @@ namespace KasoBot {
 
 	class Unit
 	{
-	private:
+	protected:
 		BWAPI::Unit _pointer;
 		std::unique_ptr<Behaviour> _behaviour;
 	public:

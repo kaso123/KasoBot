@@ -17,11 +17,14 @@ namespace KasoBot {
 		int _saturatedGas = 3;
 		int _startGasAfter = 10;
 
+		int _unitOrderDelay = 7;
+
 		bool _debugMap = false;
 		bool _debugWorkers = false;
 		bool _debugArmy = false;
 		bool _debugBuildOrder = false;
 		bool _debugStrategy = false;
+		bool _debugOrders = false;
 
 	public:
 		static ConfigModule* Instance();
@@ -35,11 +38,15 @@ namespace KasoBot {
 		int SaturatedGas() { return _saturatedGas; }
 		int StartGasAfter() { return _startGasAfter; }
 
+		int UnitOrderDelay() { return _unitOrderDelay; }
+
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
 		bool DebugArmy() { return _debugArmy; }
 		bool DebugBuildOrder() { return _debugBuildOrder; }
 		bool DebugStrategy() { return _debugStrategy; }
+		bool DebugOrders() { return _debugOrders; }
+		
 	};
 
 	namespace Config {
@@ -64,6 +71,12 @@ namespace KasoBot {
 			int StartGasAfter();
 		}
 
+		namespace Units {
+
+			//number of frames between allowing to issue new orders
+			int OrderDelay();
+		}
+
 		namespace Debug {
 
 			//@return whether to draw map debug info on screen
@@ -80,6 +93,9 @@ namespace KasoBot {
 
 			//@return whether to draw strategy debug info on screen
 			bool Strategy();
+
+			//@return whether to draw BWAPI orders for units on screen
+			bool Orders();
 		}
 	}
 }

@@ -4,6 +4,7 @@
 namespace KasoBot {
 
 	class Unit;
+	class Worker;
 	
 	//every unit type has it's own behaviour class, these functions are called every frame
 	class Behaviour
@@ -13,7 +14,7 @@ namespace KasoBot {
 		Behaviour();
 		virtual ~Behaviour();
 
-		virtual void Work(KasoBot::Unit* unit) { return; }
+		virtual void Work(KasoBot::Worker& unit) { return; }
 	};
 }
 
