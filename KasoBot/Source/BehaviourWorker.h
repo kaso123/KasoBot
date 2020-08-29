@@ -17,9 +17,18 @@ namespace KasoBot {
 		//mining gas behaviour
 		void Gas(Worker& worker);
 
-		//assign order to worker
-		//@target = mineral patch or refinery
-		void Gather(BWAPI::Unit unit, BWAPI::Unit target);
+		//assign gather order to worker
+		//@target = mineral patch
+		void GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target);
+		
+		//assign gather order to worker
+		//@target = refinery
+		void GatherGas(BWAPI::Unit unit, BWAPI::Unit target);
+
+		
+		//assign return cargo order to worker
+		void ReturnCargo(BWAPI::Unit unit);
+
 
 
 	public:

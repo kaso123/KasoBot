@@ -8,28 +8,63 @@ void BehaviourWorker::Minerals(Worker& worker)
 {
 	_ASSERT(worker.GetMineral());
 
-	//worker is mining his mineral - do nothing
-	if (((worker.GetPointer()->getOrder() == BWAPI::Orders::MiningMinerals
-		|| worker.GetPointer()->getOrder() == BWAPI::Orders::WaitForMinerals
-		|| worker.GetPointer()->getOrder() == BWAPI::Orders::MoveToMinerals)
-		&& worker.GetPointer()->getOrderTarget() == worker.GetMineral()->Unit())
-		|| worker.GetPointer()->getOrder() == BWAPI::Orders::ReturnMinerals)
+	//return cargo when switched from gas
+	if (worker.GetPointer()->isCarryingGas())
+	{
+		ReturnCargo(worker.GetPointer());
 		return;
+	}	
 
-	Gather(worker.GetPointer(), worker.GetMineral()->Unit());
+	GatherMinerals(worker.GetPointer(), worker.GetMineral()->Unit());
 }
 
 void BehaviourWorker::Gas(Worker& worker)
 {
 	_ASSERT(worker.GetRefinery());
+
+	//return cargo if switched from minerals
+	if (worker.GetPointer()->isCarryingMinerals())
+	{
+		ReturnCargo(worker.GetPointer());
+		return;
+	}
 	
-	//TODO check orders for gas mining
-	//Gather(worker.GetPointer(), worker.GetRefinery());
+	GatherGas(worker.GetPointer(), worker.GetRefinery());
 }
 
-void BehaviourWorker::Gather(BWAPI::Unit unit, BWAPI::Unit target)
+void BehaviourWorker::GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target)
 {
+	//worker is mining his mineral - do nothing
+	if (((unit->getOrder() == BWAPI::Orders::MiningMinerals
+		|| unit->getOrder() == BWAPI::Orders::WaitForMinerals
+		|| unit->getOrder() == BWAPI::Orders::MoveToMinerals)
+		&& unit->getOrderTarget() == target)
+		|| unit->getOrder() == BWAPI::Orders::ReturnMinerals)
+		return;
+
 	unit->gather(target);
+}
+
+void BehaviourWorker::GatherGas(BWAPI::Unit unit, BWAPI::Unit target)
+{
+	//worker is mining gas from his refinery - do nothing
+	if (((unit->getOrder() == BWAPI::Orders::HarvestGas
+		|| unit->getOrder() == BWAPI::Orders::WaitForGas
+		|| unit->getOrder() == BWAPI::Orders::MoveToGas
+		|| unit->getOrder() == BWAPI::Orders::Harvest1)
+		&& unit->getOrderTarget() == target)
+		|| unit->getOrder() == BWAPI::Orders::ReturnGas)
+		return;
+
+	unit->gather(target);
+}
+
+void BehaviourWorker::ReturnCargo(BWAPI::Unit unit)
+{
+	if (unit->getOrder() == BWAPI::Orders::ReturnGas || unit->getOrder() == BWAPI::Orders::ReturnMinerals)
+		return;
+
+	unit->returnCargo();
 }
 
 BehaviourWorker::BehaviourWorker()
