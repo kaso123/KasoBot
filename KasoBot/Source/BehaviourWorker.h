@@ -17,6 +17,12 @@ namespace KasoBot {
 		//mining gas behaviour
 		void Gas(Worker& worker);
 
+		//move to build location or to started building if finishing build
+		void MoveToBuild(Worker& worker);
+
+		//construct building
+		void Construct(Worker& worker);
+
 		//assign gather order to worker
 		//@target = mineral patch
 		void GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target);

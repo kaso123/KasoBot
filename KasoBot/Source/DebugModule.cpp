@@ -85,8 +85,8 @@ const char* DebugModule::WorkerRoleString(Workers::Role role)
 		return "\x1d Gas"; //grey green
 	if (role == Workers::Role::ASSIGNED)
 		return "\x03 Assigned"; //yellow
-	if (role == Workers::Role::BUILDING)
-		return "\x15 Scout"; //player white
+	if (role == Workers::Role::BUILD)
+		return "\x15 Build"; //player white
 
 		return "Idle";
 }

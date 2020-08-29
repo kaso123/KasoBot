@@ -1,6 +1,7 @@
 #include "BehaviourWorker.h"
 #include "Worker.h"
 #include "MapModule.h"
+#include "ProductionItem.h"
 
 using namespace KasoBot;
 
@@ -30,6 +31,26 @@ void BehaviourWorker::Gas(Worker& worker)
 	}
 	
 	GatherGas(worker.GetPointer(), worker.GetRefinery());
+}
+
+void BehaviourWorker::MoveToBuild(Worker& worker)
+{
+	_ASSERT(worker.GetProductionItem());
+	_ASSERT(worker.GetProductionItem()->GetState() == Production::State::ASSIGNED);
+
+	//TODO if not close to position -> move there
+	//TODO else start building
+	//TODO if started switch Role and update ProductionItem
+}
+
+void BehaviourWorker::Construct(Worker& worker)
+{
+	_ASSERT(worker.GetProductionItem());
+	_ASSERT(worker.GetProductionItem()->GetState() == Production::State::BUILDING);
+
+	//TODO if not constructing
+		//if finished -> change state, switch to minerals
+		//if not -> reset to ASSIGNED
 }
 
 void BehaviourWorker::GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target)
@@ -89,6 +110,18 @@ void BehaviourWorker::Work(Worker& worker)
 	if (worker.GetWorkerRole() == Workers::Role::GAS)
 	{
 		Gas(worker);
+		return;
+	}
+
+	if (worker.GetWorkerRole() == Workers::Role::ASSIGNED)
+	{
+		MoveToBuild(worker);
+		return;
+	}
+
+	if (worker.GetWorkerRole() == Workers::Role::BUILD)
+	{
+		Construct(worker);
 		return;
 	}
 		

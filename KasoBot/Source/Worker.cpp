@@ -5,7 +5,8 @@
 using namespace KasoBot;
 
 Worker::Worker(BWAPI::Unit unit)
-	: Unit::Unit(unit), _workerRole(Workers::Role::IDLE), _mineral(nullptr), _refinery(nullptr)
+	: Unit::Unit(unit), _workerRole(Workers::Role::IDLE)
+	, _mineral(nullptr), _refinery(nullptr), _item(nullptr)
 {
 }
 
@@ -46,6 +47,16 @@ void Worker::AssignRoleGas(BWAPI::Unit refinery)
 	_mineral = nullptr;
 	_refinery = refinery;
 	_workerRole = Workers::Role::GAS;
+}
+
+bool Worker::AssignRoleBuild(ProductionItem* item)
+{
+	if (_item)
+		return false;
+
+	_item = item;
+	_workerRole = Workers::Role::ASSIGNED;
+	return true;
 }
 
 bool Worker::IsMiningMineral(BWAPI::Unit mineral)
