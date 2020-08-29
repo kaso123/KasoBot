@@ -11,6 +11,8 @@ namespace KasoBot {
 	protected:
 		BWAPI::Unit _pointer;
 		std::unique_ptr<Behaviour> _behaviour;
+
+		bool _playerControl;
 	public:
 		Unit(BWAPI::Unit unit);
 		virtual ~Unit();
@@ -21,11 +23,13 @@ namespace KasoBot {
 		//equivalent to onFrame used in worker class (not for workers in army )
 		virtual void Work() { return; }
 
-
+		//switch between AI controlled and player controlled behaviour
+		void ChangeDebugControl();
 		
 		//getters and setters
 
-		BWAPI::Unit GetPointer() { return _pointer; };
+		BWAPI::Unit GetPointer() { return _pointer; }
+		bool PlayerControlled() { return _playerControl; }
 	};
 }
 

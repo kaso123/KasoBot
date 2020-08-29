@@ -58,6 +58,9 @@ bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 
 void Worker::Work()
 {
+	if (_playerControl)
+		return;
+
 	_ASSERT(_behaviour);
 	_behaviour->Work(*this);
 }

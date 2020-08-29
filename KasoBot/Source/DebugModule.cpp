@@ -44,11 +44,37 @@ void DebugModule::DrawWorkers()
 			if (_drawOrders)
 			{
 				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(25, 10), worker->GetPointer()->getOrder().getName().c_str());
-				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::max(BWAPI::Broodwar->getFrameCount() - worker->GetPointer()->getLastCommandFrame(),999));
+				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - worker->GetPointer()->getLastCommandFrame(),999));
 			}
+
+			//draw if player controlled
+			if (worker->PlayerControlled())
+				BWAPI::Broodwar->drawCircleMap(worker->GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
 				
 		}
 	}
+}
+
+void DebugModule::SwitchControlOnSelected()
+{
+	auto selected = BWAPI::Broodwar->getSelectedUnits();
+
+	for (auto& exp : WorkersModule::Instance()->ExpansionList())
+	{
+		for (auto& worker : exp->Workers())
+		{
+			for (auto sel : selected)
+			{
+				if (sel == worker->GetPointer())
+				{
+					worker->ChangeDebugControl();
+					break;
+				}
+			}
+		}
+	}
+
+	//TODO do this for other units
 }
 
 const char* DebugModule::WorkerRoleString(Workers::Role role)
@@ -74,6 +100,22 @@ DebugModule* DebugModule::Instance()
 
 void DebugModule::DrawDebug()
 {
+	//game speed changes with keys
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_G))
+		BWAPI::Broodwar->setLocalSpeed(0);
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_H))
+		BWAPI::Broodwar->setLocalSpeed(24);
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_J))
+		BWAPI::Broodwar->setLocalSpeed(48);
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_K))
+		BWAPI::Broodwar->setLocalSpeed(250);
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_L))
+		BWAPI::Broodwar->setLocalSpeed(1500);
+
+	//switch selected units from AI controlled to player controlled
+	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_N))
+		SwitchControlOnSelected();
+
 	//draw stuff here
 	if (_drawMap)
 		DrawMap();

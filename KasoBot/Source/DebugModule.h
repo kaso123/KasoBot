@@ -24,6 +24,9 @@ namespace KasoBot {
 		void DrawMap();
 		void DrawWorkers();
 
+		//get selected units in GUI and make them player controlled
+		void SwitchControlOnSelected();
+
 		//@return string representation of worker role enum
 		const char* WorkerRoleString(Workers::Role role);
 	public:
