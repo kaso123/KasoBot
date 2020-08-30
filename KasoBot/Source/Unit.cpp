@@ -4,7 +4,7 @@
 using namespace KasoBot;
 
 Unit::Unit(BWAPI::Unit unit)
-	:_pointer(unit), _playerControl(false)
+	:_pointer(unit), _playerControl(false), _playerControlFrame(0)
 {
 	if (unit->getType().isWorker())
 		_behaviour = std::make_unique<BehaviourWorker>();
@@ -26,5 +26,9 @@ void Unit::Fight()
 
 void Unit::ChangeDebugControl()
 {
+	if (_playerControlFrame + Config::Units::OrderDelay() > BWAPI::Broodwar->getFrameCount())
+		return;
+
 	_playerControl = !_playerControl;
+	_playerControlFrame = BWAPI::Broodwar->getFrameCount();
 }

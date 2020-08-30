@@ -104,9 +104,9 @@ void DebugModule::DrawDebug()
 	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_G))
 		BWAPI::Broodwar->setLocalSpeed(0);
 	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_H))
-		BWAPI::Broodwar->setLocalSpeed(24);
+		BWAPI::Broodwar->setLocalSpeed(12);
 	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_J))
-		BWAPI::Broodwar->setLocalSpeed(48);
+		BWAPI::Broodwar->setLocalSpeed(24);
 	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_K))
 		BWAPI::Broodwar->setLocalSpeed(250);
 	if (BWAPI::Broodwar->getKeyState(BWAPI::Key::K_L))

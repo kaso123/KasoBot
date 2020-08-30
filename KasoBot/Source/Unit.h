@@ -13,6 +13,7 @@ namespace KasoBot {
 		std::unique_ptr<Behaviour> _behaviour;
 
 		bool _playerControl;
+		int _playerControlFrame;
 	public:
 		Unit(BWAPI::Unit unit);
 		virtual ~Unit();
