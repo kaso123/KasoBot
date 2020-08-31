@@ -56,6 +56,12 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 	return nullptr;
 }
 
+BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
+{
+	//TODO get build positions from BWEB
+	return BWAPI::Broodwar->getBuildLocation(type, BWAPI::Broodwar->self()->getStartLocation(), 500);
+}
+
 void Map::Global::Initialize()
 {
 	BWEB::Map::mapBWEM.Initialize(BWAPI::BroodwarPtr);

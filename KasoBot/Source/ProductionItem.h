@@ -21,6 +21,7 @@ namespace KasoBot {
 
 	public:
 		ProductionItem(BWAPI::UnitType type);
+		ProductionItem(BWAPI::UnitType type, BWAPI::TilePosition pos);
 		~ProductionItem();
 
 

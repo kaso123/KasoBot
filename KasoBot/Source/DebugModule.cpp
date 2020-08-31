@@ -2,8 +2,11 @@
 #include "Config.h"
 #include "MapModule.h"
 #include "WorkersModule.h"
+#include "ProductionModule.h"
+
 #include "Expansion.h"
 #include "Worker.h"
+#include "ProductionItem.h"
 
 using namespace KasoBot;
 
@@ -35,6 +38,8 @@ void DebugModule::DrawWorkers()
 			BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition(), WorkerRoleString(worker->GetWorkerRole()));
 
 			//draw worker target
+			if (worker->GetProductionItem())
+				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), BWAPI::Position(worker->GetProductionItem()->GetLocation()), BWAPI::Colors::Yellow);
 			if (worker->GetMineral())
 				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), worker->GetMineral()->Pos(), BWAPI::Colors::Blue);
 			if (worker->GetRefinery())
@@ -49,8 +54,7 @@ void DebugModule::DrawWorkers()
 
 			//draw if player controlled
 			if (worker->PlayerControlled())
-				BWAPI::Broodwar->drawCircleMap(worker->GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
-				
+				BWAPI::Broodwar->drawCircleMap(worker->GetPointer()->getPosition(), 10, BWAPI::Colors::Red);	
 		}
 	}
 }
@@ -121,4 +125,20 @@ void DebugModule::DrawDebug()
 		DrawMap();
 	if (_drawWorkers)
 		DrawWorkers();
+}
+
+void DebugModule::DebugCommand(std::string& text)
+{
+	if (text == "bc")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Command_Center);
+	}
+	else if (text == "br")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Refinery);
+	}
+	else if (text == "bs")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Supply_Depot);
+	}
 }

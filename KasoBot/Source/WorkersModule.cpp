@@ -4,7 +4,7 @@
 
 #include "Worker.h"
 #include "Expansion.h"
-#include "libs/BWEB/BWEB.h"
+#include "ProductionItem.h"
 
 using namespace KasoBot;
 
@@ -202,4 +202,23 @@ void WorkersModule::MineralDestroyed(BWAPI::Unit unit)
 	
 	for(auto worker : workersToReassign)
 		NewWorker(worker); //calling NewWorker from here instead of Expansion in case last mineral was mined, then workers should be transfered to another base
+}
+
+bool WorkersModule::Build(ProductionItem* item)
+{
+	//TODO select closest worker, now selecting first available
+
+	for (auto& exp : _expansionList)
+	{
+		for (auto& worker : exp->Workers())
+		{
+			if (worker->GetWorkerRole() == Workers::Role::MINERALS)
+			{
+				if(worker->AssignRoleBuild(item))
+					return true;
+			}
+		}
+	}
+
+	return false;
 }

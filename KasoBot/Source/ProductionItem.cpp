@@ -7,6 +7,11 @@ ProductionItem::ProductionItem(BWAPI::UnitType type)
 {
 }
 
+ProductionItem::ProductionItem(BWAPI::UnitType type, BWAPI::TilePosition pos)
+	: _state(Production::State::WAITING), _type(type), _buildLocation(pos)
+{
+}
+
 ProductionItem::~ProductionItem()
 {
 }

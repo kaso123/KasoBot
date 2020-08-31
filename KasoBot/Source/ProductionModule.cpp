@@ -1,4 +1,8 @@
 #include "ProductionModule.h"
+#include "WorkersModule.h"
+#include "MapModule.h"
+
+#include "ProductionItem.h"
 #include "Unit.h"
 
 using namespace KasoBot;
@@ -91,4 +95,9 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 	{
 		_buildingList.erase(it);
 	}
+}
+
+void ProductionModule::DebugBuild(BWAPI::UnitType type)
+{
+	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, KasoBot::Map::GetBuildPosition(type))).get());
 }

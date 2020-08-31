@@ -3,6 +3,7 @@
 
 namespace KasoBot {
 	class Unit;
+	class ProductionItem;
 }
 
 typedef std::vector<std::shared_ptr<KasoBot::Unit>> UnitList;
@@ -18,6 +19,8 @@ namespace KasoBot {
 		std::unordered_map<BWAPI::UnitType, UnitList, std::hash<int>> _unitList;
 		std::unordered_map<BWAPI::UnitType, UnitList, std::hash<int>> _buildingList;
 
+		std::vector<std::unique_ptr<ProductionItem>> _items;
+
 	public:
 		static ProductionModule* Instance();
 
@@ -26,6 +29,9 @@ namespace KasoBot {
 
 		void RemoveUnit(BWAPI::Unit unit);
 		void RemoveBuilding(BWAPI::Unit unit);
+
+		//create productionItem and send it right to workersModule, use for debugging purposes only
+		void DebugBuild(BWAPI::UnitType type);
 	};
 }
 

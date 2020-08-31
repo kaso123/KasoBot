@@ -20,6 +20,8 @@ namespace KasoBot
 		//minerals are assigned closest first, when every mineral is assigned, start mining from furthest
 		//@return pointer to next mineral in expansion that should be assigned to worker
 		BWEM::Mineral* NextMineral(const BWEM::Base* base);
+
+		BWAPI::TilePosition GetBuildPosition(BWAPI::UnitType type);
 	}
 	
 }

@@ -33,6 +33,8 @@ namespace KasoBot {
 		static DebugModule* Instance();
 
 		void DrawDebug();
+
+		void DebugCommand(std::string& text);
 	};
 }
 

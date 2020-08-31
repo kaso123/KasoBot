@@ -46,6 +46,8 @@ void MainModule::onSendText(std::string text)
 
   // Make sure to use %s and pass the text as a parameter,
   // otherwise you may run into problems when you use the %(percent) character!
+
+  DebugModule::Instance()->DebugCommand(text);
 }
 
 void MainModule::onReceiveText(BWAPI::Player player, std::string text)

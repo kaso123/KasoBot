@@ -4,6 +4,7 @@
 namespace KasoBot {
 	
 	class Expansion;
+	class ProductionItem;
 
 	class WorkersModule
 	{
@@ -46,6 +47,10 @@ namespace KasoBot {
 
 		//find workers that were mining this mineral and reassign them, also send message to BWEM
 		void MineralDestroyed(BWAPI::Unit unit);
+
+		//assign this build item to worker
+		//@return false if no worker was assigned
+		bool Build(ProductionItem* item);
 
 
 		//getters and setters
