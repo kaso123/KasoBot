@@ -67,7 +67,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	else //refinery is saturated (or doesn't exists)
 	{
 		//choose mineral
-		BWEM::Mineral* mineral = Map::NextMineral(_station->getBase());
+		BWEM::Mineral* mineral = Map::NextMineral(_station->getBWEMBase());
 
 		_ASSERT(mineral);
 
@@ -167,10 +167,10 @@ bool Expansion::RemoveRefinery(BWAPI::Unit unit)
 
 bool Expansion::IsSaturated()
 {
-	if (!_refinery || _workersGas < Config::Workers::SaturationPerGas())
+	if (_refinery && _workersGas < Config::Workers::SaturationPerGas())
 		return false;
 
-	if ((int)_station->getBase()->Minerals().size() * Config::Workers::SaturationPerMineral() > _workersMinerals)
+	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() > _workersMinerals)
 		return false;
 
 	return true;
@@ -178,10 +178,10 @@ bool Expansion::IsSaturated()
 
 bool Expansion::IsFull()
 {
-	if (!_refinery || _workersGas < Config::Workers::MaxPerGas())
+	if (_refinery && _workersGas < Config::Workers::MaxPerGas())
 		return false;
 
-	if ((int)_station->getBase()->Minerals().size() * Config::Workers::MaxPerMineral() > _workersMinerals)
+	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::MaxPerMineral() > _workersMinerals)
 		return false;
 
 	return true;
@@ -190,7 +190,7 @@ bool Expansion::IsFull()
 bool Expansion::CheckMineral(BWAPI::Unit mineral, std::vector<BWAPI::Unit>& outToRemove)
 {
 	//mineral is not from this base
-	if (BWEM::Map::Instance().GetNearestArea(mineral->getTilePosition()) != _station->getBase()->GetArea())
+	if (BWEM::Map::Instance().GetNearestArea(mineral->getTilePosition()) != _station->getBWEMBase()->GetArea())
 		return false;
 
 	//select workers to reassign
@@ -214,5 +214,5 @@ size_t Expansion::IdealWorkerCount()
 	if (!_station)
 		return 0;
 
-	return _station->getBase()->Minerals().size() * Config::Workers::SaturationPerMineral() + (_refinery ? Config::Workers::SaturationPerGas() : 0);
+	return _station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() + (_refinery ? Config::Workers::SaturationPerGas() : 0);
 }

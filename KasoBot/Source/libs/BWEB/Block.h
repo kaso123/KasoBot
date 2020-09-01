@@ -41,10 +41,8 @@ namespace BWEB {
                     rowHeight = std::max(rowHeight, 2);
                 }
                 if (p == Piece::Large) {
-                    if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg && !BWAPI::Broodwar->canBuildHere(here, BWAPI::UnitTypes::Zerg_Hatchery)) {
-                        tile = BWAPI::TilePositions::Invalid; // Failed to make the block properly
-                        return;
-                    }
+                    if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg && !BWAPI::Broodwar->canBuildHere(here, BWAPI::UnitTypes::Zerg_Hatchery))
+                        continue;                    
                     largeTiles.insert(here);
                     here += BWAPI::TilePosition(4, 0);
                     rowWidth += 4;
@@ -56,7 +54,7 @@ namespace BWEB {
                     rowWidth += 2;
                     rowHeight = std::max(rowHeight, 2);
                 }
-                if (p == Piece::Row) {
+                if (p == Piece::Row) {                    
                     w = std::max(w, rowWidth);
                     h += rowHeight;
                     rowWidth = 0;

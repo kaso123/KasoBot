@@ -69,6 +69,7 @@ void MainModule::onNukeDetect(BWAPI::Position target)
 
 void MainModule::onUnitDiscover(BWAPI::Unit unit)
 {
+	BWEB::Map::onUnitDiscover(unit);
 }
 
 void MainModule::onUnitEvade(BWAPI::Unit unit)
@@ -89,6 +90,9 @@ void MainModule::onUnitCreate(BWAPI::Unit unit)
 
 void MainModule::onUnitDestroy(BWAPI::Unit unit)
 {
+
+	BWEB::Map::onUnitDestroy(unit);
+
 	//mined out minerals
 	if (unit->getType().isMineralField())
 	{
@@ -130,6 +134,7 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 
 void MainModule::onUnitMorph(BWAPI::Unit unit)
 {
+	BWEB::Map::onUnitMorph(unit);
 }
 
 void MainModule::onUnitRenegade(BWAPI::Unit unit)

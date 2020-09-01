@@ -8,40 +8,28 @@ namespace BWEB {
     class Station
     {
         const BWEM::Base* base;
-        const BWEM::ChokePoint* chokepoint;
         std::set<BWAPI::TilePosition> defenses;
-        BWAPI::Position resourceCentroid, defenseCentroid;
+        BWAPI::Position resourceCentroid;
         bool main, natural;
 
-        void addResourceReserve(BWAPI::Position, BWAPI::Position, BWAPI::Position);
-        void initialize();
-        void findChoke();
-        void findDefenses();
-
     public:
-        Station(const BWEM::Base* _base, bool _main, bool _natural)
+        Station(BWAPI::Position _resourceCentroid, std::set<BWAPI::TilePosition>& _defenses, const BWEM::Base* _base, bool _main, bool _natural)
         {
+            resourceCentroid    = _resourceCentroid;
+            defenses            = _defenses;
             base                = _base;
             main                = _main;
             natural             = _natural;
-            resourceCentroid    = BWAPI::Position(0,0);
-            defenseCentroid     = BWAPI::Position(0,0);
-            initialize();
-            findChoke();
-            findDefenses();
         }
 
-        /// <summary> Returns the central position of the resources associated with this Station including geysers. </summary>
+        /// <summary> Returns the central position of the resources associated with this base including geysers. </summary>
         BWAPI::Position getResourceCentroid() { return resourceCentroid; }
 
-        /// <summary> Returns the set of defense locations associated with this Station. </summary>
+        /// <summary> Returns the set of defense locations associated with this base. </summary>
         std::set<BWAPI::TilePosition>& getDefenseLocations() { return defenses; }
 
-        /// <summary> Returns the BWEM Base associated with this Station. </summary>
-        const BWEM::Base * getBase() { return base; }
-
-        /// <summary> Returns the BWEM Choke that should be used for generating a Wall at. </summmary>
-        const BWEM::ChokePoint * getChokepoint() { return chokepoint; }
+        /// <summary> Returns the BWEM base associated with this BWEB base. </summary>
+        const BWEM::Base * getBWEMBase() { return base; }
 
         /// <summary> Returns the number of ground defenses associated with this Station. </summary>
         int getGroundDefenseCount();
@@ -59,7 +47,7 @@ namespace BWEB {
         void draw();
 
         bool operator== (Station* s) {
-            return base == s->getBase();
+            return base == s->getBWEMBase();
         }
     };
 
@@ -67,6 +55,12 @@ namespace BWEB {
 
         /// <summary> Returns a vector containing every BWEB::Station </summary>
         std::vector<Station>& getStations();
+
+        /// <summary> Returns a vector containing every main BWEB::Station </summary>
+        std::vector<Station>& getMainStations();
+
+        /// <summary> Returns a vector containing every natural BWEB::Station </summary>
+        std::vector<Station>& getNaturalStations();
 
         /// <summary> Returns the closest BWEB::Station to the given TilePosition. </summary>
         Station * getClosestStation(BWAPI::TilePosition);

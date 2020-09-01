@@ -71,7 +71,7 @@ void WorkersModule::AssignRefinery(Expansion& exp)
 {
 	for (auto it = _unassignedRefineries.begin(); it != _unassignedRefineries.end(); it++)
 	{
-		if (BWEM::Map::Instance().GetNearestArea((*it)->getTilePosition()) == exp.GetStation()->getBase()->GetArea())
+		if (BWEM::Map::Instance().GetNearestArea((*it)->getTilePosition()) == exp.GetStation()->getBWEMBase()->GetArea())
 		{
 			exp.AddRefinery(*it);
 			_unassignedRefineries.erase(it);
@@ -125,6 +125,16 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 	{
 		if (exp->RemoveWorker(unit))
 			return;
+	}
+
+	for (auto it = _builders.begin(); it != _builders.end(); it++)
+	{
+		if ((*it)->GetPointer() == unit)
+		{
+			//TODO make sure to reset ProductionItem
+			_builders.erase(it);
+			return;
+		}
 	}
 
 	//if worker was not removed, it is part of army

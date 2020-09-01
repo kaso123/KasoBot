@@ -79,19 +79,19 @@ namespace BWEB {
         }
 
         /// <summary> Returns the Chokepoint associated with this Wall. </summary>
-        const BWEM::ChokePoint * getChokePoint() { return choke; }
+        const BWEM::ChokePoint * getChokePoint() const { return choke; }
 
         /// <summary> Returns the Area associated with this Wall. </summary>
-        const BWEM::Area * getArea() { return area; }
+        const BWEM::Area * getArea() const { return area; }
 
         /// <summary> Returns the defense locations associated with this Wall. </summary>
-        std::set<BWAPI::TilePosition>& getDefenses() { return defenses; }
+        std::set<BWAPI::TilePosition> getDefenses() const { return defenses; }
 
         /// <summary> Returns the TilePosition belonging to the opening of the wall. </summary>
-        BWAPI::TilePosition getOpening() { return opening; }
+        BWAPI::TilePosition getOpening() const { return opening; }
 
         /// <summary> Returns the TilePosition belonging to the centroid of the wall pieces. </summary>
-        BWAPI::Position getCentroid() { return centroid; }
+        BWAPI::Position getCentroid() const { return centroid; }
 
         /// <summary> Returns the TilePosition belonging to large UnitType buildings. </summary>
         std::set<BWAPI::TilePosition>& getLargeTiles() { return largeTiles; }

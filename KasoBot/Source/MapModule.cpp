@@ -1,6 +1,7 @@
 #include "MapModule.h"
 #include "Expansion.h"
 #include "Config.h"
+#include "WorkersModule.h"
 
 using namespace KasoBot;
 
@@ -58,8 +59,47 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 
 BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 {
-	//TODO get build positions from BWEB
-	return BWAPI::Broodwar->getBuildLocation(type, BWAPI::Broodwar->self()->getStartLocation(), 500);
+	if (type.isResourceDepot()) //command center
+	{
+		//TODO get next base to expand to
+		//now only getting closest base without CC
+		int closestDist = INT_MAX;
+		BWAPI::TilePosition closest = BWAPI::TilePositions::Invalid;
+		for (auto station : BWEB::Stations::getStations())
+		{
+			if (BWEB::Map::isUsed(station.getBWEMBase()->Location()) != BWAPI::UnitTypes::None)
+				continue;
+
+			int dist = (int)station.getBWEMBase()->Location().getDistance(BWAPI::Broodwar->self()->getStartLocation());
+			if (dist < closestDist)
+			{
+				closestDist = dist;
+				closest = station.getBWEMBase()->Location();
+			}
+		}
+		return  closest;
+	}
+	else if (type.isRefinery())
+	{
+		//TODO find expansion that needs refinery
+		for (auto& exp : WorkersModule::Instance()->ExpansionList())
+		{
+			if (exp->GetRefinery())
+				continue;
+
+			return (BWAPI::Broodwar->getBuildLocation(type, exp->GetStation()->getBWEMBase()->Location()));
+		}
+		//TODO all bases have refinery assigned
+		return (BWAPI::Broodwar->getBuildLocation(type, BWAPI::Broodwar->self()->getStartLocation()));
+	}
+	else if (type == BWAPI::UnitTypes::Terran_Missile_Turret)
+	{
+		//TODO find expansion that needs turrets
+		return BWEB::Map::getDefBuildPosition(type);
+	}
+
+	//get build positions from BWEB
+	return BWEB::Map::KasoBot::GetBuildPosition(type);
 }
 
 BWAPI::Position Map::GetCenterOfBuilding(BWAPI::TilePosition pos, BWAPI::UnitType type)
@@ -74,4 +114,5 @@ void Map::Global::Initialize()
 	BWEB::Map::mapBWEM.FindBasesForStartingLocations();
 	BWEB::Map::onStart();
 	BWEB::Stations::findStations();
+	BWEB::Blocks::findBlocks();
 }

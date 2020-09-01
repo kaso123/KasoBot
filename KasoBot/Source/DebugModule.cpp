@@ -173,4 +173,20 @@ void DebugModule::DebugCommand(std::string& text)
 	{
 		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Supply_Depot);
 	}
+	else if (text == "bb")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Barracks);
+	}
+	else if (text == "bf")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Factory);
+	}
+	else if (text == "be")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	}
+	else if (text == "bt")
+	{
+		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Missile_Turret);
+	}
 }
