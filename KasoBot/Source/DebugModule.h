@@ -7,6 +7,8 @@ namespace KasoBot {
 		enum Role;
 	}
 
+	class Worker;
+
 	class DebugModule
 	{
 	private:
@@ -23,6 +25,8 @@ namespace KasoBot {
 
 		void DrawMap();
 		void DrawWorkers();
+		void DrawSingleWorker(const Worker& worker);
+		void DrawQueue();
 
 		//get selected units in GUI and make them player controlled
 		void SwitchControlOnSelected();

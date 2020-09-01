@@ -94,6 +94,10 @@ void WorkersModule::OnStart()
 
 void WorkersModule::OnFrame()
 {
+	for (auto& worker : _builders)
+	{
+		worker->Work();
+	}
 	for (auto& exp : _expansionList)
 	{
 		exp->OnFrame();
@@ -214,11 +218,39 @@ bool WorkersModule::Build(ProductionItem* item)
 		{
 			if (worker->GetWorkerRole() == Workers::Role::MINERALS)
 			{
-				if(worker->AssignRoleBuild(item))
+				if (worker->AssignRoleBuild(item))
+				{
+					_builders.emplace_back(worker);
+					exp->RemoveWorker(worker->GetPointer());
 					return true;
+				}
+					
 			}
 		}
 	}
 
 	return false;
+}
+
+void WorkersModule::FinishBuild(BWAPI::Unit unit)
+{
+	for (auto it = _builders.begin(); it != _builders.end(); it++)
+	{
+		_ASSERT((*it)->GetProductionItem());
+
+		if (unit->getTilePosition() == (*it)->GetProductionItem()->GetLocation())
+		{
+			_ASSERT(unit->getType() == (*it)->GetProductionItem()->GetType());
+
+			(*it)->GetProductionItem()->Finish(); //finish task
+
+			//reassign worker to mine
+			NewWorker((*it)->GetPointer());
+			_builders.erase(it);
+			return;
+		}
+	}
+
+	//there should never be building built without a builder in list
+	_ASSERT(false);
 }

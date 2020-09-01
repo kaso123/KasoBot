@@ -62,6 +62,11 @@ BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 	return BWAPI::Broodwar->getBuildLocation(type, BWAPI::Broodwar->self()->getStartLocation(), 500);
 }
 
+BWAPI::Position Map::GetCenterOfBuilding(BWAPI::TilePosition pos, BWAPI::UnitType type)
+{
+	return BWAPI::Position(pos + BWAPI::TilePosition(type.tileWidth()/2, type.tileHeight()/2));
+}
+
 void Map::Global::Initialize()
 {
 	BWEB::Map::mapBWEM.Initialize(BWAPI::BroodwarPtr);

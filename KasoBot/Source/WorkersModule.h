@@ -5,6 +5,7 @@ namespace KasoBot {
 	
 	class Expansion;
 	class ProductionItem;
+	class Worker;
 
 	class WorkersModule
 	{
@@ -15,6 +16,7 @@ namespace KasoBot {
 
 		std::vector<std::unique_ptr<Expansion>> _expansionList;
 		std::vector<BWAPI::Unit> _unassignedRefineries; //keeping a list of refineries without an expansion
+		std::vector<std::shared_ptr<Worker>> _builders; //list of workers that are building stuff
 
 		//@return closest expansion that is not saturated or nullptr if worker should be added to military
 		Expansion* FindExpansionForWorker(BWAPI::Unit unit);
@@ -52,9 +54,12 @@ namespace KasoBot {
 		//@return false if no worker was assigned
 		bool Build(ProductionItem* item);
 
+		//reassign builder that was building this and set ProductionItem as DONE
+		void FinishBuild(BWAPI::Unit unit);
 
 		//getters and setters
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }
+		const std::vector<std::shared_ptr<Worker>>& Builders() const { return _builders; }
 	};
 }
 

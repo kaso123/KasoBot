@@ -38,19 +38,52 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 	_ASSERT(worker.GetProductionItem());
 	_ASSERT(worker.GetProductionItem()->GetState() == Production::State::ASSIGNED);
 
-	//TODO if not close to position -> move there
-	//TODO else start building
-	//TODO if started switch Role and update ProductionItem
+	//if not close to position -> move there
+	if(worker.GetPointer()->getDistance(Map::GetCenterOfBuilding(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType())) > Config::Workers::BuildStartDistance())
+	{
+		Move(worker.GetPointer(), BWAPI::Position(worker.GetProductionItem()->GetLocation()));
+		return;
+	}
+	else //start building
+	{
+		//if started switch Role and update ProductionItem
+		if (worker.GetPointer()->isConstructing() && worker.GetPointer()->getBuildUnit())
+		{
+			_ASSERT(worker.GetPointer()->getBuildType() == worker.GetProductionItem()->GetType());
+
+			worker.SetWorkerRole(Workers::Role::BUILD);
+			worker.GetProductionItem()->BuildStarted();
+			return;
+		}
+
+		Build(worker.GetPointer(),worker.GetProductionItem()->GetLocation(),worker.GetProductionItem()->GetType());
+		return;
+	}
+
+	
 }
 
 void BehaviourWorker::Construct(Worker& worker)
 {
 	_ASSERT(worker.GetProductionItem());
-	_ASSERT(worker.GetProductionItem()->GetState() == Production::State::BUILDING);
+	
 
-	//TODO if not constructing
-		//if finished -> change state, switch to minerals
-		//if not -> reset to ASSIGNED
+	if (worker.GetPointer()->isConstructing())
+	{
+		_ASSERT(worker.GetProductionItem()->GetState() == Production::State::BUILDING);
+		return;
+	}
+		
+	//if finished -> change state, switch to minerals
+	if (worker.GetProductionItem()->GetState() == Production::State::DONE)
+	{
+		//worker should be reassigned inside WorkersModule
+		return;
+	}
+		
+	//not finished, reset to assigned
+	worker.SetWorkerRole(Workers::Role::ASSIGNED);
+	worker.GetProductionItem()->Restart();
 }
 
 void BehaviourWorker::GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target)
@@ -86,6 +119,18 @@ void BehaviourWorker::ReturnCargo(BWAPI::Unit unit)
 		return;
 
 	unit->returnCargo();
+}
+
+void BehaviourWorker::Build(BWAPI::Unit unit, BWAPI::TilePosition pos, BWAPI::UnitType type)
+{
+	if ((unit->getOrder() == BWAPI::Orders::ConstructingBuilding
+		&& unit->getBuildType() == type)
+		||
+		(unit->getOrder() == BWAPI::Orders::PlaceBuilding 
+		&& unit->getOrderTargetPosition() == (BWAPI::Position)pos))
+		return;
+
+	unit->build(type, pos);
 }
 
 BehaviourWorker::BehaviourWorker()

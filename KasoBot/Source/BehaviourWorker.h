@@ -31,9 +31,11 @@ namespace KasoBot {
 		//@target = refinery
 		void GatherGas(BWAPI::Unit unit, BWAPI::Unit target);
 
-		
 		//assign return cargo order to worker
 		void ReturnCargo(BWAPI::Unit unit);
+
+		//assign build order to worker
+		void Build(BWAPI::Unit unit, BWAPI::TilePosition pos, BWAPI::UnitType type);
 
 
 

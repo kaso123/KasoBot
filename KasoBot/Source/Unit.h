@@ -29,8 +29,8 @@ namespace KasoBot {
 		
 		//getters and setters
 
-		BWAPI::Unit GetPointer() { return _pointer; }
-		bool PlayerControlled() { return _playerControl; }
+		BWAPI::Unit GetPointer() const { return _pointer; }
+		bool PlayerControlled() const { return _playerControl; }
 	};
 }
 

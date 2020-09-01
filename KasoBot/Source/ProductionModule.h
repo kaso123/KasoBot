@@ -32,6 +32,10 @@ namespace KasoBot {
 
 		//create productionItem and send it right to workersModule, use for debugging purposes only
 		void DebugBuild(BWAPI::UnitType type);
+
+		//getters and setters
+
+		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }
 	};
 }
 

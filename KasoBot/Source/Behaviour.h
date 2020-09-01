@@ -10,6 +10,9 @@ namespace KasoBot {
 	class Behaviour
 	{
 	protected:
+
+		virtual void Move(BWAPI::Unit unit, BWAPI::Position position);
+
 	public:
 		Behaviour();
 		virtual ~Behaviour();

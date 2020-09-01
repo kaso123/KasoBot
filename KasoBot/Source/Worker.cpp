@@ -1,6 +1,7 @@
 #include "Worker.h"
 #include "MapModule.h"
 #include "BehaviourWorker.h"
+#include "ProductionItem.h"
 
 using namespace KasoBot;
 
@@ -54,6 +55,18 @@ bool Worker::AssignRoleBuild(ProductionItem* item)
 	if (_item)
 		return false;
 
+	if (_mineral)
+	{
+		//decrease number of workers for mineral
+		_mineral->SetData(_mineral->Data() - 1);
+		_ASSERT(_mineral->Data() >= 0);
+	}
+	_refinery = nullptr;
+	_mineral = nullptr;
+	
+
+	_ASSERT(item->GetState() == Production::State::WAITING);
+	item->Assigned();
 	_item = item;
 	_workerRole = Workers::Role::ASSIGNED;
 	return true;

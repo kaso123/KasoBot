@@ -38,6 +38,7 @@ void ConfigModule::Init()
 		_saturatedMineral = j["workers"].contains("saturatedMineral") ? j["workers"]["saturatedMineral"] : _saturatedMineral;
 		_saturatedGas = j["workers"].contains("saturatedGas") ? j["workers"]["saturatedGas"] : _saturatedGas;
 		_startGasAfter = j["workers"].contains("startGasAfter") ? j["workers"]["startGasAfter"] : _startGasAfter;	
+		_buildStartDistance = j["workers"].contains("buildStartDistance") ? j["workers"]["buildStartDistance"] : _buildStartDistance;
 	}
 	if (j.contains("units"))
 	{
@@ -61,6 +62,7 @@ int Config::Workers::MaxPerGas() { return ConfigModule::Instance()->MaxWorkersPe
 int Config::Workers::SaturationPerMineral() { return ConfigModule::Instance()->SaturatedMineral(); }
 int Config::Workers::SaturationPerGas() { return ConfigModule::Instance()->SaturatedGas(); }
 int Config::Workers::StartGasAfter() { return ConfigModule::Instance()->StartGasAfter(); }
+int Config::Workers::BuildStartDistance() { return ConfigModule::Instance()->BuildStartDistance(); }
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
 

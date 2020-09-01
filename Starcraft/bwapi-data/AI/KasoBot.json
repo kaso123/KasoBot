@@ -5,7 +5,8 @@
     "maxPerMineral": 3,
     "saturatedGas": 3,
     "maxPerGas": 3,
-    "startGasAfter": 10
+    "startGasAfter": 10,
+    "buildStartDistance": 80
   },
   "units": {
     "orderDelay": 7

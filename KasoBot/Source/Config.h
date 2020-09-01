@@ -16,6 +16,7 @@ namespace KasoBot {
 		int _saturatedMineral = 2;
 		int _saturatedGas = 3;
 		int _startGasAfter = 10;
+		int _buildStartDistance = 50;
 
 		int _unitOrderDelay = 7;
 
@@ -37,6 +38,7 @@ namespace KasoBot {
 		int SaturatedMineral() { return _saturatedMineral; }
 		int SaturatedGas() { return _saturatedGas; }
 		int StartGasAfter() { return _startGasAfter; }
+		int BuildStartDistance() { return _buildStartDistance; }
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
 
@@ -69,6 +71,9 @@ namespace KasoBot {
 
 			//number of workers mining minerals when gas mining should start in this expansion
 			int StartGasAfter();
+
+			//distance from build position when worker receives build command
+			int BuildStartDistance();
 		}
 
 		namespace Units {

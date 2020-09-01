@@ -32,30 +32,60 @@ void DebugModule::DrawWorkers()
 {
 	for (const auto& exp : WorkersModule::Instance()->ExpansionList())
 	{
-		for (const auto worker : exp->Workers())
+		for (const auto& worker : exp->Workers())
 		{
-			//draw worker role
-			BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition(), WorkerRoleString(worker->GetWorkerRole()));
-
-			//draw worker target
-			if (worker->GetProductionItem())
-				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), BWAPI::Position(worker->GetProductionItem()->GetLocation()), BWAPI::Colors::Yellow);
-			if (worker->GetMineral())
-				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), worker->GetMineral()->Pos(), BWAPI::Colors::Blue);
-			if (worker->GetRefinery())
-				BWAPI::Broodwar->drawLineMap(worker->GetPointer()->getPosition(), worker->GetRefinery()->getPosition(), BWAPI::Colors::Green);
-
-			//draw worker game order
-			if (_drawOrders)
-			{
-				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(25, 10), worker->GetPointer()->getOrder().getName().c_str());
-				BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - worker->GetPointer()->getLastCommandFrame(),999));
-			}
-
-			//draw if player controlled
-			if (worker->PlayerControlled())
-				BWAPI::Broodwar->drawCircleMap(worker->GetPointer()->getPosition(), 10, BWAPI::Colors::Red);	
+			DrawSingleWorker(*worker);
 		}
+	}
+
+	for (const auto& worker : WorkersModule::Instance()->Builders())
+	{
+		DrawSingleWorker(*worker);
+	}
+}
+
+void DebugModule::DrawSingleWorker(const Worker& worker)
+{
+	//draw worker role
+	BWAPI::Broodwar->drawTextMap(worker.GetPointer()->getPosition(), WorkerRoleString(worker.GetWorkerRole()));
+
+	//draw worker target
+	if (worker.GetProductionItem())
+	{
+		BWAPI::Broodwar->drawLineMap(worker.GetPointer()->getPosition(), Map::GetCenterOfBuilding(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType()), BWAPI::Colors::Yellow);
+		BWAPI::Broodwar->drawTextMap(BWAPI::Position(worker.GetProductionItem()->GetLocation()), worker.GetProductionItem()->GetType().getName().c_str());
+	}
+		if (worker.GetMineral())
+		BWAPI::Broodwar->drawLineMap(worker.GetPointer()->getPosition(), worker.GetMineral()->Pos(), BWAPI::Colors::Blue);
+	if (worker.GetRefinery())
+		BWAPI::Broodwar->drawLineMap(worker.GetPointer()->getPosition(), worker.GetRefinery()->getPosition(), BWAPI::Colors::Green);
+
+	//draw worker game order
+	if (_drawOrders)
+	{
+		BWAPI::Broodwar->drawTextMap(worker.GetPointer()->getPosition() + BWAPI::Position(25, 10), worker.GetPointer()->getOrder().getName().c_str());
+		BWAPI::Broodwar->drawTextMap(worker.GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - worker.GetPointer()->getLastCommandFrame(), 999));
+	}
+
+	//draw if player controlled
+	if (worker.PlayerControlled())
+		BWAPI::Broodwar->drawCircleMap(worker.GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
+}
+
+void DebugModule::DrawQueue()
+{
+	int y = 30;
+	char color = '\x02';
+
+	for (auto& item : ProductionModule::Instance()->GetItems())
+	{
+		if (item->GetState() == Production::State::ASSIGNED) color = '\x11'; //orange
+		if (item->GetState() == Production::State::BUILDING) color = '\x07'; //green
+		if (item->GetState() == Production::State::WAITING) color = '\x02'; //default
+		if (item->GetState() == Production::State::DONE) color = '\x1c'; //light blue
+
+		BWAPI::Broodwar->drawTextScreen(420, y, "%c %s", color, item->GetType().getName().c_str());
+		y += 10;
 	}
 }
 
@@ -125,6 +155,8 @@ void DebugModule::DrawDebug()
 		DrawMap();
 	if (_drawWorkers)
 		DrawWorkers();
+	if (_drawBuildOrder)
+		DrawQueue();
 }
 
 void DebugModule::DebugCommand(std::string& text)

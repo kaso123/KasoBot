@@ -22,6 +22,9 @@ namespace KasoBot
 		BWEM::Mineral* NextMineral(const BWEM::Base* base);
 
 		BWAPI::TilePosition GetBuildPosition(BWAPI::UnitType type);
+
+		//@return center pixel for specified building, used for debug drawing and calculating distance to build location
+		BWAPI::Position GetCenterOfBuilding(BWAPI::TilePosition pos, BWAPI::UnitType type);
 	}
 	
 }

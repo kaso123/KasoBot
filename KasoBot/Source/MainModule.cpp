@@ -159,6 +159,9 @@ void MainModule::onUnitComplete(BWAPI::Unit unit)
 			{
 				ProductionModule::Instance()->AddBuilding(unit);
 			}
+
+			if(BWAPI::Broodwar->getFrameCount() > 0) //skip starting buildings on frame 0
+				WorkersModule::Instance()->FinishBuild(unit);
 		}
 		else
 		{
