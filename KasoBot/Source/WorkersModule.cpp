@@ -210,25 +210,42 @@ void WorkersModule::MineralDestroyed(BWAPI::Unit unit)
 
 bool WorkersModule::Build(ProductionItem* item)
 {
-	//TODO select closest worker, now selecting first available
+	_ASSERT(item->GetLocation() != BWAPI::TilePositions::Invalid);
 
+	std::shared_ptr<Worker> closestWorker = nullptr;
+	Expansion* expForWorker = nullptr; //saving expansion that have the closest worker, to easily remove him after
+	int closestDist = INT_MAX;
+
+	//select closest worker
 	for (auto& exp : _expansionList)
 	{
 		for (auto& worker : exp->Workers())
 		{
+			//only mineral workers are building stuff for now
 			if (worker->GetWorkerRole() == Workers::Role::MINERALS)
 			{
-				if (worker->AssignRoleBuild(item))
+				int dist = worker->GetPointer()->getDistance(BWAPI::Position(item->GetLocation()));
+
+				if (dist < closestDist)
 				{
-					_builders.emplace_back(worker);
-					exp->RemoveWorker(worker->GetPointer());
-					return true;
-				}
-					
+					closestWorker = worker;
+					closestDist = dist;
+					expForWorker = exp.get();
+				}					
 			}
 		}
 	}
 
+	if (closestWorker)
+	{
+		if (closestWorker->AssignRoleBuild(item))
+		{
+			_builders.emplace_back(closestWorker);
+			expForWorker->RemoveWorker(closestWorker->GetPointer());
+			return true;
+		}
+	}
+	
 	return false;
 }
 
