@@ -28,7 +28,7 @@ Expansion* WorkersModule::FindExpansionForWorker(BWAPI::Unit unit)
 
 	for (const auto& exp : _expansionList)
 	{
-		if (!exp->GetPointer()->exists()) //this can happen when we are reassigning workers in expansion destructor
+		if (!exp || !exp->GetPointer() || !exp->GetPointer()->exists()) //this can happen when we are reassigning workers in expansion destructor
 			break;
 
 		int currDist = unit->getDistance(exp->GetPointer());
@@ -120,6 +120,10 @@ void WorkersModule::NewWorker(BWAPI::Unit unit)
 
 void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 {
+	if (!unit->isCompleted()) //when CC is destroyed while producing worker, the worker is destroyed also
+	{
+		return;
+	}
 	//check if worker was from any expansion and remove him
 	for (auto& exp : _expansionList)
 	{

@@ -26,6 +26,7 @@ namespace KasoBot {
 		bool _debugBuildOrder = false;
 		bool _debugStrategy = false;
 		bool _debugOrders = false;
+		bool _debugBases = false;
 
 	public:
 		static ConfigModule* Instance();
@@ -48,6 +49,7 @@ namespace KasoBot {
 		bool DebugBuildOrder() { return _debugBuildOrder; }
 		bool DebugStrategy() { return _debugStrategy; }
 		bool DebugOrders() { return _debugOrders; }
+		bool DebugBases() { return _debugBases; }
 		
 	};
 
@@ -101,6 +103,9 @@ namespace KasoBot {
 
 			//@return whether to draw BWAPI orders for units on screen
 			bool Orders();
+
+			//@return whether to draw info about bases on screen
+			bool Bases();
 		}
 	}
 }

@@ -17,6 +17,7 @@
     "army": true,
     "build": true,
     "strategy": true,
-    "orders": true
+    "orders": true,
+    "bases":  true
   }
 }

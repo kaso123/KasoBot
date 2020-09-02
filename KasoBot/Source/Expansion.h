@@ -66,6 +66,8 @@ namespace KasoBot {
 		BWEB::Station* GetStation() const { return _station; }
 		const std::vector<std::shared_ptr<Worker>>& Workers() { return _workerList; }
 		BWAPI::Unit GetRefinery() const { return _refinery; }
+		int WorkerCountMinerals() const { return _workersMinerals; }
+		int WorkerCountGas() const { return _workersGas; }
 	};
 }
 

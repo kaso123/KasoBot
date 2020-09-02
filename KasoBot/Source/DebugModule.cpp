@@ -89,6 +89,17 @@ void DebugModule::DrawQueue()
 	}
 }
 
+void DebugModule::DrawBases()
+{
+	for (const auto& exp : WorkersModule::Instance()->ExpansionList())
+	{
+		BWAPI::Broodwar->drawTextMap(BWAPI::Position(exp->GetStation()->getBWEMBase()->Location()).x, BWAPI::Position(exp->GetStation()->getBWEMBase()->Location()).y,
+			"Min: %i/%i\nGas: %i/%i",
+			exp->WorkerCountMinerals(),exp->GetStation()->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral(),
+			exp->WorkerCountGas(),exp->GetRefinery() ? Config::Workers::SaturationPerGas() : 0);
+	}
+}
+
 void DebugModule::SwitchControlOnSelected()
 {
 	auto selected = BWAPI::Broodwar->getSelectedUnits();
@@ -157,6 +168,8 @@ void DebugModule::DrawDebug()
 		DrawWorkers();
 	if (_drawBuildOrder)
 		DrawQueue();
+	if (_drawBases)
+		DrawBases();
 }
 
 void DebugModule::DebugCommand(std::string& text)

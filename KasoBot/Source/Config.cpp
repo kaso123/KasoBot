@@ -52,6 +52,7 @@ void ConfigModule::Init()
 		_debugBuildOrder = j["debug"].contains("build") ? j["debug"]["build"] : _debugBuildOrder;
 		_debugStrategy = j["debug"].contains("strategy") ? j["debug"]["strategy"] : _debugStrategy;
 		_debugOrders = j["debug"].contains("orders") ? j["debug"]["orders"] : _debugOrders;
+		_debugBases = j["debug"].contains("bases") ? j["debug"]["bases"] : _debugBases;
 	}
 }
 
@@ -72,4 +73,5 @@ bool Config::Debug::Army() { return ConfigModule::Instance()->DebugArmy(); }
 bool Config::Debug::BuildOrder() { return ConfigModule::Instance()->DebugBuildOrder(); }
 bool Config::Debug::Strategy() { return ConfigModule::Instance()->DebugStrategy(); }
 bool Config::Debug::Orders() { return ConfigModule::Instance()->DebugOrders(); }
+bool Config::Debug::Bases() { return ConfigModule::Instance()->DebugBases(); }
 

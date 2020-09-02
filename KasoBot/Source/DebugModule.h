@@ -22,11 +22,13 @@ namespace KasoBot {
 		bool _drawBuildOrder;
 		bool _drawStrategy;
 		bool _drawOrders;
+		bool _drawBases;
 
 		void DrawMap();
 		void DrawWorkers();
 		void DrawSingleWorker(const Worker& worker);
 		void DrawQueue();
+		void DrawBases();
 
 		//get selected units in GUI and make them player controlled
 		void SwitchControlOnSelected();
