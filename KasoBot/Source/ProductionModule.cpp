@@ -97,7 +97,37 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 	}
 }
 
+bool ProductionModule::BuildAddon(BWAPI::UnitType type)
+{
+	_ASSERT(type.isAddon());
+
+	if (type.whatBuilds().first == BWAPI::UnitTypes::Terran_Command_Center)
+		return WorkersModule::Instance()->BuildAddon(type);
+
+	//find building type that builds this
+	auto it = _buildingList.find(type.whatBuilds().first);
+	if (it == _buildingList.end())
+		return false;
+
+	for (auto& building : (*it).second)
+	{
+		if (building->GetPointer()->isIdle())
+		{ 
+			if (building->GetPointer()->buildAddon(type)) //build started
+			{
+				return true;
+			}
+		}	
+	}
+	return false;
+}
+
 void ProductionModule::DebugBuild(BWAPI::UnitType type)
 {
+	if (type.isAddon())
+	{
+		BuildAddon(type);
+		return;
+	}		
 	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, KasoBot::Map::GetBuildPosition(type))).get());
 }

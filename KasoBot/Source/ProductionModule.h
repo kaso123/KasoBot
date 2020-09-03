@@ -30,6 +30,10 @@ namespace KasoBot {
 		void RemoveUnit(BWAPI::Unit unit);
 		void RemoveBuilding(BWAPI::Unit unit);
 
+		//find building that can build this addon
+		//@return true if building found and addon started
+		bool BuildAddon(BWAPI::UnitType type);
+
 		//create productionItem and send it right to workersModule, use for debugging purposes only
 		void DebugBuild(BWAPI::UnitType type);
 

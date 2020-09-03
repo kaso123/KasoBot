@@ -54,6 +54,10 @@ namespace KasoBot {
 		//@return false if no worker was assigned
 		bool Build(ProductionItem* item);
 
+		//build addon for CommandCenter
+		//@return true if building started
+		bool BuildAddon(BWAPI::UnitType type);
+
 		//reassign builder that was building this and set ProductionItem as DONE
 		void FinishBuild(BWAPI::Unit unit);
 

@@ -263,6 +263,23 @@ bool WorkersModule::Build(ProductionItem* item)
 	return false;
 }
 
+bool WorkersModule::BuildAddon(BWAPI::UnitType type)
+{
+	_ASSERT(type.whatBuilds().first.isResourceDepot());
+
+	for (auto& exp : _expansionList)
+	{
+		if (exp->GetPointer()->isIdle())
+		{
+			if (exp->GetPointer()->buildAddon(type))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void WorkersModule::FinishBuild(BWAPI::Unit unit)
 {
 	for (auto it = _builders.begin(); it != _builders.end(); it++)

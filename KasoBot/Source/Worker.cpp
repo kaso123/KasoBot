@@ -74,6 +74,9 @@ bool Worker::AssignRoleBuild(ProductionItem* item)
 
 bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 {
+	if (!_mineral)
+		return false;
+
 	if (mineral == _mineral->Unit())
 		return true;
 
