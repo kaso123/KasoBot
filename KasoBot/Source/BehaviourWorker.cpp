@@ -41,7 +41,7 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 	//if not close to position -> move there
 	if(worker.GetPointer()->getDistance(Map::GetCenterOfBuilding(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType())) > Config::Workers::BuildStartDistance())
 	{
-		Move(worker.GetPointer(), BWAPI::Position(worker.GetProductionItem()->GetLocation()));
+		Move(worker.GetPointer(), Map::GetCenterOfBuilding(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType()));
 		return;
 	}
 	else //start building

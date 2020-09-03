@@ -771,6 +771,27 @@ namespace BWEB::Map
 							}
 							continue;
 						}
+						else if (type.tileWidth() == 4) //non-addon large buildings (trying to keep addon places free here)
+						{
+							bool isAddonTile = false;
+							for (auto& addonTile : block.getSmallTiles())
+							{
+								//check if there is empty small tile where addon could be placed later
+								if ((tile + BWAPI::TilePosition(4, 1) == addonTile)
+									&& (isPlaceable(UnitTypes::Terran_Missile_Turret, addonTile)))
+								{
+									isAddonTile = true;
+									break;
+								}
+								
+							}
+							if (!isAddonTile)
+							{
+								distBest = dist;
+								tileBest = tile;
+							}	
+							continue;
+						}
 						distBest = dist;
 						tileBest = tile;
 					}

@@ -28,6 +28,45 @@ namespace BWEB {
 
 namespace BWEB::Blocks
 {
+	namespace KasoBot {
+		vector<Piece> whichPieces(int width, int height)
+		{
+			if (height == 2) {
+				if (width == 6)
+					return { Piece::Medium, Piece::Medium };
+			}
+			else if (height == 3) {
+				if (width == 5)
+					return { Piece::Large, Piece::Addon };
+			}
+			else if (height == 4) {
+				if (width == 3)
+					return { Piece::Medium, Piece::Row, Piece::Medium };
+				if (width == 6)
+					return { Piece::Medium, Piece::Medium, Piece::Row, Piece::Medium, Piece::Medium };
+			}
+			else if (height == 5) {
+				if (width == 6)
+					return { Piece::Large, Piece::Addon, Piece::Row, Piece::Medium, Piece::Medium };
+				if (width == 10)
+					return { Piece::Large, Piece::Addon, Piece::Large, Piece::Row, Piece::Medium, Piece::Medium, Piece::Medium };
+			}
+			else if (height == 6) {
+				if (width == 6)
+					return { Piece::Large, Piece::Addon, Piece::Row, Piece::Large, Piece::Addon };
+				if (width == 9)
+					return { Piece::Medium, Piece::Large, Piece::Addon, Piece::Row, Piece::Medium, Piece::Large, Piece::Addon };
+				if (width == 10)
+					return { Piece::Large, Piece::Large, Piece::Addon, Piece::Row, Piece::Large, Piece::Large, Piece::Addon };
+			}
+			else if (height == 7) {
+				if (width == 6)
+					return { Piece::Medium, Piece::Medium, Piece::Row, Piece::Large, Piece::Addon, Piece::Row, Piece::Medium, Piece::Medium };
+			}
+			return {};
+		}
+	}
+
     namespace {
         vector<Block> allBlocks;
         map<const BWEM::Area *, int> typePerArea;
@@ -46,6 +85,10 @@ namespace BWEB::Blocks
         vector<Piece> whichPieces(int width, int height, bool faceUp = false, bool faceLeft = false)
         {
             vector<Piece> pieces;
+
+			pieces = BWEB::Blocks::KasoBot::whichPieces(width, height);
+			if (pieces.size() >= 0)
+				return pieces;			
 
             // Zerg Block pieces
             if (Broodwar->self()->getRace() == Races::Zerg) {
@@ -117,38 +160,38 @@ namespace BWEB::Blocks
 
             // Terran Block pieces
             if (Broodwar->self()->getRace() == Races::Terran) {
-                if (height == 2) {
-                    if (width == 3)
-                        pieces ={ Piece::Medium };
-                    if (width == 6)
-                        pieces ={ Piece::Medium, Piece::Medium };
-                }
-                else if (height == 4) {
-                    if (width == 3)
-                        pieces ={ Piece::Medium, Piece::Row, Piece::Medium };
-                }
-                else if (height == 6) {
-                    if (width == 3)
-                        pieces ={ Piece::Medium, Piece::Row, Piece::Medium, Piece::Row, Piece::Medium };
-                }
-                else if (height == 3) {
-                    if (width == 6)
-                        pieces ={ Piece::Large, Piece::Addon };
-                }
-                else if (height == 4) {
-                    if (width == 6)
-                        pieces ={ Piece::Medium, Piece::Medium, Piece::Row, Piece::Medium, Piece::Medium };
-                    if (width == 9)
-                        pieces ={ Piece::Medium, Piece::Medium, Piece::Medium, Piece::Row, Piece::Medium, Piece::Medium, Piece::Medium };
-                }
-                else if (height == 5) {
-                    if (width == 6)
-                        pieces ={ Piece::Large, Piece::Addon, Piece::Row, Piece::Medium, Piece::Medium };
-                }
-                else if (height == 6) {
-                    if (width == 6)
-                        pieces ={ Piece::Large, Piece::Addon, Piece::Row, Piece::Large, Piece::Addon };
-                }
+				if (height == 2) {
+					if (width == 3)
+						pieces ={ Piece::Medium };
+					if (width == 6)
+						pieces ={ Piece::Medium, Piece::Medium };
+				}
+				else if (height == 4) {
+					if (width == 3)
+						pieces ={ Piece::Medium, Piece::Row, Piece::Medium };
+				}
+				else if (height == 6) {
+					if (width == 3)
+						pieces ={ Piece::Medium, Piece::Row, Piece::Medium, Piece::Row, Piece::Medium };
+				}
+				else if (height == 3) {
+					if (width == 6)
+						pieces ={ Piece::Large, Piece::Addon };
+				}
+				else if (height == 4) {
+					if (width == 6)
+						pieces ={ Piece::Medium, Piece::Medium, Piece::Row, Piece::Medium, Piece::Medium };
+					if (width == 9)
+						pieces ={ Piece::Medium, Piece::Medium, Piece::Medium, Piece::Row, Piece::Medium, Piece::Medium, Piece::Medium };
+				}
+				else if (height == 5) {
+					if (width == 6)
+						pieces ={ Piece::Large, Piece::Addon, Piece::Row, Piece::Medium, Piece::Medium };
+				}
+				else if (height == 6) {
+					if (width == 6)
+						pieces ={ Piece::Large, Piece::Addon, Piece::Row, Piece::Large, Piece::Addon };
+				}
             }
             return pieces;
         }
