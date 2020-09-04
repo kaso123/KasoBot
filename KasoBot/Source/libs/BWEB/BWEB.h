@@ -128,5 +128,14 @@ namespace BWEB::Map
 	namespace KasoBot {
 		//updated with addon support
 		BWAPI::TilePosition GetBuildPosition(BWAPI::UnitType type, BWAPI::TilePosition searchCenter = BWAPI::Broodwar->self()->getStartLocation());
+
+		//reserve tiles when build location is assigned, to keep other buildings to be assigned to same spot
+		void ReserveTiles(BWAPI::TilePosition tile, BWAPI::UnitType type);
+
+		//remove from reserved grid in case the building is destroyed later and we want to rebuild on the same place
+		void UnreserveTiles(BWAPI::TilePosition tile, BWAPI::UnitType type);
+
+		//@return true if this tile is reserved for KasoBot buildings
+		bool IsReservedTile(BWAPI::TilePosition tile, BWAPI::UnitType type);
 	}
 }

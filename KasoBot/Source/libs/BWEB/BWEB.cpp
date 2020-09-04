@@ -733,6 +733,8 @@ namespace BWEB::Map
 
 	namespace KasoBot {
 
+		int reservedGrid[256][256] = {};
+
 		BWAPI::TilePosition GetBuildPosition(BWAPI::UnitType type, BWAPI::TilePosition searchCenter /*= BWAPI::Broodwar->self()->getStartLocation()*/)
 		{
 			bool bNeedAddon = type.canBuildAddon();
@@ -752,6 +754,9 @@ namespace BWEB::Map
 					placements = block.getSmallTiles();
 
 				for (auto &tile : placements) {
+					if (KasoBot::IsReservedTile(tile, type))
+						continue;
+
 					const auto dist = tile.getDistance(searchCenter);
 					if (dist < distBest && isPlaceable(type, tile)) {
 
@@ -798,6 +803,49 @@ namespace BWEB::Map
 				}
 			}
 			return tileBest;
+		}
+
+		void ReserveTiles(BWAPI::TilePosition tile, BWAPI::UnitType type)
+		{
+			for (auto x = tile.x; x < tile.x + type.tileWidth(); x++) {
+				for (auto y = tile.y; y < tile.y + type.tileHeight(); y++)
+				{
+					if (TilePosition(x, y).isValid())
+					{
+						_ASSERT(KasoBot::reservedGrid[x][y] == 0);
+						KasoBot::reservedGrid[x][y] = 1;
+					}
+				}
+			}
+		}
+
+		void UnreserveTiles(BWAPI::TilePosition tile, BWAPI::UnitType type)
+		{
+			for (auto x = tile.x; x < tile.x + type.tileWidth(); x++) {
+				for (auto y = tile.y; y < tile.y + type.tileHeight(); y++)
+				{
+					if (TilePosition(x, y).isValid())
+					{
+						_ASSERT(KasoBot::reservedGrid[x][y] == 1);
+						KasoBot::reservedGrid[x][y] = 0;
+					}
+				}
+			}
+		}
+
+		bool IsReservedTile(BWAPI::TilePosition tile, BWAPI::UnitType type)
+		{
+			for (auto x = tile.x; x < tile.x + type.tileWidth(); x++) {
+				for (auto y = tile.y; y < tile.y + type.tileHeight(); y++)
+				{
+					if (!TilePosition(x, y).isValid())
+						return true;
+
+					if (KasoBot::reservedGrid[x][y] == 1)
+						return true;
+				}
+			}
+			return false;
 		}
 	}
 }

@@ -57,6 +57,9 @@ void ProductionModule::AddBuilding(BWAPI::Unit unit)
 
 void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 {
+	if (!unit->isCompleted())
+		return;
+
 	auto it = _unitList.find(unit->getType());
 
 	_ASSERT(it != _unitList.end());
@@ -78,6 +81,9 @@ void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 
 void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 {
+	if (!unit->isCompleted())
+		return;
+
 	auto it = _buildingList.find(unit->getType());
 
 	_ASSERT(it != _buildingList.end());
@@ -129,5 +135,9 @@ void ProductionModule::DebugBuild(BWAPI::UnitType type)
 		BuildAddon(type);
 		return;
 	}		
-	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, KasoBot::Map::GetBuildPosition(type))).get());
+	BWAPI::TilePosition buildPos = KasoBot::Map::GetBuildPosition(type);
+
+	if (buildPos.isValid())
+		BWEB::Map::KasoBot::ReserveTiles(buildPos, type);
+	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, buildPos)).get());
 }

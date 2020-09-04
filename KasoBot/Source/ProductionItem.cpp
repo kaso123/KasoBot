@@ -1,4 +1,5 @@
 #include "ProductionItem.h"
+#include "MapModule.h"
 
 using namespace KasoBot;
 
@@ -25,14 +26,18 @@ void ProductionItem::Assigned()
 void ProductionItem::BuildStarted()
 {
 	_ASSERT(_state == Production::State::ASSIGNED);
+	_ASSERT(_buildLocation.isValid());
 
+	BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
 	_state = Production::State::BUILDING;
 }
 
 void ProductionItem::Restart()
 {
 	_ASSERT(_state == Production::State::BUILDING);
+	_ASSERT(_buildLocation.isValid());
 
+	BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
 	_state = Production::State::ASSIGNED;
 }
 
