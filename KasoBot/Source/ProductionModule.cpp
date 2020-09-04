@@ -10,6 +10,7 @@ using namespace KasoBot;
 ProductionModule* ProductionModule::_instance = 0;
 
 ProductionModule::ProductionModule()
+	: _reservedMinerals(0), _reservedGas(0)
 {
 }
 
@@ -140,4 +141,19 @@ void ProductionModule::DebugBuild(BWAPI::UnitType type)
 	if (buildPos.isValid())
 		BWEB::Map::KasoBot::ReserveTiles(buildPos, type);
 	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, buildPos)).get());
+}
+
+void ProductionModule::ReserveResources(BWAPI::UnitType type)
+{
+	_reservedMinerals += type.mineralPrice();
+	_reservedGas += type.gasPrice();
+}
+
+void ProductionModule::FreeResources(BWAPI::UnitType type)
+{
+	_reservedMinerals -= type.mineralPrice();
+	_reservedGas -= type.gasPrice();
+
+	_ASSERT(_reservedMinerals >= 0);
+	_ASSERT(_reservedGas >= 0);
 }

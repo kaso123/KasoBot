@@ -1,5 +1,6 @@
 #include "ProductionItem.h"
 #include "MapModule.h"
+#include "ProductionModule.h"
 
 using namespace KasoBot;
 
@@ -21,6 +22,7 @@ void ProductionItem::Assigned()
 {
 	_ASSERT(_state == Production::State::WAITING);
 	_state = Production::State::ASSIGNED;
+	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 void ProductionItem::BuildStarted()
@@ -29,7 +31,9 @@ void ProductionItem::BuildStarted()
 	_ASSERT(_buildLocation.isValid());
 
 	BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
+	
 	_state = Production::State::BUILDING;
+	ProductionModule::Instance()->FreeResources(_type);
 }
 
 void ProductionItem::Restart()

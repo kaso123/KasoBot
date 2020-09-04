@@ -21,6 +21,9 @@ namespace KasoBot {
 
 		std::vector<std::unique_ptr<ProductionItem>> _items;
 
+		int _reservedMinerals;
+		int _reservedGas;
+
 	public:
 		static ProductionModule* Instance();
 
@@ -37,9 +40,17 @@ namespace KasoBot {
 		//create productionItem and send it right to workersModule, use for debugging purposes only
 		void DebugBuild(BWAPI::UnitType type);
 
+		//add resources for this type to reserved
+		void ReserveResources(BWAPI::UnitType type);
+
+		//subtract this unit's cost from reserved resources
+		void FreeResources(BWAPI::UnitType type);
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }
+		const int GetReservedMinerals() { return _reservedMinerals; }
+		const int GetReservedGas() { return _reservedGas; }
 	};
 }
 

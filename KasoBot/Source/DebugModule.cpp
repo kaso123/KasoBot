@@ -15,6 +15,7 @@ DebugModule* DebugModule::_instance = 0;
 DebugModule::DebugModule()
 	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
 	, _drawBuildOrder(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
+	, _drawResources(Config::Debug::Resources())
 {
 }
 
@@ -100,6 +101,12 @@ void DebugModule::DrawBases()
 	}
 }
 
+void DebugModule::DrawResources()
+{
+	BWAPI::Broodwar->drawTextScreen(10, 10, "Reserved:\x1c %i\x07 %i", ProductionModule::Instance()->GetReservedMinerals(), ProductionModule::Instance()->GetReservedGas());
+	//TODO draw enemy lost resources
+}
+
 void DebugModule::SwitchControlOnSelected()
 {
 	auto selected = BWAPI::Broodwar->getSelectedUnits();
@@ -170,6 +177,8 @@ void DebugModule::DrawDebug()
 		DrawQueue();
 	if (_drawBases)
 		DrawBases();
+	if (_drawResources)
+		DrawResources();
 }
 
 void DebugModule::DebugCommand(std::string& text)

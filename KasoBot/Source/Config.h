@@ -27,6 +27,7 @@ namespace KasoBot {
 		bool _debugStrategy = false;
 		bool _debugOrders = false;
 		bool _debugBases = false;
+		bool _debugResources = false;
 
 	public:
 		static ConfigModule* Instance();
@@ -50,6 +51,7 @@ namespace KasoBot {
 		bool DebugStrategy() { return _debugStrategy; }
 		bool DebugOrders() { return _debugOrders; }
 		bool DebugBases() { return _debugBases; }
+		bool DebugResources() { return _debugResources; }
 		
 	};
 
@@ -106,6 +108,9 @@ namespace KasoBot {
 
 			//@return whether to draw info about bases on screen
 			bool Bases();
+
+			//@return whether to draw info about reserved, mined and lost resources
+			bool Resources();
 		}
 	}
 }

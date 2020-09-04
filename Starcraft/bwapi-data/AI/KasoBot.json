@@ -18,6 +18,7 @@
     "build": true,
     "strategy": true,
     "orders": true,
-    "bases":  true
+    "bases": true,
+    "resources": true
   }
 }
