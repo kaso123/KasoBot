@@ -129,6 +129,7 @@
     <ClCompile Include="Source\MapModule.cpp" />
     <ClCompile Include="Source\ProductionItem.cpp" />
     <ClCompile Include="source\ProductionModule.cpp" />
+    <ClCompile Include="Source\StrategyModule.cpp" />
     <ClCompile Include="source\Unit.cpp" />
     <ClCompile Include="source\Worker.cpp" />
     <ClCompile Include="source\WorkersModule.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Source\MapModule.h" />
     <ClInclude Include="Source\ProductionItem.h" />
     <ClInclude Include="source\ProductionModule.h" />
+    <ClInclude Include="Source\StrategyModule.h" />
     <ClInclude Include="source\Unit.h" />
     <ClInclude Include="source\Worker.h" />
     <ClInclude Include="source\WorkersModule.h" />

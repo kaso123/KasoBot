@@ -3,6 +3,7 @@
 #include "MapModule.h"
 #include "WorkersModule.h"
 #include "ProductionModule.h"
+#include "StrategyModule.h"
 
 #include "Expansion.h"
 #include "Worker.h"
@@ -103,8 +104,12 @@ void DebugModule::DrawBases()
 
 void DebugModule::DrawResources()
 {
+	//draw reserved resources
 	BWAPI::Broodwar->drawTextScreen(10, 10, "Reserved:\x1c %i\x07 %i", ProductionModule::Instance()->GetReservedMinerals(), ProductionModule::Instance()->GetReservedGas());
-	//TODO draw enemy lost resources
+	
+	//draw enemy lost resources
+	BWAPI::Broodwar->drawTextScreen(10, 50, "Enemy Lost:\x1c %i\x07 %i", StrategyModule::Instance()->EnemyLostMinerals(), StrategyModule::Instance()->EnemyLostGas());
+
 }
 
 void DebugModule::SwitchControlOnSelected()

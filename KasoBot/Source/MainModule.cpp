@@ -5,6 +5,7 @@
 #include "ArmyModule.h"
 #include "Config.h"
 #include "DebugModule.h"
+#include "StrategyModule.h"
 #include <iostream>
 
 using namespace BWAPI;
@@ -129,6 +130,11 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 				ProductionModule::Instance()->RemoveUnit(unit);
 			}
 		}
+	}
+	//enemy unit
+	else if (BWAPI::Broodwar->self()->isEnemy(unit->getPlayer()))
+	{
+		StrategyModule::Instance()->EnemyDestroyed(unit->getType());
 	}
 }
 
