@@ -51,6 +51,8 @@ namespace KasoBot {
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }
 		const int GetReservedMinerals() { return _reservedMinerals; }
 		const int GetReservedGas() { return _reservedGas; }
+		const std::unordered_map<BWAPI::UnitType, UnitList, std::hash<int>>& Units() { return _unitList; }
+		const std::unordered_map<BWAPI::UnitType, UnitList, std::hash<int>>& Buildings() { return _buildingList; }
 	};
 }
 

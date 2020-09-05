@@ -18,6 +18,13 @@ Worker::~Worker()
 		_mineral->SetData(_mineral->Data() - 1);
 		_ASSERT(_mineral->Data() >= 0);
 	}
+
+	if (_item) //set appropriate state to productionItem
+	{
+		_ASSERT(_item->GetState() == Production::State::ASSIGNED || _item->GetState() == Production::State::BUILDING);
+		_item->WorkerDied();
+		_item = nullptr;
+	}
 }
 
 void Worker::AssignRoleMinerals(BWEM::Mineral* mineral)
@@ -81,6 +88,13 @@ bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 		return true;
 
 	return false;
+}
+
+void Worker::BuildFinished()
+{
+	_ASSERT(_workerRole == Workers::Role::BUILD);
+	_ASSERT(_item);
+	_item = nullptr;
 }
 
 void Worker::Work()

@@ -44,6 +44,9 @@ namespace KasoBot {
 		//check if worker has this mineral assigned
 		bool IsMiningMineral(BWAPI::Unit mineral);
 
+		//set build item to nullptr
+		void BuildFinished();
+
 		void Work() override;
 
 

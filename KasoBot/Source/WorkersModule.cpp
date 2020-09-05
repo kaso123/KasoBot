@@ -135,7 +135,6 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 	{
 		if ((*it)->GetPointer() == unit)
 		{
-			//TODO make sure to reset ProductionItem
 			_builders.erase(it);
 			return;
 		}
@@ -291,6 +290,7 @@ void WorkersModule::FinishBuild(BWAPI::Unit unit)
 			_ASSERT(unit->getType() == (*it)->GetProductionItem()->GetType());
 
 			(*it)->GetProductionItem()->Finish(); //finish task
+			(*it)->BuildFinished();
 
 			//reassign worker to mine
 			NewWorker((*it)->GetPointer());
@@ -301,4 +301,26 @@ void WorkersModule::FinishBuild(BWAPI::Unit unit)
 
 	//there should never be building built without a builder in list
 	_ASSERT(false);
+}
+
+void WorkersModule::BuildFailed(ProductionItem * item)
+{
+	//find worker that was building this
+	for (auto it = _builders.begin(); it != _builders.end(); it++)
+	{
+		if ((*it)->GetProductionItem() == item)
+		{
+			_ASSERT((*it)->GetWorkerRole() == Workers::Role::BUILD);
+
+			//remove item from worker
+			(*it)->BuildFinished();
+
+			//reassign worker to mining
+			NewWorker((*it)->GetPointer());
+			_builders.erase(it);
+			return;
+		}
+	}
+
+	_ASSERT(false); //item was in building state but no worker was building it
 }

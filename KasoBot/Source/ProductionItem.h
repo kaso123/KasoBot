@@ -6,6 +6,7 @@ namespace KasoBot {
 	namespace Production {
 		enum State {
 			WAITING,
+			UNFINISHED,
 			ASSIGNED,
 			BUILDING,
 			DONE
@@ -35,6 +36,12 @@ namespace KasoBot {
 
 		//set state to done
 		void Finish();
+
+		//called when worker died
+		void WorkerDied();
+
+		//called when building that should be built in this Item was destroyed
+		void BuildingDestroyed();
 
 		//setters and getters
 

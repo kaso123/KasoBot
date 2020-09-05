@@ -83,7 +83,19 @@ void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 {
 	if (!unit->isCompleted())
-		return;
+	{
+		//find building in ProductionItems and change its status
+		for (auto& item : _items)
+		{
+			if (unit->getTilePosition() == item->GetLocation())
+			{
+				_ASSERT(unit->getType() == item->GetType());
+				item->BuildingDestroyed();
+				return;
+			}
+		}
+		_ASSERT(false); //there can't be uncomplete building without a production item
+	}
 
 	auto it = _buildingList.find(unit->getType());
 

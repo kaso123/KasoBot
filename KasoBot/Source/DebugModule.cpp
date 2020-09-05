@@ -84,6 +84,7 @@ void DebugModule::DrawQueue()
 		if (item->GetState() == Production::State::ASSIGNED) color = '\x11'; //orange
 		if (item->GetState() == Production::State::BUILDING) color = '\x07'; //green
 		if (item->GetState() == Production::State::WAITING) color = '\x02'; //default
+		if (item->GetState() == Production::State::UNFINISHED) color = '\x03'; //TODO what color is this?
 		if (item->GetState() == Production::State::DONE) color = '\x1c'; //light blue
 
 		BWAPI::Broodwar->drawTextScreen(420, y, "%c %s", color, item->GetType().getName().c_str());
@@ -116,6 +117,7 @@ void DebugModule::SwitchControlOnSelected()
 {
 	auto selected = BWAPI::Broodwar->getSelectedUnits();
 
+	//basic workers
 	for (auto& exp : WorkersModule::Instance()->ExpansionList())
 	{
 		for (auto& worker : exp->Workers())
@@ -131,7 +133,35 @@ void DebugModule::SwitchControlOnSelected()
 		}
 	}
 
-	//TODO do this for other units
+	//builders
+	for (auto& worker : WorkersModule::Instance()->Builders())
+	{
+		for (auto sel : selected)
+		{
+			if (sel == worker->GetPointer())
+			{
+				worker->ChangeDebugControl();
+				break;
+			}
+		}
+	}
+
+	//units
+	for (auto& type : ProductionModule::Instance()->Units())
+	{
+		for (auto& unit : type.second)
+		{
+			for (auto sel : selected)
+			{
+				if (sel == unit->GetPointer())
+				{
+					unit->ChangeDebugControl();
+					break;
+				}
+			}
+		}
+	}
+
 }
 
 const char* DebugModule::WorkerRoleString(Workers::Role role)

@@ -61,7 +61,12 @@ namespace KasoBot {
 		//reassign builder that was building this and set ProductionItem as DONE
 		void FinishBuild(BWAPI::Unit unit);
 
+		//building was destroyed while building, find assigned worker and send him to mine
+		void BuildFailed(ProductionItem* item);
+		
+		
 		//getters and setters
+		
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }
 		const std::vector<std::shared_ptr<Worker>>& Builders() const { return _builders; }
 	};
