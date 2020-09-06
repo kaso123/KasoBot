@@ -112,6 +112,11 @@ namespace KasoBot {
 			//@return whether to draw info about reserved, mined and lost resources
 			bool Resources();
 		}
+
+		namespace Utils {
+			//@return BWAPI type parsed from config string
+			BWAPI::UnitType TypeFromString(std::string input);
+		}
 	}
 }
 

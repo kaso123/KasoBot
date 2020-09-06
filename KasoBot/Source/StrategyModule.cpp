@@ -1,4 +1,5 @@
 #include "StrategyModule.h"
+#include "Opener.h"
 
 using namespace KasoBot;
 
@@ -25,4 +26,9 @@ void StrategyModule::EnemyDestroyed(BWAPI::UnitType type)
 {
 	_enemyLostMinerals += type.mineralPrice();
 	_enemyLostGas += type.gasPrice();
+}
+
+void StrategyModule::NewOpener(const std::string & name, nlohmann::json & array)
+{
+	_openers.emplace(name, std::make_unique<Opener>(array));
 }

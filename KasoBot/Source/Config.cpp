@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "StrategyModule.h"
 #include "libs/nlohmann/json.hpp"
 #include <fstream>
 
@@ -55,6 +56,13 @@ void ConfigModule::Init()
 		_debugBases = j["debug"].contains("bases") ? j["debug"]["bases"] : _debugBases;
 		_debugResources = j["debug"].contains("resources") ? j["debug"]["resources"] : _debugResources;
 	}
+	if (j.contains("openers"))
+	{
+		for (auto it = j["openers"].begin(); it != j["openers"].end(); ++it)
+		{
+			StrategyModule::Instance()->NewOpener(it.key(), it.value());
+		}
+	}
 }
 
 
@@ -77,4 +85,28 @@ bool Config::Debug::Orders() { return ConfigModule::Instance()->DebugOrders(); }
 bool Config::Debug::Bases() { return ConfigModule::Instance()->DebugBases(); }
 bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResources(); }
 
+BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
+{
+	//aliases for some unit types
+	if (input == "depot")
+		input = "supply_depot";
+	else if (input == "cc")
+		input = "command_center";
 
+	//cycle all types
+	for (const auto& type : BWAPI::UnitTypes::allUnitTypes())
+	{
+		//compare without race part of string
+		const std::string& race = type.getRace().getName();
+		std::string name = type.getName();
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+		
+		if ((name.length() > race.length()) && (name.compare(race.length() + 1, name.length(), input) == 0))
+		{
+			return type;
+		}
+	}
+
+	_ASSERT(false);
+	return BWAPI::UnitTypes::None;
+}

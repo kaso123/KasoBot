@@ -127,6 +127,7 @@
     <ClCompile Include="Source\libs\BWEM\utils.cpp" />
     <ClCompile Include="Source\MainModule.cpp" />
     <ClCompile Include="Source\MapModule.cpp" />
+    <ClCompile Include="Source\Opener.cpp" />
     <ClCompile Include="Source\ProductionItem.cpp" />
     <ClCompile Include="source\ProductionModule.cpp" />
     <ClCompile Include="Source\StrategyModule.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Source\libs\Profiler\Profiler.hpp" />
     <ClInclude Include="Source\MainModule.h" />
     <ClInclude Include="Source\MapModule.h" />
+    <ClInclude Include="Source\Opener.h" />
     <ClInclude Include="Source\ProductionItem.h" />
     <ClInclude Include="source\ProductionModule.h" />
     <ClInclude Include="Source\StrategyModule.h" />
