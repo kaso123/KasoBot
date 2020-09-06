@@ -31,6 +31,7 @@ namespace KasoBot {
 		void DrawQueue();
 		void DrawBases();
 		void DrawResources();
+		void DrawStrategy();
 
 		//get selected units in GUI and make them player controlled
 		void SwitchControlOnSelected();

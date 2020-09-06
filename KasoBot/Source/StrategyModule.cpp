@@ -1,12 +1,13 @@
 #include "StrategyModule.h"
 #include "Opener.h"
+#include <time.h>
 
 using namespace KasoBot;
 
 StrategyModule* StrategyModule::_instance = 0;
 
 StrategyModule::StrategyModule()
-	: _enemyLostMinerals(0), _enemyLostGas(0)
+	: _enemyLostMinerals(0), _enemyLostGas(0), _activeOpener(nullptr), _activeOpenerName("random")
 {
 }
 
@@ -31,4 +32,24 @@ void StrategyModule::EnemyDestroyed(BWAPI::UnitType type)
 void StrategyModule::NewOpener(const std::string & name, nlohmann::json & array)
 {
 	_openers.emplace(name, std::make_unique<Opener>(array));
+}
+
+void StrategyModule::SetOpener(const std::string & name)
+{
+	_ASSERT(!_openers.empty());
+
+	if (name == "random" || _openers.find(name) == _openers.end())
+	{
+		srand(time(NULL));
+		//choose random opener
+		auto it = _openers.begin();
+		std::advance(it, rand() % _openers.size());
+		_activeOpener = it->second.get();
+		_activeOpenerName = "random: "+it->first;
+		return;
+	}
+
+	//set opener
+	_activeOpenerName = name;
+	_activeOpener = _openers[name].get();
 }

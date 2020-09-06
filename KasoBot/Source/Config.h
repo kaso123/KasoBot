@@ -52,7 +52,6 @@ namespace KasoBot {
 		bool DebugOrders() { return _debugOrders; }
 		bool DebugBases() { return _debugBases; }
 		bool DebugResources() { return _debugResources; }
-		
 	};
 
 	namespace Config {

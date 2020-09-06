@@ -109,8 +109,14 @@ void DebugModule::DrawResources()
 	BWAPI::Broodwar->drawTextScreen(10, 10, "Reserved:\x1c %i\x07 %i", ProductionModule::Instance()->GetReservedMinerals(), ProductionModule::Instance()->GetReservedGas());
 	
 	//draw enemy lost resources
-	BWAPI::Broodwar->drawTextScreen(10, 50, "Enemy Lost:\x1c %i\x07 %i", StrategyModule::Instance()->EnemyLostMinerals(), StrategyModule::Instance()->EnemyLostGas());
+	BWAPI::Broodwar->drawTextScreen(10, 20, "Enemy Lost:\x1c %i\x07 %i", StrategyModule::Instance()->EnemyLostMinerals(), StrategyModule::Instance()->EnemyLostGas());
 
+}
+
+void DebugModule::DrawStrategy()
+{
+	//draw opener
+	BWAPI::Broodwar->drawTextScreen(10, 40, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
 }
 
 void DebugModule::SwitchControlOnSelected()
@@ -214,6 +220,8 @@ void DebugModule::DrawDebug()
 		DrawBases();
 	if (_drawResources)
 		DrawResources();
+	if (_drawStrategy)
+		DrawStrategy();
 }
 
 void DebugModule::DebugCommand(std::string& text)

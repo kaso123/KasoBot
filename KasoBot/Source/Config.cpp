@@ -63,6 +63,14 @@ void ConfigModule::Init()
 			StrategyModule::Instance()->NewOpener(it.key(), it.value());
 		}
 	}
+	if (j.contains("strategy"))
+	{
+		if (j["strategy"].contains("opener"))
+		{
+			//be sure to call this after openers have been loaded
+			StrategyModule::Instance()->SetOpener(j["strategy"]["opener"]);
+		}
+	}
 }
 
 

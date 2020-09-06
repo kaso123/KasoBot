@@ -21,6 +21,9 @@
     "bases": true,
     "resources": true
   },
+  "strategy": {
+    "opener": "test2" 
+  },
   "openers": {
     "test1": [ "scv $2", "depot", "scv $3", "barracks", "scv", "marine" ],
     "test2": [ "scv $2", "depot", "scv", "cc", "scv $3", "barracks"]
