@@ -26,6 +26,18 @@ ProductionModule* ProductionModule::Instance()
 	return _instance;
 }
 
+void ProductionModule::OnFrame()
+{
+	for (auto& item : _items)
+	{
+		if (item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED)
+		{
+			WorkersModule::Instance()->Build(item.get());
+			return;
+		}		
+	}
+}
+
 void ProductionModule::AddUnit(BWAPI::Unit unit)
 {
 	auto it = _unitList.find(unit->getType());
@@ -120,6 +132,9 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 {
 	_ASSERT(type.isAddon());
 
+	if (!CheckResources(type))
+		return false;
+
 	if (type.whatBuilds().first == BWAPI::UnitTypes::Terran_Command_Center)
 		return WorkersModule::Instance()->BuildAddon(type);
 
@@ -141,6 +156,44 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 	return false;
 }
 
+bool ProductionModule::BuildBuilding(BWAPI::UnitType type)
+{
+	_ASSERT(type.isBuilding() && !type.isAddon());
+
+	if (_items.emplace_back(std::make_unique<ProductionItem>(type, KasoBot::Map::GetBuildPosition(type))))
+		return true;
+
+	return false;
+}
+
+bool ProductionModule::BuildUnit(BWAPI::UnitType type)
+{
+	_ASSERT(!type.isBuilding());
+
+	if (!CheckResources(type))
+		return false;
+
+	if (type.isWorker())
+		return WorkersModule::Instance()->BuildWorker();
+
+	//find building type that builds this
+	auto it = _buildingList.find(type.whatBuilds().first);
+	if (it == _buildingList.end())
+		return false;
+
+	for (auto& building : (*it).second)
+	{
+		if (building->GetPointer()->isIdle())
+		{
+			if (building->GetPointer()->train(type)) //training started
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void ProductionModule::DebugBuild(BWAPI::UnitType type)
 {
 	if (type.isAddon())
@@ -150,8 +203,6 @@ void ProductionModule::DebugBuild(BWAPI::UnitType type)
 	}		
 	BWAPI::TilePosition buildPos = KasoBot::Map::GetBuildPosition(type);
 
-	if (buildPos.isValid())
-		BWEB::Map::KasoBot::ReserveTiles(buildPos, type);
 	WorkersModule::Instance()->Build(_items.emplace_back(std::make_unique<ProductionItem>(type, buildPos)).get());
 }
 
@@ -168,4 +219,27 @@ void ProductionModule::FreeResources(BWAPI::UnitType type)
 
 	_ASSERT(_reservedMinerals >= 0);
 	_ASSERT(_reservedGas >= 0);
+}
+
+bool ProductionModule::CheckResources(BWAPI::UnitType type)
+{
+	if (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice())
+		return false;
+	if (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice())
+		return false;
+
+	return true;
+}
+
+bool ProductionModule::NewTask(BWAPI::UnitType type)
+{
+	if (type.isBuilding())
+	{
+		if (type.isAddon())
+			return BuildAddon(type);
+
+		return BuildBuilding(type);
+	}
+
+	return BuildUnit(type);
 }

@@ -145,6 +145,19 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 	_ASSERT(temp); //every worker has to be in WorkerModule or army
 }
 
+bool WorkersModule::BuildWorker()
+{
+	for (auto& exp : _expansionList)
+	{
+		if (exp->GetPointer()->isIdle())
+		{
+			if (exp->GetPointer()->train(BWAPI::UnitTypes::Terran_SCV))
+				return true;
+		}
+	}
+	return false;
+}
+
 void WorkersModule::ExpansionCreated(BWAPI::Unit unit)
 {
 	//create new expansion object and assign workers from army or oversaturated bases
@@ -253,6 +266,7 @@ bool WorkersModule::Build(ProductionItem* item)
 	{
 		if (closestWorker->AssignRoleBuild(item))
 		{
+			BWEB::Map::KasoBot::ReserveTiles(item->GetLocation(), item->GetType());
 			_builders.emplace_back(closestWorker);
 			expForWorker->RemoveWorker(closestWorker->GetPointer());
 			return true;

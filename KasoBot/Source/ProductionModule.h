@@ -27,6 +27,8 @@ namespace KasoBot {
 	public:
 		static ProductionModule* Instance();
 
+		void OnFrame();
+
 		void AddUnit(BWAPI::Unit unit);
 		void AddBuilding(BWAPI::Unit unit);
 
@@ -37,6 +39,14 @@ namespace KasoBot {
 		//@return true if building found and addon started
 		bool BuildAddon(BWAPI::UnitType type);
 
+		//create new productionItem and assign worker
+		//@return true if worker was assigned
+		bool BuildBuilding(BWAPI::UnitType type);
+
+		//find building that builds this unit and build it
+		//@return true if unit was started
+		bool BuildUnit(BWAPI::UnitType type);
+
 		//create productionItem and send it right to workersModule, use for debugging purposes only
 		void DebugBuild(BWAPI::UnitType type);
 
@@ -45,6 +55,14 @@ namespace KasoBot {
 
 		//subtract this unit's cost from reserved resources
 		void FreeResources(BWAPI::UnitType type);
+
+		//check if we can build this unit considering reserved resources also
+		//@return true if unit can be built
+		bool CheckResources(BWAPI::UnitType type);
+
+		//try to make this new item
+		//@return true if successfuly started new task
+		bool NewTask(BWAPI::UnitType type);
 
 		//getters and setters
 

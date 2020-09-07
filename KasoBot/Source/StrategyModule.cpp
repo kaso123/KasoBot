@@ -1,4 +1,5 @@
 #include "StrategyModule.h"
+#include "ProductionModule.h"
 #include "Opener.h"
 #include <time.h>
 
@@ -21,6 +22,24 @@ StrategyModule* StrategyModule::Instance()
 	if (!_instance)
 		_instance = new StrategyModule;
 	return _instance;
+}
+
+void StrategyModule::OnFrame()
+{
+	if (_activeOpener)
+	{
+		if (ProductionModule::Instance()->NewTask(_activeOpener->Next()))
+		{
+			//task successful
+			if (_activeOpener->Pop())
+			{
+				//opener was finished
+				_activeOpener = nullptr;
+				_activeOpenerName = "finished";
+			}
+		}
+		return;
+	}
 }
 
 void StrategyModule::EnemyDestroyed(BWAPI::UnitType type)

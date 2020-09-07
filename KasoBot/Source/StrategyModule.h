@@ -25,6 +25,8 @@ namespace KasoBot {
 	public:
 		static StrategyModule* Instance();
 
+		void OnFrame();
+
 		void EnemyDestroyed(BWAPI::UnitType type);
 
 		//add new opener instance to list of openers

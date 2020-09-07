@@ -7,10 +7,17 @@ namespace KasoBot {
 	class Opener
 	{
 	private:
-		std::vector<BWAPI::UnitType> _queue;
+		std::deque<BWAPI::UnitType> _queue;
 	public:
 		Opener(nlohmann::json& j);
 		~Opener();
+
+		//get next item from queue
+		BWAPI::UnitType Next() { return _queue.front(); }
+
+		//remove first element for queue
+		//@return true if opener was finished
+		bool Pop();
 	};
 
 }

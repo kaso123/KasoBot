@@ -72,7 +72,7 @@ bool Worker::AssignRoleBuild(ProductionItem* item)
 	_mineral = nullptr;
 	
 
-	_ASSERT(item->GetState() == Production::State::WAITING);
+	_ASSERT(item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED);
 	item->Assigned();
 	_item = item;
 	_workerRole = Workers::Role::ASSIGNED;

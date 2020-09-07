@@ -32,3 +32,10 @@ Opener::Opener(nlohmann::json & j)
 Opener::~Opener()
 {
 }
+
+bool Opener::Pop()
+{
+	_queue.pop_front();
+	
+	return _queue.size() <= 0;
+}

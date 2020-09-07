@@ -38,6 +38,10 @@ namespace KasoBot {
 		//remove worker from expansion
 		void RemoveWorker(BWAPI::Unit unit);
 
+		//find idle expansion and build worker
+		//@return true if worker was started
+		bool BuildWorker();
+
 		void ExpansionCreated(BWAPI::Unit unit);
 
 		void ExpansionDestroyed(BWAPI::Unit unit);
