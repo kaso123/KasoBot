@@ -1,6 +1,7 @@
 #include "ProductionModule.h"
 #include "WorkersModule.h"
 #include "MapModule.h"
+#include "Config.h"
 
 #include "ProductionItem.h"
 #include "Unit.h"
@@ -45,11 +46,19 @@ void ProductionModule::OnFrame()
 
 	for (auto& item : _items)
 	{
-		if (item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED)
+		if (item->GetState() == Production::State::UNFINISHED)
 		{
 			WorkersModule::Instance()->Build(item.get());
 			return;
-		}		
+		}
+		if (item->GetState() == Production::State::WAITING)
+		{
+			if (CanSendWorker(item->GetType()))
+			{
+				WorkersModule::Instance()->Build(item.get());
+			}
+			return;
+		}
 	}
 }
 
@@ -243,6 +252,17 @@ bool ProductionModule::CheckResources(BWAPI::UnitType type)
 	if (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice())
 		return false;
 
+	return true;
+}
+
+bool ProductionModule::CanSendWorker(BWAPI::UnitType type)
+{
+	if (BWAPI::Broodwar->self()->minerals() + WorkersModule::Instance()->WorkerCountMinerals() * Config::Workers::WorkerResourceValue()
+		* (type.isResourceDepot() ? 2 : 1) < type.mineralPrice()) //double the amount for CCs, worker has to move longer
+		return false;
+	if (BWAPI::Broodwar->self()->gas() + WorkersModule::Instance()->WorkerCountGas() * Config::Workers::WorkerResourceValue() < type.gasPrice())
+		return false;
+	
 	return true;
 }
 

@@ -68,7 +68,12 @@ namespace KasoBot {
 		//building was destroyed while building, find assigned worker and send him to mine
 		void BuildFailed(ProductionItem* item);
 		
-		
+		//@return total number of workers mining minerals
+		int WorkerCountMinerals();
+
+		//@return total number of workers mining gas
+		int WorkerCountGas();
+
 		//getters and setters
 		
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }

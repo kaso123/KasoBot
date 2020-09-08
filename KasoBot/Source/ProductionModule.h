@@ -60,6 +60,9 @@ namespace KasoBot {
 		//@return true if unit can be built
 		bool CheckResources(BWAPI::UnitType type);
 
+		//@return true if we have enough resources to assign worker to build
+		bool CanSendWorker(BWAPI::UnitType type);
+
 		//try to make this new item
 		//@return true if successfuly started new task
 		bool NewTask(BWAPI::UnitType type);

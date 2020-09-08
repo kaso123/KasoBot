@@ -8,11 +8,13 @@ using namespace KasoBot;
 ProductionItem::ProductionItem(BWAPI::UnitType type)
 	:_state(Production::State::WAITING), _type(type), _buildLocation(BWAPI::TilePositions::Invalid)
 {
+	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 ProductionItem::ProductionItem(BWAPI::UnitType type, BWAPI::TilePosition pos)
 	: _state(Production::State::WAITING), _type(type), _buildLocation(pos)
 {
+	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 ProductionItem::~ProductionItem()
@@ -23,7 +25,6 @@ void ProductionItem::Assigned()
 {
 	_ASSERT(_state == Production::State::WAITING);
 	_state = Production::State::ASSIGNED;
-	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 void ProductionItem::BuildStarted()

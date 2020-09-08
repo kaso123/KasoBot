@@ -338,3 +338,19 @@ void WorkersModule::BuildFailed(ProductionItem * item)
 
 	_ASSERT(false); //item was in building state but no worker was building it
 }
+
+int WorkersModule::WorkerCountMinerals()
+{
+	int result = 0;
+	for (const auto& exp : _expansionList)
+		result += exp->WorkerCountMinerals();
+	return result;
+}
+
+int WorkersModule::WorkerCountGas()
+{
+	int result = 0;
+	for (const auto& exp : _expansionList)
+		result += exp->WorkerCountGas();
+	return result;
+}

@@ -6,7 +6,8 @@
     "saturatedGas": 3,
     "maxPerGas": 3,
     "startGasAfter": 10,
-    "buildStartDistance": 80
+    "buildStartDistance": 80,
+    "workerResourceValue": 5
   },
   "units": {
     "orderDelay": 7
