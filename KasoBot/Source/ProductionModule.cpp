@@ -28,6 +28,21 @@ ProductionModule* ProductionModule::Instance()
 
 void ProductionModule::OnFrame()
 {
+	//sort items by status
+	std::sort(_items.begin(), _items.end(),
+		[](const std::unique_ptr<ProductionItem>& a, const std::unique_ptr<ProductionItem>& b) {return a->GetState() < b->GetState(); });
+
+	//remove finished  items
+	_items.erase(std::remove_if(_items.begin(), _items.end(),
+		[](auto& x)
+		{
+			if (x->GetState() == Production::State::DONE)
+				return true;
+			return false;
+		}
+	), _items.end());
+
+
 	for (auto& item : _items)
 	{
 		if (item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED)

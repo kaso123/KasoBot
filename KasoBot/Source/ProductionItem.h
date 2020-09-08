@@ -5,8 +5,8 @@ namespace KasoBot {
 
 	namespace Production {
 		enum State {
-			WAITING,
 			UNFINISHED,
+			WAITING,
 			ASSIGNED,
 			BUILDING,
 			DONE

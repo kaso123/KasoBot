@@ -59,7 +59,7 @@ void StrategyModule::SetOpener(const std::string & name)
 
 	if (name == "random" || _openers.find(name) == _openers.end())
 	{
-		srand(time(NULL));
+		srand(unsigned int(time(NULL)));
 		//choose random opener
 		auto it = _openers.begin();
 		std::advance(it, rand() % _openers.size());
