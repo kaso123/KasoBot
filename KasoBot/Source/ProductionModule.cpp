@@ -3,6 +3,7 @@
 #include "ArmyModule.h"
 #include "MapModule.h"
 #include "Config.h"
+#include "StrategyModule.h"
 
 #include "ProductionItem.h"
 #include "Unit.h"
@@ -21,6 +22,26 @@ ProductionModule::~ProductionModule()
 	delete(_instance);
 }
 
+void ProductionModule::PreventSupplyBlock()
+{	
+	//check how many supply depots are ordered already
+	int suppliesInQueue = 0;
+	for (auto& item : _items)
+	{
+		if (item->GetState() == Production::State::DONE)
+			continue;
+
+		if (item->GetType() == BWAPI::UnitTypes::Terran_Supply_Depot)
+			suppliesInQueue++;
+	}
+
+	int var = 10; //TODO add algorithm to calculate this value from stuff we have
+	if (BWAPI::Broodwar->self()->supplyTotal() + suppliesInQueue * 16 < BWAPI::Broodwar->self()->supplyUsed() + var)
+	{
+		BuildBuilding(BWAPI::UnitTypes::Terran_Supply_Depot);
+	}
+}
+
 ProductionModule* ProductionModule::Instance()
 {
 	if (!_instance)
@@ -30,6 +51,9 @@ ProductionModule* ProductionModule::Instance()
 
 void ProductionModule::OnFrame()
 {
+	if(!StrategyModule::Instance()->IsOpenerActive())
+		PreventSupplyBlock();
+
 	//sort items by status
 	std::sort(_items.begin(), _items.end(),
 		[](const std::unique_ptr<ProductionItem>& a, const std::unique_ptr<ProductionItem>& b) {return a->GetState() < b->GetState(); });

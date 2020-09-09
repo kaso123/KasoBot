@@ -24,6 +24,9 @@ namespace KasoBot {
 		int _reservedMinerals;
 		int _reservedGas;
 
+		//order new supply depot when getting close to supply block
+		void PreventSupplyBlock();
+
 	public:
 		static ProductionModule* Instance();
 

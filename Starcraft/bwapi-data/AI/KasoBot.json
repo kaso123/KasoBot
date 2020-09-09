@@ -23,7 +23,8 @@
     "resources": true
   },
   "strategy": {
-    "opener": "test2" 
+    "opener": "test2" ,
+    "cycle":  [ "saturation","army","tech","production"]
   },
   "openers": {
     "test1": [ "scv $2", "depot", "scv $3", "barracks", "scv", "marine" ],

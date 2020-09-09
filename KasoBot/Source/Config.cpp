@@ -71,6 +71,10 @@ void ConfigModule::Init()
 			//be sure to call this after openers have been loaded
 			StrategyModule::Instance()->SetOpener(j["strategy"]["opener"]);
 		}
+		if (j["strategy"].contains("cycle"))
+		{
+			StrategyModule::Instance()->SetCycle(j["strategy"]["cycle"]);
+		}
 	}
 }
 
