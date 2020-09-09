@@ -57,11 +57,10 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 		}
 
 		//unfinished building needs to be completed
-		if (BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight())
-			!= BWAPI::UnitTypes::None)
+		auto typeOnTile = BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight());
+		if ( typeOnTile != BWAPI::UnitTypes::None && typeOnTile != BWAPI::UnitTypes::Resource_Vespene_Geyser)
 		{
-			_ASSERT(BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight())
-				== worker.GetProductionItem()->GetType());
+			_ASSERT(typeOnTile == worker.GetProductionItem()->GetType());
 
 			BWAPI::Unit unfinished = KasoBot::Map::GetUnfinished(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType());
 			_ASSERT(unfinished);

@@ -1,5 +1,6 @@
 #include "Unit.h"
 #include "BehaviourWorker.h"
+#include "ArmyModule.h"
 
 using namespace KasoBot;
 
@@ -13,6 +14,10 @@ Unit::Unit(BWAPI::Unit unit)
 
 Unit::~Unit()
 {
+	if (_pointer->getType().isBuilding() || _pointer->getType().isWorker())
+		return;
+
+	ArmyModule::Instance()->SoldierKilled(this);
 }
 
 void Unit::Fight()

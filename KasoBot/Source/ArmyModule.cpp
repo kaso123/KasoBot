@@ -71,3 +71,39 @@ bool ArmyModule::WorkerKilled(BWAPI::Unit unit)
 	//check if worker was removed from list
 	return before > _workers.size();
 }
+
+void ArmyModule::AddSoldier(KasoBot::Unit* unit)
+{
+	_soldiers.emplace_back(unit);
+}
+
+void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
+{
+	size_t before = _soldiers.size();
+
+	for (auto it = _soldiers.begin(); it != _soldiers.end(); it++)
+	{
+		if (*it == unit)
+		{
+			_soldiers.erase(it);
+			return;
+		}
+	}
+
+	_ASSERT(false);
+}
+
+int ArmyModule::GetArmySupply()
+{
+	int supply = 0;
+
+	//TODO cycle through all armies here
+	for (auto& unit : _soldiers)
+	{
+		supply += unit->GetPointer()->getType().supplyRequired();
+	}
+
+	supply += _workers.size();
+
+	return supply;
+}

@@ -1,5 +1,6 @@
 #include "ProductionModule.h"
 #include "WorkersModule.h"
+#include "ArmyModule.h"
 #include "MapModule.h"
 #include "Config.h"
 
@@ -68,12 +69,12 @@ void ProductionModule::AddUnit(BWAPI::Unit unit)
 	
 	if (it != _unitList.end())
 	{
-		it->second.emplace_back(std::make_shared<KasoBot::Unit>(unit));
+		ArmyModule::Instance()->AddSoldier(it->second.emplace_back(std::make_unique<KasoBot::Unit>(unit)).get());
 	}
 	else
 	{
 		auto new_it = _unitList.insert({ unit->getType(), UnitList{} });
-		new_it.first->second.emplace_back(std::make_shared<KasoBot::Unit>(unit));
+		ArmyModule::Instance()->AddSoldier(new_it.first->second.emplace_back(std::make_unique<KasoBot::Unit>(unit)).get());
 	}
 }
 
@@ -83,12 +84,12 @@ void ProductionModule::AddBuilding(BWAPI::Unit unit)
 
 	if (it != _buildingList.end())
 	{
-		it->second.emplace_back(std::make_shared<KasoBot::Unit>(unit));
+		it->second.emplace_back(std::make_unique<KasoBot::Unit>(unit));
 	}
 	else
 	{
 		auto new_it = _buildingList.insert({ unit->getType(), UnitList{} });
-		new_it.first->second.emplace_back(std::make_shared<KasoBot::Unit>(unit));
+		new_it.first->second.emplace_back(std::make_unique<KasoBot::Unit>(unit));
 	}
 }
 

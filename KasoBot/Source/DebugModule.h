@@ -28,6 +28,7 @@ namespace KasoBot {
 		void DrawMap();
 		void DrawWorkers();
 		void DrawSingleWorker(const Worker& worker);
+		void DrawArmy();
 		void DrawQueue();
 		void DrawBases();
 		void DrawResources();

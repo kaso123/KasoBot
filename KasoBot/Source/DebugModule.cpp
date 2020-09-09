@@ -4,6 +4,7 @@
 #include "WorkersModule.h"
 #include "ProductionModule.h"
 #include "StrategyModule.h"
+#include "ArmyModule.h"
 
 #include "Expansion.h"
 #include "Worker.h"
@@ -74,9 +75,14 @@ void DebugModule::DrawSingleWorker(const Worker& worker)
 		BWAPI::Broodwar->drawCircleMap(worker.GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
 }
 
+void DebugModule::DrawArmy()
+{
+	BWAPI::Broodwar->drawTextScreen(420, 10, "Army supply: %i", ArmyModule::Instance()->GetArmySupply()/2);
+}
+
 void DebugModule::DrawQueue()
 {
-	int y = 30;
+	int y = 60;
 	char color = '\x02';
 
 	for (auto& item : ProductionModule::Instance()->GetItems())
@@ -87,7 +93,7 @@ void DebugModule::DrawQueue()
 		if (item->GetState() == Production::State::UNFINISHED) color = '\x03'; //TODO what color is this?
 		if (item->GetState() == Production::State::DONE) color = '\x1c'; //light blue
 
-		BWAPI::Broodwar->drawTextScreen(420, y, "%c %s", color, item->GetType().getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(10, y, "%c %s", color, item->GetType().getName().c_str());
 		y += 10;
 	}
 }
@@ -214,6 +220,8 @@ void DebugModule::DrawDebug()
 		DrawMap();
 	if (_drawWorkers)
 		DrawWorkers();
+	if (_drawArmy)
+		DrawArmy();
 	if (_drawBuildOrder)
 		DrawQueue();
 	if (_drawBases)

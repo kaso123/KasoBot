@@ -6,7 +6,7 @@ namespace KasoBot {
 	class ProductionItem;
 }
 
-typedef std::vector<std::shared_ptr<KasoBot::Unit>> UnitList;
+typedef std::vector<std::unique_ptr<KasoBot::Unit>> UnitList;
 
 namespace KasoBot {
 	class ProductionModule
