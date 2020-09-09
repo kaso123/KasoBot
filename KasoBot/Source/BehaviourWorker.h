@@ -36,7 +36,9 @@ namespace KasoBot {
 
 		//assign build order to worker
 		void Build(BWAPI::Unit unit, BWAPI::TilePosition pos, BWAPI::UnitType type);
-
+		
+		//assign build order to worker when building is unfinished
+		void Build(BWAPI::Unit unit, BWAPI::Unit building);
 
 
 	public:

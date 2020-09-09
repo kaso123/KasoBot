@@ -107,6 +107,19 @@ BWAPI::Position Map::GetCenterOfBuilding(BWAPI::TilePosition pos, BWAPI::UnitTyp
 	return BWAPI::Position(pos + BWAPI::TilePosition(type.tileWidth()/2, type.tileHeight()/2));
 }
 
+BWAPI::Unit Map::GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type)
+{
+	auto set = BWAPI::Broodwar->getUnitsOnTile(pos);
+	for (auto unit : set)
+	{
+		if (unit->getType() == type && !unit->isCompleted())
+			return unit;
+	}
+
+	_ASSERT(false);
+	return nullptr;
+}
+
 void Map::Global::Initialize()
 {
 	BWEB::Map::mapBWEM.Initialize(BWAPI::BroodwarPtr);

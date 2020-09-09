@@ -92,7 +92,7 @@ bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 
 void Worker::BuildFinished()
 {
-	_ASSERT(_workerRole == Workers::Role::BUILD);
+	_ASSERT(_workerRole == Workers::Role::BUILD || _workerRole == Workers::Role::ASSIGNED);
 	_ASSERT(_item);
 	_item = nullptr;
 }

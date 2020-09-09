@@ -266,7 +266,6 @@ bool WorkersModule::Build(ProductionItem* item)
 	{
 		if (closestWorker->AssignRoleBuild(item))
 		{
-			BWEB::Map::KasoBot::ReserveTiles(item->GetLocation(), item->GetType());
 			_builders.emplace_back(closestWorker);
 			expForWorker->RemoveWorker(closestWorker->GetPointer());
 			return true;
@@ -324,7 +323,7 @@ void WorkersModule::BuildFailed(ProductionItem * item)
 	{
 		if ((*it)->GetProductionItem() == item)
 		{
-			_ASSERT((*it)->GetWorkerRole() == Workers::Role::BUILD);
+			_ASSERT((*it)->GetWorkerRole() == Workers::Role::BUILD || (*it)->GetWorkerRole() == Workers::Role::ASSIGNED);
 
 			//remove item from worker
 			(*it)->BuildFinished();

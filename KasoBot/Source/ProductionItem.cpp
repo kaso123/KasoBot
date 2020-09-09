@@ -6,15 +6,16 @@
 using namespace KasoBot;
 
 ProductionItem::ProductionItem(BWAPI::UnitType type)
-	:_state(Production::State::WAITING), _type(type), _buildLocation(BWAPI::TilePositions::Invalid)
+	:_state(Production::State::WAITING), _type(type), _buildLocation(BWAPI::TilePositions::Invalid), _unfinished(false)
 {
 	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 ProductionItem::ProductionItem(BWAPI::UnitType type, BWAPI::TilePosition pos)
-	: _state(Production::State::WAITING), _type(type), _buildLocation(pos)
+	: _state(Production::State::WAITING), _type(type), _buildLocation(pos), _unfinished(false)
 {
 	ProductionModule::Instance()->ReserveResources(_type);
+	BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 }
 
 ProductionItem::~ProductionItem()
@@ -23,7 +24,7 @@ ProductionItem::~ProductionItem()
 
 void ProductionItem::Assigned()
 {
-	_ASSERT(_state == Production::State::WAITING);
+	_ASSERT(_state == Production::State::WAITING || _state == Production::State::UNFINISHED);
 	_state = Production::State::ASSIGNED;
 }
 
@@ -32,10 +33,13 @@ void ProductionItem::BuildStarted()
 	_ASSERT(_state == Production::State::ASSIGNED);
 	_ASSERT(_buildLocation.isValid());
 
-	BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
+	if (!_unfinished)
+	{
+		BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
+		ProductionModule::Instance()->FreeResources(_type);
+	}
 	
 	_state = Production::State::BUILDING;
-	ProductionModule::Instance()->FreeResources(_type);
 }
 
 void ProductionItem::Restart()
@@ -43,7 +47,8 @@ void ProductionItem::Restart()
 	_ASSERT(_state == Production::State::BUILDING);
 	_ASSERT(_buildLocation.isValid());
 
-	BWEB::Map::KasoBot::UnreserveTiles(_buildLocation, _type);
+	ProductionModule::Instance()->ReserveResources(_type);
+	BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 	_state = Production::State::ASSIGNED;
 }
 
@@ -60,8 +65,7 @@ void ProductionItem::WorkerDied()
 
 	if (_state == Production::State::ASSIGNED)
 	{
-		//when only assigned -> remove reserved minerals and go to WAITING
-		ProductionModule::Instance()->FreeResources(_type);
+		//when only assigned -> go to waiting
 		_state = Production::State::WAITING;
 		return;
 	}
@@ -70,23 +74,28 @@ void ProductionItem::WorkerDied()
 	{
 		//when already built
 		_state = Production::State::UNFINISHED;
+		_unfinished = true;
 		return;
 	}
 }
 
 void ProductionItem::BuildingDestroyed()
 {
-	if (_state == Production::State::BUILDING)
+	if (_state == Production::State::BUILDING || _state == Production::State::ASSIGNED)
 	{
 		_state = Production::State::WAITING;
+		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
+		ProductionModule::Instance()->ReserveResources(_type);
 		WorkersModule::Instance()->BuildFailed(this);
-		//TODO figure out a worker
 		return;
 	}
 
 	if (_state == Production::State::UNFINISHED)
 	{
+		_unfinished = false;
 		_state = Production::State::WAITING;
+		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
+		ProductionModule::Instance()->ReserveResources(_type);
 		return;
 	}
 

@@ -19,6 +19,7 @@ namespace KasoBot {
 		BWAPI::UnitType _type;
 		BWAPI::TilePosition _buildLocation;
 		Production::State _state;
+		bool _unfinished;
 
 	public:
 		ProductionItem(BWAPI::UnitType type);

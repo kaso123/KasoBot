@@ -25,6 +25,9 @@ namespace KasoBot
 
 		//@return center pixel for specified building, used for debug drawing and calculating distance to build location
 		BWAPI::Position GetCenterOfBuilding(BWAPI::TilePosition pos, BWAPI::UnitType type);
+
+		//@return pointer to unfinished building on specific tile on map
+		BWAPI::Unit GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type);
 	}
 	
 }

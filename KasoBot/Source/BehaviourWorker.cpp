@@ -56,6 +56,20 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 			return;
 		}
 
+		//unfinished building needs to be completed
+		if (BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight())
+			!= BWAPI::UnitTypes::None)
+		{
+			_ASSERT(BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight())
+				== worker.GetProductionItem()->GetType());
+
+			BWAPI::Unit unfinished = KasoBot::Map::GetUnfinished(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType());
+			_ASSERT(unfinished);
+
+			Build(worker.GetPointer(), unfinished);
+			return;
+		}
+
 		Build(worker.GetPointer(),worker.GetProductionItem()->GetLocation(),worker.GetProductionItem()->GetType());
 		return;
 	}
@@ -131,6 +145,14 @@ void BehaviourWorker::Build(BWAPI::Unit unit, BWAPI::TilePosition pos, BWAPI::Un
 		return;
 
 	unit->build(type, pos);
+}
+
+void BehaviourWorker::Build(BWAPI::Unit unit, BWAPI::Unit building)
+{
+	if(unit->getOrder() == BWAPI::Orders::ConstructingBuilding && unit->getBuildUnit() == building)
+		return;
+
+	unit->rightClick(building);
 }
 
 BehaviourWorker::BehaviourWorker()
