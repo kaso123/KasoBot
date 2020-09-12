@@ -34,9 +34,10 @@ void ProductionModule::PreventSupplyBlock()
 		if (item->GetType() == BWAPI::UnitTypes::Terran_Supply_Depot)
 			suppliesInQueue++;
 	}
+	if (BWAPI::Broodwar->self()->supplyTotal() + suppliesInQueue * 16 >= 400)
+		return;
 
-	int var = 10; //TODO add algorithm to calculate this value from stuff we have
-	if (BWAPI::Broodwar->self()->supplyTotal() + suppliesInQueue * 16 < BWAPI::Broodwar->self()->supplyUsed() + var)
+	if (BWAPI::Broodwar->self()->supplyTotal() + suppliesInQueue * 16 < (int)std::floor(BWAPI::Broodwar->self()->supplyUsed() * Config::Production::FreeSupplyMultiplier()))
 	{
 		BuildBuilding(BWAPI::UnitTypes::Terran_Supply_Depot);
 	}
@@ -302,4 +303,17 @@ bool ProductionModule::NewTask(BWAPI::UnitType type)
 	}
 
 	return BuildUnit(type);
+}
+
+bool ProductionModule::IsInQueue(BWAPI::UnitType type)
+{
+	for (const auto& item : _items)
+	{
+		if (item->GetState() == Production::State::DONE)
+			continue;
+
+		if (item->GetType() == type)
+			return true;
+	}
+	return false;
 }

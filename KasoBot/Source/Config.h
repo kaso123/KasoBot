@@ -21,6 +21,8 @@ namespace KasoBot {
 
 		int _unitOrderDelay = 7;
 
+		float _freeSupplyMultiplier = 1.5f;
+
 		bool _debugMap = false;
 		bool _debugWorkers = false;
 		bool _debugArmy = false;
@@ -45,6 +47,8 @@ namespace KasoBot {
 		int WorkerResourceValue() { return _workerResourceValue; }
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
+
+		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
@@ -88,6 +92,12 @@ namespace KasoBot {
 
 			//number of frames between allowing to issue new orders
 			int OrderDelay();
+		}
+
+		namespace Production {
+
+			//hom much more available supply we want to have in comparison to used supply 
+			float FreeSupplyMultiplier();
 		}
 
 		namespace Debug {

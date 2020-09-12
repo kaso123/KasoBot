@@ -70,6 +70,9 @@ namespace KasoBot {
 		//@return true if successfuly started new task
 		bool NewTask(BWAPI::UnitType type);
 
+		//@return true if this building is in queue (in any state except DONE)
+		bool IsInQueue(BWAPI::UnitType type);
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }

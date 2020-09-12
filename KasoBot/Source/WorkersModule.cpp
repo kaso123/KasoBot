@@ -353,3 +353,23 @@ int WorkersModule::WorkerCountGas()
 		result += exp->WorkerCountGas();
 	return result;
 }
+
+bool WorkersModule::ExpansionNeeded()
+{
+	for (auto& exp : _expansionList)
+	{
+		if (!exp->IsSaturated())
+			return false;
+	}
+	return true;
+}
+
+bool WorkersModule::BasesFull()
+{
+	for (auto& exp : _expansionList)
+	{
+		if (!exp->IsFull())
+			return false;
+	}
+	return true;
+}

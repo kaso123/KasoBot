@@ -46,6 +46,10 @@ void ConfigModule::Init()
 	{
 		_unitOrderDelay = j["units"].contains("orderDelay") ? j["units"]["orderDelay"] : _unitOrderDelay;
 	}
+	if (j.contains("production"))
+	{
+		_freeSupplyMultiplier = j["production"].contains("freeSupplyMultiplier") ? j["production"]["freeSupplyMultiplier"] : _freeSupplyMultiplier;
+	}
 	if (j.contains("debug"))
 	{
 		_debugMap = j["debug"].contains("map") ? j["debug"]["map"] : _debugMap;
@@ -89,6 +93,8 @@ int Config::Workers::BuildStartDistance() { return ConfigModule::Instance()->Bui
 int Config::Workers::WorkerResourceValue() { return ConfigModule::Instance()->WorkerResourceValue(); }
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
+
+float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }
 
 bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
 bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }

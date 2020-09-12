@@ -74,6 +74,12 @@ namespace KasoBot {
 		//@return total number of workers mining gas
 		int WorkerCountGas();
 
+		//@return true if we have more workers that is optimal saturation
+		bool ExpansionNeeded();
+
+		//@return true if all bases are at max capacity
+		bool BasesFull();
+
 		//getters and setters
 		
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }

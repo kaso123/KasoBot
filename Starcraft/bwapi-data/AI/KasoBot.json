@@ -12,6 +12,9 @@
   "units": {
     "orderDelay": 7
   },
+  "production": {
+    "freeSupplyMultiplier": 1.3
+  },
   "debug": {
     "map": true,
     "workers": true,

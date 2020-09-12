@@ -22,8 +22,19 @@ StrategyModule::~StrategyModule()
 
 bool StrategyModule::MacroSaturation()
 {
-	//TODO check if we need to expand
+	//TODO check if refinery is needed
+
+	//check if we need to expand
+	if (WorkersModule::Instance()->ExpansionNeeded())
+	{
+		if (!ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Command_Center))
+			return ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Command_Center);
+	}
+
 	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() >= Config::Workers::MaxGlobal())
+		return false;
+
+	if (WorkersModule::Instance()->BasesFull())
 		return false;
 
 	return ProductionModule::Instance()->BuildUnit(BWAPI::UnitTypes::Terran_SCV);
@@ -42,7 +53,10 @@ bool StrategyModule::MacroTech()
 
 bool StrategyModule::MacroProduction()
 {
-	return false;
+	if (ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Barracks))
+		return false;
+
+	return ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Barracks);
 }
 
 StrategyModule* StrategyModule::Instance()
