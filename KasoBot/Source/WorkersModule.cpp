@@ -64,7 +64,25 @@ void WorkersModule::AssignIdleWorkers(Expansion& exp)
 		exp.AddWorker(worker);
 	}
 	
-	//TODO if not enough, get workers from oversaturated bases
+	//if not enough, get workers from oversaturated bases
+	if (list.size() < exp.IdealWorkerCount())
+	{
+		size_t added = 0; //total count of workers from other bases
+		
+		for (auto& base : _expansionList)
+		{
+			if (list.size() + added >= exp.IdealWorkerCount())
+				break;
+
+			if (!base->IsSaturated())
+				continue;
+			
+			auto workers = base->GetUnneededWorkers(exp.IdealWorkerCount() - list.size() - added);
+			for (auto& worker : workers)
+				exp.AddWorker(worker);
+			added += workers.size();
+		}
+	}
 }
 
 void WorkersModule::AssignRefinery(Expansion& exp)

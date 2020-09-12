@@ -105,3 +105,15 @@ void Worker::Work()
 	_ASSERT(_behaviour);
 	_behaviour->Work(*this);
 }
+
+bool Worker::RemoveMineral()
+{
+	if (!_mineral)
+		return false;
+
+	_mineral->SetData(_mineral->Data() - 1);
+	_ASSERT(_mineral->Data() >= 0);
+
+	_mineral = nullptr;
+	return true;
+}

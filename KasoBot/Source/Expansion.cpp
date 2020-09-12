@@ -4,7 +4,10 @@
 #include "Worker.h"
 #include "Config.h"
 
+#include <algorithm>
+
 using namespace KasoBot;
+
 
 bool Expansion::VerifyWorkers()
 {
@@ -215,4 +218,41 @@ size_t Expansion::IdealWorkerCount()
 		return 0;
 
 	return _station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() + (_refinery ? Config::Workers::SaturationPerGas() : 0);
+}
+
+std::vector<std::shared_ptr<Worker>> Expansion::GetUnneededWorkers(size_t max)
+{
+	std::vector<std::shared_ptr<Worker>> workers = {};
+
+	//select workers to transfer
+	for (auto& worker : _workerList)
+	{
+		if (workers.size() >= max)
+			break;
+		if (!worker->GetMineral() || worker->GetMineral()->Data() <= Config::Workers::SaturationPerMineral())
+			continue;
+
+		worker->RemoveMineral();
+
+		workers.emplace_back(worker);
+	}
+
+	//remove selected from army
+	_workerList.erase(std::remove_if(_workerList.begin(), _workerList.end(),
+		[workers](auto& x)
+		{
+			//cycle selected workers, erase if found
+			for (auto worker : workers)
+			{
+				if (worker == x)
+					return true;
+			}
+			return false;
+		}
+	), _workerList.end());
+
+	_workersMinerals -= workers.size();
+
+	_ASSERT(VerifyWorkers());
+	return workers;
 }

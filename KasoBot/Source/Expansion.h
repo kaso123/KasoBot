@@ -59,6 +59,11 @@ namespace KasoBot {
 
 		//@return number of workers we want this base to currently have
 		size_t IdealWorkerCount();
+
+		//find workers from each mineral that are oversaturated and remove them
+		//@param max maximum number of workers to remove
+		//@return vector of Workers that were removed from this base
+		std::vector<std::shared_ptr<Worker>> GetUnneededWorkers(size_t max);
 		
 		//getters and setters
 
