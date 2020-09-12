@@ -4,6 +4,7 @@
 namespace KasoBot {
 	class Unit;
 	class ProductionItem;
+	class Expansion;
 }
 
 typedef std::vector<std::unique_ptr<KasoBot::Unit>> UnitList;
@@ -45,6 +46,9 @@ namespace KasoBot {
 		//create new productionItem and assign worker
 		//@return true if worker was assigned
 		bool BuildBuilding(BWAPI::UnitType type);
+
+		//build refinery at the closest position to this base (should be its vespene geyser, but can't guarantee)
+		bool BuildRefineryAtExpansion(Expansion& exp);
 
 		//find building that builds this unit and build it
 		//@return true if unit was started

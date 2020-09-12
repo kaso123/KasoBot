@@ -1,6 +1,8 @@
 #include "Expansion.h"
 #include "MapModule.h"
 #include "WorkersModule.h"
+#include "StrategyModule.h"
+#include "ProductionModule.h"
 #include "Worker.h"
 #include "Config.h"
 
@@ -81,6 +83,13 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	}
 
 	_ASSERT(VerifyWorkers());
+
+	//check if refinery should be built, don't interfere with opener
+	if (!_refinery && !StrategyModule::Instance()->IsOpenerActive())
+	{
+		if(_workersMinerals >= Config::Workers::StartGasAfter() && !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Refinery))
+			ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Refinery);
+	}
 }
 
 void Expansion::AddRefinery(BWAPI::Unit unit)

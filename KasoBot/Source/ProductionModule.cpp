@@ -7,6 +7,7 @@
 
 #include "ProductionItem.h"
 #include "Unit.h"
+#include "Expansion.h"
 
 using namespace KasoBot;
 
@@ -214,6 +215,20 @@ bool ProductionModule::BuildBuilding(BWAPI::UnitType type)
 		return true;
 
 	return false;
+}
+
+bool ProductionModule::BuildRefineryAtExpansion(Expansion& exp)
+{
+	auto pos = BWAPI::Broodwar->getBuildLocation(BWAPI::UnitTypes::Terran_Refinery, exp.GetStation()->getBWEMBase()->Location());
+
+	if(!pos.isValid())
+		return false;
+
+	if (_items.emplace_back(std::make_unique<ProductionItem>(BWAPI::UnitTypes::Terran_Refinery, pos)))
+		return true;
+
+	return false;
+
 }
 
 bool ProductionModule::BuildUnit(BWAPI::UnitType type)

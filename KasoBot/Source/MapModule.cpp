@@ -81,7 +81,7 @@ BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 	}
 	else if (type.isRefinery())
 	{
-		//TODO find expansion that needs refinery
+		//find expansion that needs refinery
 		for (auto& exp : WorkersModule::Instance()->ExpansionList())
 		{
 			if (exp->GetRefinery())
