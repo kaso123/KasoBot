@@ -13,6 +13,7 @@ namespace KasoBot {
 		std::unique_ptr<Behaviour> _behaviour;
 
 		bool _playerControl;
+		bool _lock; //used for buildings that needs addons to lock them from training more units before addon is started
 		int _playerControlFrame;
 	public:
 		Unit(BWAPI::Unit unit);
@@ -26,11 +27,14 @@ namespace KasoBot {
 
 		//switch between AI controlled and player controlled behaviour
 		void ChangeDebugControl();
-		
+				
 		//getters and setters
 
 		BWAPI::Unit GetPointer() const { return _pointer; }
 		bool PlayerControlled() const { return _playerControl; }
+		void Lock() { _lock = true; }
+		void Unlock() { _lock = false; }
+		bool IsLocked() const { return _lock; }
 	};
 }
 

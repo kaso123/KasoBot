@@ -391,3 +391,19 @@ bool WorkersModule::BasesFull()
 	}
 	return true;
 }
+
+int WorkersModule::ExpansionCount()
+{
+	return _expansionList.size();
+}
+
+int WorkersModule::RefineryCount()
+{
+	int result = 0;
+	for (auto& exp : _expansionList)
+	{
+		if (exp->GetRefinery())
+			result++;
+	}
+	return result;
+}

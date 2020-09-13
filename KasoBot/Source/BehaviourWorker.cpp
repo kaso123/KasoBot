@@ -72,8 +72,6 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 		Build(worker.GetPointer(),worker.GetProductionItem()->GetLocation(),worker.GetProductionItem()->GetType());
 		return;
 	}
-
-	
 }
 
 void BehaviourWorker::Construct(Worker& worker)

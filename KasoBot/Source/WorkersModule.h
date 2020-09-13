@@ -80,6 +80,12 @@ namespace KasoBot {
 		//@return true if all bases are at max capacity
 		bool BasesFull();
 
+		//@return number of existing CCs
+		int ExpansionCount();
+
+		//@return number of existing refineries
+		int RefineryCount();
+
 		//getters and setters
 		
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }

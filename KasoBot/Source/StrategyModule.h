@@ -46,6 +46,12 @@ namespace KasoBot {
 		//try to build more production buildings
 		bool MacroProduction();
 
+		//@return vector with next army units that should be built in order of priority
+		std::vector<BWAPI::UnitType> GetMacroArmyTypes();
+
+		//@return next production building that should be built
+		BWAPI::UnitType GetMacroProductionType();
+
 	public:
 		static StrategyModule* Instance();
 

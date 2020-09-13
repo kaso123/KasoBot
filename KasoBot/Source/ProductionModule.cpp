@@ -196,20 +196,38 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 
 	for (auto& building : (*it).second)
 	{
-		if (building->GetPointer()->isIdle())
+		if (building->IsLocked()) //only one locked building of one type at each type
 		{ 
-			if (building->GetPointer()->buildAddon(type)) //build started
+			if (building->GetPointer()->isIdle())
 			{
-				return true;
+				if (building->GetPointer()->buildAddon(type)) //build started
+				{
+					building->Unlock();
+					return true;
+				}
 			}
+			return false;
 		}	
 	}
+
+	for (auto& building : (*it).second)
+	{
+		if (!building->GetPointer()->getAddon() && !building->IsLocked())
+		{
+			building->Lock();
+			return false;
+		}
+	}
+
 	return false;
 }
 
 bool ProductionModule::BuildBuilding(BWAPI::UnitType type)
 {
-	_ASSERT(type.isBuilding() && !type.isAddon());
+	_ASSERT(type.isBuilding());
+
+	if (type.isAddon())
+		return BuildAddon(type);
 
 	if (_items.emplace_back(std::make_unique<ProductionItem>(type, KasoBot::Map::GetBuildPosition(type))))
 		return true;
@@ -331,4 +349,39 @@ bool ProductionModule::IsInQueue(BWAPI::UnitType type)
 			return true;
 	}
 	return false;
+}
+
+int ProductionModule::GetCountOf(BWAPI::UnitType type)
+{
+	if (type.isBuilding())
+	{
+		int inProgress = 0;
+
+		for (auto& item : _items)
+		{
+			if (item->GetState() != Production::State::DONE && item->GetType() == type)
+				inProgress++;
+		}
+
+		if (type == BWAPI::UnitTypes::Terran_Refinery)
+			return inProgress + WorkersModule::Instance()->RefineryCount();
+		if (type == BWAPI::UnitTypes::Terran_Command_Center)
+			return inProgress + WorkersModule::Instance()->ExpansionCount();
+
+		auto it = _buildingList.find(type);
+
+		if (it == _buildingList.end())
+			return inProgress;
+
+		return it->second.size() + inProgress;
+	}
+	else
+	{
+		auto it = _unitList.find(type);
+
+		if (it == _unitList.end())
+			return 0;
+		return it->second.size();
+	}
+	return 0;
 }

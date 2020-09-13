@@ -5,7 +5,7 @@
 using namespace KasoBot;
 
 Unit::Unit(BWAPI::Unit unit)
-	:_pointer(unit), _playerControl(false), _playerControlFrame(0)
+	:_pointer(unit), _playerControl(false), _playerControlFrame(0), _lock(false)
 {
 	if (unit->getType().isWorker())
 		_behaviour = std::make_unique<BehaviourWorker>();

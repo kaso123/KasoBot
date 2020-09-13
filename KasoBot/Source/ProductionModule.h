@@ -77,6 +77,9 @@ namespace KasoBot {
 		//@return true if this building is in queue (in any state except DONE)
 		bool IsInQueue(BWAPI::UnitType type);
 
+		//@return number of units/buildings of this type (including in progress buildings)
+		int GetCountOf(BWAPI::UnitType type);
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }

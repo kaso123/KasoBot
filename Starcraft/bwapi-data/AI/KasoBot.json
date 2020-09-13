@@ -30,7 +30,7 @@
     "cycle":  [ "saturation","army","tech","production"]
   },
   "openers": {
-    "test1": [ "scv $2", "depot", "scv $3", "barracks", "scv", "marine" ],
-    "test2": [ "scv $2", "depot", "scv", "cc", "scv $3", "barracks"]
+    "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
+    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv", "marine", "scv", "cc"]
   }
 }
