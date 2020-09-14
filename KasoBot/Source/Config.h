@@ -20,6 +20,7 @@ namespace KasoBot {
 		int _workerResourceValue = 5;
 
 		int _unitOrderDelay = 7;
+		int _clearTileLock = 150;
 
 		float _freeSupplyMultiplier = 1.5f;
 
@@ -47,6 +48,7 @@ namespace KasoBot {
 		int WorkerResourceValue() { return _workerResourceValue; }
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
+		int ClearTileLock() { return _clearTileLock; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 
@@ -92,6 +94,9 @@ namespace KasoBot {
 
 			//number of frames between allowing to issue new orders
 			int OrderDelay();
+
+			//number of frames units ingore commands when they are making space for buildings
+			int ClearTileLock();
 		}
 
 		namespace Production {

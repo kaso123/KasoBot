@@ -107,3 +107,16 @@ int ArmyModule::GetArmySupply()
 
 	return supply;
 }
+
+void ArmyModule::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
+{
+	for (auto& soldier : _soldiers)
+	{
+		int x = soldier->GetPointer()->getTilePosition().x;
+		int y = soldier->GetPointer()->getTilePosition().y;
+
+		if ((pos.x) - 1 <= x && x < (pos.x + type.tileWidth())
+			&& (pos.y) - 1 <= y && y < (pos.y + type.tileHeight()))
+			soldier->ClearTile();
+	}
+}

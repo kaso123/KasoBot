@@ -45,6 +45,7 @@ void ConfigModule::Init()
 	if (j.contains("units"))
 	{
 		_unitOrderDelay = j["units"].contains("orderDelay") ? j["units"]["orderDelay"] : _unitOrderDelay;
+		_clearTileLock = j["units"].contains("clearTileLock") ? j["units"]["clearTileLock"] : _clearTileLock;
 	}
 	if (j.contains("production"))
 	{
@@ -93,6 +94,7 @@ int Config::Workers::BuildStartDistance() { return ConfigModule::Instance()->Bui
 int Config::Workers::WorkerResourceValue() { return ConfigModule::Instance()->WorkerResourceValue(); }
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
+int Config::Units::ClearTileLock() { return ConfigModule::Instance()->ClearTileLock(); }
 
 float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }
 

@@ -1,6 +1,7 @@
 #include "BehaviourWorker.h"
 #include "Worker.h"
 #include "MapModule.h"
+#include "ArmyModule.h"
 #include "ProductionItem.h"
 
 using namespace KasoBot;
@@ -141,7 +142,14 @@ void BehaviourWorker::Build(BWAPI::Unit unit, BWAPI::TilePosition pos, BWAPI::Un
 		&& unit->getOrderTargetPosition() == (BWAPI::Position)pos))
 		return;
 
-	unit->build(type, pos);
+	if (!unit->build(type, pos))
+	{
+		if (BWAPI::Broodwar->getLastError() == BWAPI::Errors::None)
+		{
+			//move units away from build Position
+			ArmyModule::Instance()->ClearTiles(pos, type);
+		}
+	}
 }
 
 void BehaviourWorker::Build(BWAPI::Unit unit, BWAPI::Unit building)

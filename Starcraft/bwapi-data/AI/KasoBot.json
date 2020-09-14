@@ -10,7 +10,8 @@
     "workerResourceValue": 5
   },
   "units": {
-    "orderDelay": 7
+    "orderDelay": 7,
+    "clearTileLock":  150
   },
   "production": {
     "freeSupplyMultiplier": 1.3
