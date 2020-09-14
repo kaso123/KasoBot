@@ -52,6 +52,22 @@ bool StrategyModule::MacroArmy()
 
 bool StrategyModule::MacroTech()
 {
+	auto macro = GetMacroTechType();
+
+	if (macro.unit != BWAPI::UnitTypes::None)
+	{
+		_ASSERT(macro.unit.isBuilding());
+		return ProductionModule::Instance()->BuildBuilding(macro.unit);
+	}
+	if (macro.upgrade != BWAPI::UpgradeTypes::None)
+	{
+		return ProductionModule::Instance()->MakeTech(macro.upgrade);
+	}
+	if (macro.tech != BWAPI::TechTypes::None)
+	{
+		return ProductionModule::Instance()->MakeTech(macro.tech);
+	}
+
 	return false;
 }
 
@@ -196,5 +212,46 @@ BWAPI::UnitType StrategyModule::GetMacroProductionType()
 		}
 	}
 	return BWAPI::UnitTypes::Terran_Barracks;
+}
+
+Production::TechMacro StrategyModule::GetMacroTechType()
+{
+	//TODO this is for testing only
+	Production::TechMacro macro;
+	
+	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 1)
+	{
+		macro.unit = BWAPI::UnitTypes::Terran_Armory;
+		return macro;
+	}
+	if (BWAPI::Broodwar->canResearch(BWAPI::TechTypes::Tank_Siege_Mode) && !BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		macro.tech = BWAPI::TechTypes::Tank_Siege_Mode;
+		return macro;
+	}
+	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 2 && BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0)
+	{
+		macro.unit = BWAPI::UnitTypes::Terran_Armory;
+		return macro;
+	}
+	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) <= 0)
+	{
+		macro.unit = BWAPI::UnitTypes::Terran_Starport;
+		return macro;
+	}
+	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) > 0
+		&& !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Starport) && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Science_Facility) <= 0)
+	{
+		macro.unit = BWAPI::UnitTypes::Terran_Science_Facility;
+		return macro;
+	}
+	if (!BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) && 
+		BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) <= BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Plating))
+	{
+		macro.upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Weapons;
+		return macro;
+	}
+	macro.upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Plating;
+	return macro;
 }
 

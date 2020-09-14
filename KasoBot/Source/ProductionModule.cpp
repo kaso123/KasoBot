@@ -277,6 +277,53 @@ bool ProductionModule::BuildUnit(BWAPI::UnitType type)
 	return false;
 }
 
+bool ProductionModule::MakeTech(BWAPI::UpgradeType type)
+{
+	if (!CheckResources(type))
+		return false;
+
+
+	//find building type that builds this
+	auto it = _buildingList.find(type.whatUpgrades());
+	if (it == _buildingList.end())
+		return false;
+
+	for (auto& building : (*it).second)
+	{
+		if (building->GetPointer()->isIdle())
+		{
+			if (building->GetPointer()->upgrade(type)) //research started
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool ProductionModule::MakeTech(BWAPI::TechType type)
+{
+	if (!CheckResources(type))
+		return false;
+
+	//find building type that builds this
+	auto it = _buildingList.find(type.whatResearches());
+	if (it == _buildingList.end())
+		return false;
+
+	for (auto& building : (*it).second)
+	{
+		if (building->GetPointer()->isIdle())
+		{
+			if (building->GetPointer()->research(type)) //research started
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void ProductionModule::DebugBuild(BWAPI::UnitType type)
 {
 	if (type.isAddon())
@@ -305,6 +352,27 @@ void ProductionModule::FreeResources(BWAPI::UnitType type)
 }
 
 bool ProductionModule::CheckResources(BWAPI::UnitType type)
+{
+	if (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice())
+		return false;
+	if (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice())
+		return false;
+
+	return true;
+}
+
+bool ProductionModule::CheckResources(BWAPI::UpgradeType type)
+{
+	//consider level of upgrade also
+	if (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice(BWAPI::Broodwar->self()->getUpgradeLevel(type) + 1))
+		return false;
+	if (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice(BWAPI::Broodwar->self()->getUpgradeLevel(type) + 1))
+		return false;
+
+	return true;
+}
+
+bool ProductionModule::CheckResources(BWAPI::TechType type)
 {
 	if (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice())
 		return false;

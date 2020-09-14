@@ -54,6 +54,12 @@ namespace KasoBot {
 		//@return true if unit was started
 		bool BuildUnit(BWAPI::UnitType type);
 
+		//find building that can make this upgrade and try to do it
+		bool MakeTech(BWAPI::UpgradeType type);
+
+		//find building that can make this upgrade and try to do it
+		bool MakeTech(BWAPI::TechType type);
+
 		//create productionItem and send it right to workersModule, use for debugging purposes only
 		void DebugBuild(BWAPI::UnitType type);
 
@@ -66,6 +72,14 @@ namespace KasoBot {
 		//check if we can build this unit considering reserved resources also
 		//@return true if unit can be built
 		bool CheckResources(BWAPI::UnitType type);
+
+		//check if we can do this upgrade considering reserved resources also
+		//@return true if upgrade can be researched
+		bool CheckResources(BWAPI::UpgradeType type);
+
+		//check if we can do this upgrade considering reserved resources also
+		//@return true if upgrade can be researched
+		bool CheckResources(BWAPI::TechType type);
 
 		//@return true if we have enough resources to assign worker to build
 		bool CanSendWorker(BWAPI::UnitType type);

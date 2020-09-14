@@ -184,6 +184,9 @@ void WorkersModule::ExpansionCreated(BWAPI::Unit unit)
 
 void WorkersModule::ExpansionDestroyed(BWAPI::Unit unit)
 {
+	if (!unit->isCompleted())
+		return;
+
 	_expansionList.erase(std::remove_if(_expansionList.begin(), _expansionList.end(),
 		[unit](auto& x) 
 		{
@@ -216,6 +219,9 @@ void WorkersModule::RefineryCreated(BWAPI::Unit unit, bool unassign /*= false*/)
 
 void WorkersModule::RefineryDestroyed(BWAPI::Unit unit)
 {
+	if (!unit->isCompleted())
+		return;
+
 	for (auto& exp : _expansionList)
 	{
 		if (exp->RemoveRefinery(unit))

@@ -109,10 +109,34 @@ void DebugModule::DrawProduction()
 		}
 	}
 
-	y += 10;
 	//draw next unit type for all macro production types
+	y += 10;
+	//production
 	BWAPI::Broodwar->drawTextScreen(10, y, "Next:\n%s", StrategyModule::Instance()->GetMacroProductionType().getName().c_str());
+	
+	y += 30;
+	//army
+	for (auto& type : StrategyModule::Instance()->GetMacroArmyTypes())
+	{
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", type.getName().c_str());
+		y += 10;
+	}
 
+	y += 10;
+	//tech/upgrades
+	auto macro = StrategyModule::Instance()->GetMacroTechType();
+	if (macro.unit != BWAPI::UnitTypes::None)
+	{
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.unit.getName().c_str());
+	}
+	else if (macro.upgrade != BWAPI::UpgradeTypes::None)
+	{
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.upgrade.getName().c_str());
+	}
+	else if (macro.tech != BWAPI::TechTypes::None)
+	{
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.tech.getName().c_str());
+	}
 }
 
 void DebugModule::DrawBases()

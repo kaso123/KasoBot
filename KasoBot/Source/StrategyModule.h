@@ -14,6 +14,12 @@ namespace KasoBot {
 			PRODUCTION,
 			TECH
 		};
+
+		struct TechMacro {
+			BWAPI::UnitType unit = BWAPI::UnitTypes::None;
+			BWAPI::UpgradeType upgrade = BWAPI::UpgradeTypes::None;
+			BWAPI::TechType tech = BWAPI::TechTypes::None;
+		};
 	}
 	class Opener;
 
@@ -68,6 +74,9 @@ namespace KasoBot {
 
 		//@return next production building that should be built
 		BWAPI::UnitType GetMacroProductionType();
+
+		//@return next upgrade, tech or building that should be built
+		Production::TechMacro GetMacroTechType();
 
 		//getters and setters
 

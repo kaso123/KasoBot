@@ -108,6 +108,9 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 		//remove unit from lists
 		if (unit->getType().isBuilding())
 		{
+			if (!unit->isCompleted())
+				ProductionModule::Instance()->RemoveBuilding(unit);
+
 			if (unit->getType().isResourceDepot())
 			{
 				WorkersModule::Instance()->ExpansionDestroyed(unit);
