@@ -19,7 +19,7 @@ namespace KasoBot {
 		bool _drawMap;
 		bool _drawWorkers;
 		bool _drawArmy;
-		bool _drawBuildOrder;
+		bool _drawProduction;
 		bool _drawStrategy;
 		bool _drawOrders;
 		bool _drawBases;
@@ -29,7 +29,7 @@ namespace KasoBot {
 		void DrawWorkers();
 		void DrawSingleWorker(const Worker& worker);
 		void DrawArmy();
-		void DrawQueue();
+		void DrawProduction();
 		void DrawBases();
 		void DrawResources();
 		void DrawStrategy();

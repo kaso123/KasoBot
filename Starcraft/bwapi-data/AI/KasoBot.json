@@ -31,6 +31,6 @@
   },
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
-    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv", "marine", "scv", "cc"]
+    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"]
   }
 }

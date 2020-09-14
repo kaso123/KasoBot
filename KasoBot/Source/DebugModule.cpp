@@ -16,7 +16,7 @@ DebugModule* DebugModule::_instance = 0;
 
 DebugModule::DebugModule()
 	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
-	, _drawBuildOrder(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
+	, _drawProduction(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
 	, _drawResources(Config::Debug::Resources())
 {
 }
@@ -80,7 +80,7 @@ void DebugModule::DrawArmy()
 	BWAPI::Broodwar->drawTextScreen(420, 10, "Army supply: %i", ArmyModule::Instance()->GetArmySupply()/2);
 }
 
-void DebugModule::DrawQueue()
+void DebugModule::DrawProduction()
 {
 	int y = 60;
 	char color = '\x02';
@@ -96,6 +96,23 @@ void DebugModule::DrawQueue()
 		BWAPI::Broodwar->drawTextScreen(10, y, "%c %s", color, item->GetType().getName().c_str());
 		y += 10;
 	}
+
+	//draw locked buildings
+	for (auto& type : ProductionModule::Instance()->Buildings())
+	{
+		for (auto& building : type.second)
+		{
+			if (building->IsLocked())
+				BWAPI::Broodwar->drawLineMap(BWAPI::Position(building->GetPointer()->getTilePosition()),
+					BWAPI::Position(building->GetPointer()->getTilePosition()) + BWAPI::Position(building->GetPointer()->getType().width(), building->GetPointer()->getType().height()),
+					BWAPI::Colors::Red);
+		}
+	}
+
+	y += 10;
+	//draw next unit type for all macro production types
+	BWAPI::Broodwar->drawTextScreen(10, y, "Next:\n%s", StrategyModule::Instance()->GetMacroProductionType().getName().c_str());
+
 }
 
 void DebugModule::DrawBases()
@@ -222,8 +239,8 @@ void DebugModule::DrawDebug()
 		DrawWorkers();
 	if (_drawArmy)
 		DrawArmy();
-	if (_drawBuildOrder)
-		DrawQueue();
+	if (_drawProduction)
+		DrawProduction();
 	if (_drawBases)
 		DrawBases();
 	if (_drawResources)

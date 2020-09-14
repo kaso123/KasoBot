@@ -212,7 +212,7 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 
 	for (auto& building : (*it).second)
 	{
-		if (!building->GetPointer()->getAddon() && !building->IsLocked())
+		if (!building->GetPointer()->getAddon() && !building->GetPointer()->isConstructing() && !building->IsLocked())
 		{
 			building->Lock();
 			return false;

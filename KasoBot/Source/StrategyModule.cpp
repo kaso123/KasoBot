@@ -63,37 +63,6 @@ bool StrategyModule::MacroProduction()
 	return ProductionModule::Instance()->BuildBuilding(GetMacroProductionType());
 }
 
-std::vector<BWAPI::UnitType> StrategyModule::GetMacroArmyTypes()
-{
-	//TODO this is for testing only
-	std::vector<BWAPI::UnitType> result = {};
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) > 0)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory) > 0 && BWAPI::Broodwar->self()->gas() < 400)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Vulture);
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Marine);
-
-	return result;
-}
-
-BWAPI::UnitType StrategyModule::GetMacroProductionType()
-{
-	//TODO this is for testing only
-	if ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
-		&& ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) * 3) >= ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory)))
-	{
-		if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Refinery) > 0)
-		{
-			if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) < ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory))
-				return BWAPI::UnitTypes::Terran_Machine_Shop;
-
-			return BWAPI::UnitTypes::Terran_Factory;
-		}
-	}
-	return BWAPI::UnitTypes::Terran_Barracks;
-}
-
 StrategyModule* StrategyModule::Instance()
 {
 	if (!_instance)
@@ -197,3 +166,35 @@ void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 
 	}
 }
+
+std::vector<BWAPI::UnitType> StrategyModule::GetMacroArmyTypes()
+{
+	//TODO this is for testing only
+	std::vector<BWAPI::UnitType> result = {};
+	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) > 0)
+		result.emplace_back(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory) > 0 && BWAPI::Broodwar->self()->gas() < 400)
+		result.emplace_back(BWAPI::UnitTypes::Terran_Vulture);
+	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
+		result.emplace_back(BWAPI::UnitTypes::Terran_Marine);
+
+	return result;
+}
+
+BWAPI::UnitType StrategyModule::GetMacroProductionType()
+{
+	//TODO this is for testing only
+	if ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
+		&& ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) * 3) >= ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory)))
+	{
+		if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Refinery) > 0)
+		{
+			if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) < ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory))
+				return BWAPI::UnitTypes::Terran_Machine_Shop;
+
+			return BWAPI::UnitTypes::Terran_Factory;
+		}
+	}
+	return BWAPI::UnitTypes::Terran_Barracks;
+}
+
