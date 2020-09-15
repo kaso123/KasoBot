@@ -24,6 +24,7 @@ namespace KasoBot {
 		bool _drawOrders;
 		bool _drawBases;
 		bool _drawResources;
+		bool _drawEnemy;
 
 		void DrawMap();
 		void DrawWorkers();
@@ -33,6 +34,7 @@ namespace KasoBot {
 		void DrawBases();
 		void DrawResources();
 		void DrawStrategy();
+		void DrawEnemy();
 
 		//get selected units in GUI and make them player controlled
 		void SwitchControlOnSelected();

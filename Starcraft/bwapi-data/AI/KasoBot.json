@@ -24,7 +24,8 @@
     "strategy": true,
     "orders": true,
     "bases": true,
-    "resources": true
+    "resources": true,
+    "enemyInfo": true
   },
   "strategy": {
     "opener": "test2" ,

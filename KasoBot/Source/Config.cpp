@@ -61,6 +61,7 @@ void ConfigModule::Init()
 		_debugOrders = j["debug"].contains("orders") ? j["debug"]["orders"] : _debugOrders;
 		_debugBases = j["debug"].contains("bases") ? j["debug"]["bases"] : _debugBases;
 		_debugResources = j["debug"].contains("resources") ? j["debug"]["resources"] : _debugResources;
+		_debugEnemy = j["debug"].contains("enemyInfo") ? j["debug"]["enemyInfo"] : _debugEnemy;
 	}
 	if (j.contains("openers"))
 	{
@@ -106,6 +107,7 @@ bool Config::Debug::Strategy() { return ConfigModule::Instance()->DebugStrategy(
 bool Config::Debug::Orders() { return ConfigModule::Instance()->DebugOrders(); }
 bool Config::Debug::Bases() { return ConfigModule::Instance()->DebugBases(); }
 bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResources(); }
+bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
 BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 {

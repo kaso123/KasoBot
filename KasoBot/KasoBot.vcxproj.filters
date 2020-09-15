@@ -74,6 +74,7 @@
     <ClCompile Include="Source\ProductionItem.cpp" />
     <ClCompile Include="Source\StrategyModule.cpp" />
     <ClCompile Include="Source\Opener.cpp" />
+    <ClCompile Include="Source\ScoutModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Source\ProductionItem.h" />
     <ClInclude Include="Source\StrategyModule.h" />
     <ClInclude Include="Source\Opener.h" />
+    <ClInclude Include="Source\ScoutModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

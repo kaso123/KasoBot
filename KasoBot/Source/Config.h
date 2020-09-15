@@ -32,6 +32,7 @@ namespace KasoBot {
 		bool _debugOrders = false;
 		bool _debugBases = false;
 		bool _debugResources = false;
+		bool _debugEnemy = false;
 
 	public:
 		static ConfigModule* Instance();
@@ -60,6 +61,7 @@ namespace KasoBot {
 		bool DebugOrders() { return _debugOrders; }
 		bool DebugBases() { return _debugBases; }
 		bool DebugResources() { return _debugResources; }
+		bool DebugEnemy() { return _debugEnemy; }
 	};
 
 	namespace Config {
@@ -130,6 +132,9 @@ namespace KasoBot {
 
 			//@return whether to draw info about reserved, mined and lost resources
 			bool Resources();
+
+			//@return whether to draw info about enemy
+			bool Enemy();
 		}
 
 		namespace Utils {

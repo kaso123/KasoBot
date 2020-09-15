@@ -5,6 +5,7 @@
 #include "ProductionModule.h"
 #include "StrategyModule.h"
 #include "ArmyModule.h"
+#include "ScoutModule.h"
 
 #include "Expansion.h"
 #include "Worker.h"
@@ -17,7 +18,7 @@ DebugModule* DebugModule::_instance = 0;
 DebugModule::DebugModule()
 	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
 	, _drawProduction(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
-	, _drawResources(Config::Debug::Resources())
+	, _drawResources(Config::Debug::Resources()), _drawEnemy(Config::Debug::Enemy())
 {
 }
 
@@ -166,6 +167,17 @@ void DebugModule::DrawStrategy()
 	BWAPI::Broodwar->drawTextScreen(10, 40, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
 }
 
+void DebugModule::DrawEnemy()
+{
+	BWAPI::Broodwar->drawTextScreen(420, 30, "Enemies:");
+	int y = 40;
+	for (auto& type : ScoutModule::Instance()->GetEnemies())
+	{
+		BWAPI::Broodwar->drawTextScreen(420, y, "%i %s", type.second.size(), type.first.getName().c_str());
+		y += 10;
+	}
+}
+
 void DebugModule::SwitchControlOnSelected()
 {
 	auto selected = BWAPI::Broodwar->getSelectedUnits();
@@ -271,6 +283,8 @@ void DebugModule::DrawDebug()
 		DrawResources();
 	if (_drawStrategy)
 		DrawStrategy();
+	if (_drawEnemy)
+		DrawEnemy();
 }
 
 void DebugModule::DebugCommand(std::string& text)

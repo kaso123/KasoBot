@@ -6,6 +6,7 @@
 #include "Config.h"
 #include "DebugModule.h"
 #include "StrategyModule.h"
+#include "ScoutModule.h"
 #include <iostream>
 
 using namespace BWAPI;
@@ -81,6 +82,7 @@ void MainModule::onUnitEvade(BWAPI::Unit unit)
 
 void MainModule::onUnitShow(BWAPI::Unit unit)
 {
+	ScoutModule::Instance()->EnemyDiscovered(unit);
 }
 
 void MainModule::onUnitHide(BWAPI::Unit unit)
@@ -140,6 +142,7 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 	else if (BWAPI::Broodwar->self()->isEnemy(unit->getPlayer()))
 	{
 		StrategyModule::Instance()->EnemyDestroyed(unit->getType());
+		ScoutModule::Instance()->EnemyDestroyed(unit);
 	}
 }
 
