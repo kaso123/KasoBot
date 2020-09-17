@@ -169,12 +169,23 @@ void DebugModule::DrawStrategy()
 
 void DebugModule::DrawEnemy()
 {
+	//draw enemy counts for unit types
 	BWAPI::Broodwar->drawTextScreen(420, 30, "Enemies:");
 	int y = 40;
 	for (auto& type : ScoutModule::Instance()->GetEnemies())
 	{
 		BWAPI::Broodwar->drawTextScreen(420, y, "%i %s", type.second.size(), type.first.getName().c_str());
 		y += 10;
+	}
+
+	//draw positions around the map
+	for (auto& type : ScoutModule::Instance()->GetEnemies())
+	{
+		for (auto& unit : type.second)
+		{
+			if(unit.hidden) //only draw unit positions of units in fog-of-war
+				BWAPI::Broodwar->drawBoxMap(BWAPI::Position(unit.lastPos), BWAPI::Position(unit.lastPos) + BWAPI::Position(unit.type.width(), unit.type.height()), BWAPI::Colors::Red, false);
+		}
 	}
 }
 
@@ -226,7 +237,6 @@ void DebugModule::SwitchControlOnSelected()
 			}
 		}
 	}
-
 }
 
 const char* DebugModule::WorkerRoleString(Workers::Role role)

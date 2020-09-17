@@ -82,11 +82,18 @@ void MainModule::onUnitEvade(BWAPI::Unit unit)
 
 void MainModule::onUnitShow(BWAPI::Unit unit)
 {
-	ScoutModule::Instance()->EnemyDiscovered(unit);
+	if (BWAPI::Broodwar->self()->isEnemy(unit->getPlayer()))
+	{
+		ScoutModule::Instance()->EnemyDiscovered(unit);
+	}
 }
 
 void MainModule::onUnitHide(BWAPI::Unit unit)
 {
+	if (BWAPI::Broodwar->self()->isEnemy(unit->getPlayer()))
+	{
+		ScoutModule::Instance()->EnemyHidden(unit);
+	}
 }
 
 void MainModule::onUnitCreate(BWAPI::Unit unit)

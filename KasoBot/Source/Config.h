@@ -21,6 +21,7 @@ namespace KasoBot {
 
 		int _unitOrderDelay = 7;
 		int _clearTileLock = 150;
+		int _enemyPositionResetFrames = 50;
 
 		float _freeSupplyMultiplier = 1.5f;
 
@@ -50,6 +51,7 @@ namespace KasoBot {
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
 		int ClearTileLock() { return _clearTileLock; }
+		int EnemyPositionResetFrames() { return _enemyPositionResetFrames; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 
@@ -99,6 +101,9 @@ namespace KasoBot {
 
 			//number of frames units ingore commands when they are making space for buildings
 			int ClearTileLock();
+
+			//number of frames between each position saving for enemies
+			int EnemyPositionResetFrames();
 		}
 
 		namespace Production {

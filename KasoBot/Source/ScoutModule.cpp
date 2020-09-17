@@ -1,4 +1,5 @@
 #include "ScoutModule.h"
+#include "Config.h"
 
 using namespace KasoBot;
 
@@ -13,11 +14,42 @@ ScoutModule::~ScoutModule()
 	delete(_instance);
 }
 
+void ScoutModule::ResetEnemyInfo()
+{
+	if (BWAPI::Broodwar->getFrameCount() % Config::Units::EnemyPositionResetFrames() != 0)
+		return;
+
+	for (auto& type : _enemies)
+	{
+		for (auto& enemy : type.second)
+		{
+			if (enemy.hidden)
+				continue;
+			auto pointer = BWAPI::Broodwar->getUnit(enemy.id);
+
+			if (!pointer)
+				continue;
+
+			auto pos = pointer->getTilePosition();
+			if (!pos.isValid() || pos == BWAPI::TilePositions::Unknown)
+				continue;
+
+			enemy.lastPos = pos;
+		}
+	}
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
 		_instance = new ScoutModule;
 	return _instance;
+}
+
+void ScoutModule::OnFrame()
+{
+	ResetEnemyInfo();
+
 }
 
 void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
@@ -38,6 +70,8 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		{
 			if (enemy.id == unit->getID()) //find this unit by ID
 			{
+				enemy.lastPos = BWAPI::TilePosition(unit->getPosition());
+				enemy.hidden = false;
 				return;
 			}
 		}
@@ -52,6 +86,32 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		new_it.first->second.emplace_back(EnemyUnit(unit));
 	}
 
+}
+
+void ScoutModule::EnemyHidden(BWAPI::Unit unit)
+{
+	//TODO duplicate code here
+	//skip our own and neutral units
+	if (!unit->getPlayer() || !unit->getPlayer()->isEnemy(BWAPI::Broodwar->self()))
+		return;
+
+	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg || unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva)
+		return;
+
+	auto it_type = _enemies.find(unit->getType()); //find type
+
+	if (it_type != _enemies.end())
+	{
+		for (auto& enemy : it_type->second)
+		{
+			if (enemy.id == unit->getID()) //find this unit by ID
+			{
+				enemy.hidden = true;
+				return;
+			}
+		}
+	}
 }
 
 void ScoutModule::EnemyDestroyed(BWAPI::Unit unit)

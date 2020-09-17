@@ -46,6 +46,7 @@ void ConfigModule::Init()
 	{
 		_unitOrderDelay = j["units"].contains("orderDelay") ? j["units"]["orderDelay"] : _unitOrderDelay;
 		_clearTileLock = j["units"].contains("clearTileLock") ? j["units"]["clearTileLock"] : _clearTileLock;
+		_enemyPositionResetFrames = j["units"].contains("enemyPositionReset") ? j["units"]["enemyPositionReset"] : _enemyPositionResetFrames;
 	}
 	if (j.contains("production"))
 	{
@@ -96,6 +97,7 @@ int Config::Workers::WorkerResourceValue() { return ConfigModule::Instance()->Wo
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
 int Config::Units::ClearTileLock() { return ConfigModule::Instance()->ClearTileLock(); }
+int Config::Units::EnemyPositionResetFrames() { return ConfigModule::Instance()->EnemyPositionResetFrames(); }
 
 float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }
 
