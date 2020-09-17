@@ -1,5 +1,6 @@
 #include "ArmyModule.h"
 #include "Worker.h"
+#include "Army.h"
 
 using namespace KasoBot;
 
@@ -74,18 +75,28 @@ bool ArmyModule::WorkerKilled(BWAPI::Unit unit)
 
 void ArmyModule::AddSoldier(KasoBot::Unit* unit)
 {
-	_soldiers.emplace_back(unit);
+	for (auto& army : _armies)
+	{
+		if (army->AddSoldier(unit))
+		{
+			return;
+		}
+	}
+
+	auto& newArmy = _armies.emplace_back(std::make_unique<Army>());
+	newArmy->AddSoldier(unit);
 }
 
 void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
 {
-	size_t before = _soldiers.size();
 
-	for (auto it = _soldiers.begin(); it != _soldiers.end(); it++)
+	for (auto it = _armies.begin(); it != _armies.end(); it++)
 	{
-		if (*it == unit)
+		if ((*it)->SoldierKilled(unit))
 		{
-			_soldiers.erase(it);
+			if ((*it)->GetSupply() <= 0)
+				_armies.erase(it);
+
 			return;
 		}
 	}
@@ -97,10 +108,10 @@ int ArmyModule::GetArmySupply()
 {
 	int supply = 0;
 
-	//TODO cycle through all armies here
-	for (auto& unit : _soldiers)
+	//cycle through all armies
+	for (auto& army : _armies)
 	{
-		supply += unit->GetPointer()->getType().supplyRequired();
+		supply += army->GetSupply();
 	}
 
 	supply += _workers.size();
@@ -110,13 +121,8 @@ int ArmyModule::GetArmySupply()
 
 void ArmyModule::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 {
-	for (auto& soldier : _soldiers)
+	for (auto& army : _armies)
 	{
-		int x = soldier->GetPointer()->getTilePosition().x;
-		int y = soldier->GetPointer()->getTilePosition().y;
-
-		if ((pos.x) - 1 <= x && x < (pos.x + type.tileWidth())
-			&& (pos.y) - 1 <= y && y < (pos.y + type.tileHeight()))
-			soldier->ClearTile();
+		army->ClearTiles(pos,type);
 	}
 }

@@ -99,6 +99,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Army.cpp" />
     <ClCompile Include="source\ArmyModule.cpp" />
     <ClCompile Include="Source\Behaviour.cpp" />
     <ClCompile Include="Source\BehaviourWorker.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="source\WorkersModule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Army.h" />
     <ClInclude Include="source\ArmyModule.h" />
     <ClInclude Include="Source\Behaviour.h" />
     <ClInclude Include="Source\BehaviourWorker.h" />

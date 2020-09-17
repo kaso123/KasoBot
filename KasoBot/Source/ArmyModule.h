@@ -5,6 +5,7 @@ namespace KasoBot {
 	
 	class Worker;
 	class Unit;
+	class Army;
 
 	class ArmyModule
 	{
@@ -16,7 +17,7 @@ namespace KasoBot {
 		//TODO mockup for workers in army
 		std::vector<std::shared_ptr<Worker>> _workers;
 
-		std::vector <KasoBot::Unit*> _soldiers;
+		std::vector <std::unique_ptr<Army>> _armies;
 
 	public:
 		static ArmyModule* Instance();
