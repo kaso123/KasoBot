@@ -1,6 +1,8 @@
 #include "WorkersModule.h"
 #include "ArmyModule.h"
 #include "MapModule.h"
+#include "ScoutModule.h"
+#include "Config.h"
 
 #include "Worker.h"
 #include "Expansion.h"
@@ -124,9 +126,16 @@ void WorkersModule::OnFrame()
 
 void WorkersModule::NewWorker(BWAPI::Unit unit)
 {
+	//check if this worker should be send to scout, if so send him to the army
+	if (ScoutModule::Instance()->ShouldWorkerScout() && ArmyModule::Instance()->NeedScout())
+	{
+		ArmyModule::Instance()->AddWorker(std::make_shared<Worker>(unit));
+		return;
+	}
+
 	//select expansion for worker
 	Expansion* closest = FindExpansionForWorker(unit);
-	if (!closest)
+	if (!closest) //all expansions full
 	{
 		//send worker to military
 		ArmyModule::Instance()->AddWorker(std::make_shared<Worker>(unit));

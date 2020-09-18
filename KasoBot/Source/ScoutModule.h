@@ -1,6 +1,10 @@
 #pragma once
 #include <BWAPI.h>
 
+namespace BWEM {
+	class Area;
+}
+
 namespace KasoBot {
 
 	struct EnemyUnit {
@@ -26,6 +30,8 @@ namespace KasoBot {
 
 		std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>> _enemies; //List of enemy units we discovered
 
+		BWEM::Area* _enemyStart; //enemy starting area
+
 		//cycle all enemies and save new position for visible enemies
 		void ResetEnemyInfo();
 
@@ -43,9 +49,13 @@ namespace KasoBot {
 		//remove enemy unit info from list
 		void EnemyDestroyed(BWAPI::Unit unit);
 
+		//@return true if first worker scout should be in progress 
+		bool ShouldWorkerScout();
+
 		//getters and setters
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }
+		BWEM::Area* EnemyStart() { return _enemyStart; }
 
 	};
 }

@@ -6,7 +6,7 @@
 using namespace KasoBot;
 
 Unit::Unit(BWAPI::Unit unit)
-	:_pointer(unit), _playerControl(false), _playerControlFrame(0), _lock(false), _clearTileLock(-1)
+	:_pointer(unit), _playerControl(false), _playerControlFrame(0), _lock(false), _clearTileLock(-1), _role(Units::Role::IDLE)
 {
 	if (unit->getType().isWorker())
 		_behaviour = std::make_unique<BehaviourWorker>();
@@ -38,6 +38,15 @@ void Unit::Fight()
 
 	_ASSERT(_behaviour);
 	//TODO call function from behaviour
+}
+
+void Unit::Scout()
+{
+	if (_playerControl)
+		return;
+
+	_ASSERT(_behaviour);
+	_behaviour->Scout(*this);
 }
 
 void Unit::ChangeDebugControl()

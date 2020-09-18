@@ -18,6 +18,8 @@ namespace KasoBot {
 		virtual ~Behaviour();
 
 		virtual void Work(KasoBot::Worker& unit) { return; }
+
+		virtual void Scout(KasoBot::Unit& unit);
 	};
 }
 

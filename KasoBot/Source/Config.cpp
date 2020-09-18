@@ -84,6 +84,24 @@ void ConfigModule::Init()
 		{
 			StrategyModule::Instance()->SetCycle(j["strategy"]["cycle"]);
 		}
+		if (j["strategy"].contains("scout"))
+		{
+			if (j["strategy"]["scout"].contains("first"))
+			{
+				if (BWAPI::Broodwar->getStartLocations().size() >= 4)
+				{
+					_firstScoutSupply = j["strategy"]["scout"]["first"].contains("4starts") ? j["strategy"]["scout"]["first"]["4starts"] : _firstScoutSupply;
+				}
+				else if (BWAPI::Broodwar->getStartLocations().size() == 3)
+				{
+					_firstScoutSupply = j["strategy"]["scout"]["first"].contains("3starts") ? j["strategy"]["scout"]["first"]["3starts"] : _firstScoutSupply;
+				}
+				else
+				{
+					_firstScoutSupply = j["strategy"]["scout"]["first"].contains("2starts") ? j["strategy"]["scout"]["first"]["2starts"] : _firstScoutSupply;
+				}
+			}
+		}
 	}
 }
 
@@ -114,6 +132,7 @@ bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResource
 bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
+int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
 
 BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 {

@@ -1,6 +1,8 @@
 #include "ArmyModule.h"
 #include "Worker.h"
 #include "Army.h"
+#include "ScoutModule.h"
+#include "Config.h"
 
 using namespace KasoBot;
 
@@ -22,6 +24,32 @@ ArmyModule* ArmyModule::Instance()
 	return _instance;
 }
 
+void ArmyModule::OnFrame()
+{
+	//scouting with worker
+	if (ScoutModule::Instance()->ShouldWorkerScout())
+	{
+		bool isScout = false;
+		for (auto& worker : _workers)
+		{
+			if (worker->GetRole() == Units::Role::SCOUT)
+			{
+				isScout = true;
+				break;
+			}
+		}
+		if (!isScout && !_workers.empty())
+			(_workers.front()->SetRole(Units::Role::SCOUT));
+	}
+
+	for (auto& worker : _workers)
+	{
+		if (worker->GetRole() == Units::Role::SCOUT)
+			worker->Scout();
+	}
+	
+}
+
 std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
 {
 	std::vector<std::shared_ptr<Worker>> workers = {};
@@ -31,6 +59,9 @@ std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
 	//select workers to transfer
 	for (auto worker : _workers)
 	{
+		if (worker->GetRole() == Units::Role::SCOUT)
+			continue;
+
 		workers.emplace_back(worker);
 		if (workers.size() >= max)
 			break;
@@ -125,4 +156,11 @@ void ArmyModule::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 	{
 		army->ClearTiles(pos,type);
 	}
+}
+
+bool ArmyModule::NeedScout()
+{
+	if (_workers.size() <= 0)
+		return true;
+	return false;
 }

@@ -1,5 +1,6 @@
 #include "Behaviour.h"
 #include "Unit.h"
+#include "MapModule.h"
 
 using namespace KasoBot;
 
@@ -17,4 +18,9 @@ Behaviour::Behaviour()
 
 Behaviour::~Behaviour()
 {
+}
+
+void Behaviour::Scout(KasoBot::Unit & unit)
+{
+	Move(unit.GetPointer(), BWEM::Map::Instance().Center());
 }

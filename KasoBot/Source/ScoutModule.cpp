@@ -1,11 +1,14 @@
 #include "ScoutModule.h"
 #include "Config.h"
+#include "MapModule.h"
+#include "WorkersModule.h"
 
 using namespace KasoBot;
 
 ScoutModule* ScoutModule::_instance = 0;
 
 ScoutModule::ScoutModule()
+	: _enemyStart(nullptr)
 {
 }
 
@@ -129,3 +132,14 @@ void ScoutModule::EnemyDestroyed(BWAPI::Unit unit)
 			_enemies.erase(it_type);
 	}
 }
+
+bool ScoutModule::ShouldWorkerScout()
+{
+	if (_enemyStart)
+		return false;
+	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() + 1 < Config::Strategy::FirstScoutSupply())
+		return false;
+
+	return true;
+}
+

@@ -18,9 +18,10 @@ namespace KasoBot {
 		std::vector<std::shared_ptr<Worker>> _workers;
 
 		std::vector <std::unique_ptr<Army>> _armies;
-
 	public:
 		static ArmyModule* Instance();
+
+		void OnFrame();
 
 		//@param max = max amount of workers needed
 		//@return vector of workers from army
@@ -42,6 +43,8 @@ namespace KasoBot {
 		//move all units that are standing on this tile to unblock construction
 		void ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type);
 
+		//@return true if no worker is available to scout
+		bool NeedScout();
 
 		//getters and setters
 

@@ -19,7 +19,7 @@ DebugModule* DebugModule::_instance = 0;
 DebugModule::DebugModule()
 	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
 	, _drawProduction(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
-	, _drawResources(Config::Debug::Resources()), _drawEnemy(Config::Debug::Enemy())
+	, _drawResources(Config::Debug::Resources()), _drawEnemy(Config::Debug::Enemy()), _drawBases(Config::Debug::Bases())
 {
 }
 
