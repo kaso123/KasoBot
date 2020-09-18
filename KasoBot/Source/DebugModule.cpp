@@ -10,6 +10,7 @@
 #include "Expansion.h"
 #include "Worker.h"
 #include "ProductionItem.h"
+#include "Army.h"
 
 using namespace KasoBot;
 
@@ -76,9 +77,16 @@ void DebugModule::DrawSingleWorker(const Worker& worker)
 		BWAPI::Broodwar->drawCircleMap(worker.GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
 }
 
-void DebugModule::DrawArmy()
+int DebugModule::DrawArmy()
 {
-	BWAPI::Broodwar->drawTextScreen(420, 10, "Army supply: %i", ArmyModule::Instance()->GetArmySupply()/2);
+	int y = 15;
+	int i = 1;
+	for (auto& army : ArmyModule::Instance()->Armies())
+	{
+		BWAPI::Broodwar->drawTextScreen(420, y, "Army no. %i: %i supply", i++, army->GetSupply() / 2);
+		y += 10;
+	}
+	return y+5;
 }
 
 void DebugModule::DrawProduction()
@@ -167,11 +175,12 @@ void DebugModule::DrawStrategy()
 	BWAPI::Broodwar->drawTextScreen(10, 40, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
 }
 
-void DebugModule::DrawEnemy()
+void DebugModule::DrawEnemy(int y)
 {
 	//draw enemy counts for unit types
-	BWAPI::Broodwar->drawTextScreen(420, 30, "Enemies:");
-	int y = 40;
+	BWAPI::Broodwar->drawTextScreen(420, y, "Enemies:");
+	y += 10;
+
 	for (auto& type : ScoutModule::Instance()->GetEnemies())
 	{
 		BWAPI::Broodwar->drawTextScreen(420, y, "%i %s", type.second.size(), type.first.getName().c_str());
@@ -287,8 +296,6 @@ void DebugModule::DrawDebug()
 		DrawMap();
 	if (_drawWorkers)
 		DrawWorkers();
-	if (_drawArmy)
-		DrawArmy();
 	if (_drawProduction)
 		DrawProduction();
 	if (_drawBases)
@@ -297,8 +304,14 @@ void DebugModule::DrawDebug()
 		DrawResources();
 	if (_drawStrategy)
 		DrawStrategy();
+
+	int y = 15; //stop overlaping text
+	if (_drawArmy)
+	{
+		y = DrawArmy();
+	}
 	if (_drawEnemy)
-		DrawEnemy();
+		DrawEnemy(y);
 }
 
 void DebugModule::DebugCommand(std::string& text)

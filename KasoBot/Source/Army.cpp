@@ -1,5 +1,6 @@
 #include "Army.h"
 #include "Unit.h"
+#include "Config.h"
 
 using namespace KasoBot;
 
@@ -13,6 +14,9 @@ Army::~Army()
 
 bool Army::AddSoldier(KasoBot::Unit* unit)
 {
+	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > Config::Strategy::MaxArmySupply() * 2)
+		return false;
+
 	_soldiers.emplace_back(unit);
 	return true;
 }

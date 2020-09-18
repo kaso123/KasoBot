@@ -41,6 +41,12 @@ namespace KasoBot {
 
 		//move all units that are standing on this tile to unblock construction
 		void ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type);
+
+
+		//getters and setters
+
+		const std::vector <std::unique_ptr<Army>>& Armies() const { return _armies; }
+
 	};
 }
 

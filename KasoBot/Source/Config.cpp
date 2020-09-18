@@ -73,6 +73,8 @@ void ConfigModule::Init()
 	}
 	if (j.contains("strategy"))
 	{
+		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
+
 		if (j["strategy"].contains("opener"))
 		{
 			//be sure to call this after openers have been loaded
@@ -110,6 +112,8 @@ bool Config::Debug::Orders() { return ConfigModule::Instance()->DebugOrders(); }
 bool Config::Debug::Bases() { return ConfigModule::Instance()->DebugBases(); }
 bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResources(); }
 bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
+
+int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
 
 BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 {

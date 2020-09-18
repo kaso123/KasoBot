@@ -29,12 +29,12 @@ namespace KasoBot {
 		void DrawMap();
 		void DrawWorkers();
 		void DrawSingleWorker(const Worker& worker);
-		void DrawArmy();
+		int DrawArmy();
 		void DrawProduction();
 		void DrawBases();
 		void DrawResources();
 		void DrawStrategy();
-		void DrawEnemy();
+		void DrawEnemy(int y);
 
 		//get selected units in GUI and make them player controlled
 		void SwitchControlOnSelected();

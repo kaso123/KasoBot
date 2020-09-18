@@ -35,6 +35,8 @@ namespace KasoBot {
 		bool _debugResources = false;
 		bool _debugEnemy = false;
 
+		int _maxArmySupply = 60;
+
 	public:
 		static ConfigModule* Instance();
 
@@ -64,6 +66,8 @@ namespace KasoBot {
 		bool DebugBases() { return _debugBases; }
 		bool DebugResources() { return _debugResources; }
 		bool DebugEnemy() { return _debugEnemy; }
+
+		int MaxArmySupply() { return _maxArmySupply; }
 	};
 
 	namespace Config {
@@ -140,6 +144,12 @@ namespace KasoBot {
 
 			//@return whether to draw info about enemy
 			bool Enemy();
+		}
+
+		namespace Strategy {
+
+			//@return how much supply can be in one army
+			int MaxArmySupply();
 		}
 
 		namespace Utils {

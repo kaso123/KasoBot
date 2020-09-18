@@ -30,7 +30,8 @@
   },
   "strategy": {
     "opener": "test2" ,
-    "cycle":  [ "saturation","army","tech","production"]
+    "cycle":  [ "saturation","army","tech","production"],
+    "maxArmySupply": 30
   },
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
