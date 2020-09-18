@@ -90,20 +90,9 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 
 void ScoutModule::EnemyHidden(BWAPI::Unit unit)
 {
-	//TODO duplicate code here
-	//skip our own and neutral units
-	if (!unit->getPlayer() || !unit->getPlayer()->isEnemy(BWAPI::Broodwar->self()))
-		return;
-
-	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg || unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
-		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva)
-		return;
-
-	auto it_type = _enemies.find(unit->getType()); //find type
-
-	if (it_type != _enemies.end())
+	for(auto& type : _enemies)
 	{
-		for (auto& enemy : it_type->second)
+		for (auto& enemy : type.second)
 		{
 			if (enemy.id == unit->getID()) //find this unit by ID
 			{

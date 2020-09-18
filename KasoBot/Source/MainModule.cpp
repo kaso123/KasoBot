@@ -90,10 +90,7 @@ void MainModule::onUnitShow(BWAPI::Unit unit)
 
 void MainModule::onUnitHide(BWAPI::Unit unit)
 {
-	if (BWAPI::Broodwar->self()->isEnemy(unit->getPlayer()))
-	{
-		ScoutModule::Instance()->EnemyHidden(unit);
-	}
+	ScoutModule::Instance()->EnemyHidden(unit);
 }
 
 void MainModule::onUnitCreate(BWAPI::Unit unit)
