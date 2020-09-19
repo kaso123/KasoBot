@@ -20,9 +20,10 @@ void MainModule::onStart()
 	Broodwar->enableFlag(Flag::UserInput);
 
 	Map::Global::Initialize();
-	ConfigModule::Instance()->Init();
 
+	ConfigModule::Instance()->Init();
 	WorkersModule::Instance()->OnStart();
+	ScoutModule::Instance()->OnStart();
 }
 
 void MainModule::onEnd(bool isWinner)

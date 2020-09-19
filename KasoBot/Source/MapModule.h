@@ -8,6 +8,7 @@ namespace BWEB {
 namespace KasoBot
 {
 	class Expansion;
+	struct BaseInfo;
 
 	namespace Map 
 	{
@@ -28,6 +29,12 @@ namespace KasoBot
 
 		//@return pointer to unfinished building on specific tile on map
 		BWAPI::Unit GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type);
+
+		//create BaseInfo struct for every base
+		void ResetBaseInfo(std::vector<std::unique_ptr<BaseInfo>>& output);
+
+		//@return pointer to next area that should be scouted
+		const BWEM::Base* NextScoutBase();
 	}
 	
 }

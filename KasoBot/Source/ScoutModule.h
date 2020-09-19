@@ -7,6 +7,8 @@ namespace BWEM {
 
 namespace KasoBot {
 
+	struct BaseInfo;
+
 	struct EnemyUnit {
 		int id;
 		BWAPI::TilePosition lastPos;
@@ -29,6 +31,7 @@ namespace KasoBot {
 		static ScoutModule* _instance;
 
 		std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>> _enemies; //List of enemy units we discovered
+		std::vector<std::unique_ptr<BaseInfo>> _baseInfo; //list of baseInfo structs, should be accessed through bWEM, this is only for memory management
 
 		BWEM::Area* _enemyStart; //enemy starting area
 
@@ -39,6 +42,7 @@ namespace KasoBot {
 		static ScoutModule* Instance();
 
 		void OnFrame();
+		void OnStart();
 
 		//save info about enemy unit or update it when already seen before
 		void EnemyDiscovered(BWAPI::Unit unit);

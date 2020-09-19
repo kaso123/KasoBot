@@ -11,6 +11,7 @@
 #include "Worker.h"
 #include "ProductionItem.h"
 #include "Army.h"
+#include "BaseInfo.h"
 
 using namespace KasoBot;
 
@@ -79,6 +80,12 @@ void DebugModule::DrawSingleWorker(const Worker& worker)
 
 int DebugModule::DrawArmy()
 {
+	for (auto& worker : ArmyModule::Instance()->Workers())
+	{
+		//draw worker role
+		BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition(), UnitRoleString(worker->GetRole()));
+	}
+
 	int y = 15;
 	int i = 1;
 	for (auto& army : ArmyModule::Instance()->Armies())
@@ -156,6 +163,26 @@ void DebugModule::DrawBases()
 			"Min: %i/%i\nGas: %i/%i",
 			exp->WorkerCountMinerals(),exp->GetStation()->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral(),
 			exp->WorkerCountGas(),exp->GetRefinery() ? Config::Workers::SaturationPerGas() : 0);
+	}
+
+	for (const auto& area : BWEM::Map::Instance().Areas())
+	{
+		for (const auto& base : area.Bases())
+		{
+			auto owner = ((BaseInfo*)base.Ptr())->_owner;
+			std::string text;
+
+			if (owner == Base::Owner::PLAYER)
+				text = "Player";
+			else if (owner == Base::Owner::ENEMY)
+				text = "Enemy";
+			else if (owner == Base::Owner::NONE)
+				text = "Empty";
+			else
+				text = "Unknown";
+
+			BWAPI::Broodwar->drawTextMap(base.Center(), "%s", text.c_str());
+		}
 	}
 }
 
@@ -264,6 +291,14 @@ const char* DebugModule::WorkerRoleString(Workers::Role role)
 		return "\x15 Build"; //player white
 
 		return "Idle";
+}
+
+const char* DebugModule::UnitRoleString(Units::Role role)
+{
+	if (role == Units::Role::SCOUT)
+		return "\x01 Scout"; //TODO color?
+
+	return "Idle";
 }
 
 DebugModule* DebugModule::Instance()

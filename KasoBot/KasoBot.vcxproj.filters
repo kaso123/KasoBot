@@ -164,6 +164,7 @@
     <ClInclude Include="Source\Opener.h" />
     <ClInclude Include="Source\ScoutModule.h" />
     <ClInclude Include="Source\Army.h" />
+    <ClInclude Include="Source\BaseInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

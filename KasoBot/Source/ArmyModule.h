@@ -49,6 +49,7 @@ namespace KasoBot {
 		//getters and setters
 
 		const std::vector <std::unique_ptr<Army>>& Armies() const { return _armies; }
+		const std::vector<std::shared_ptr<Worker>>& Workers() const { return _workers; }
 
 	};
 }

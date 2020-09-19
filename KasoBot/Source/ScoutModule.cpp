@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "MapModule.h"
 #include "WorkersModule.h"
+#include "BaseInfo.h"
 
 using namespace KasoBot;
 
@@ -53,6 +54,11 @@ void ScoutModule::OnFrame()
 {
 	ResetEnemyInfo();
 
+}
+
+void ScoutModule::OnStart()
+{
+	Map::ResetBaseInfo(_baseInfo);
 }
 
 void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)

@@ -6,6 +6,9 @@ namespace KasoBot {
 	namespace Workers {
 		enum Role;
 	}
+	namespace Units {
+		enum Role;
+	}
 
 	class Worker;
 
@@ -41,6 +44,10 @@ namespace KasoBot {
 
 		//@return string representation of worker role enum
 		const char* WorkerRoleString(Workers::Role role);
+
+		//@return string representation of worker role enum
+		const char* UnitRoleString(Units::Role role);
+	
 	public:
 		static DebugModule* Instance();
 

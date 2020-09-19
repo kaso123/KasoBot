@@ -2,6 +2,7 @@
 #include "Expansion.h"
 #include "Config.h"
 #include "WorkersModule.h"
+#include "BaseInfo.h"
 
 using namespace KasoBot;
 
@@ -117,6 +118,42 @@ BWAPI::Unit Map::GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type)
 	}
 
 	_ASSERT(false);
+	return nullptr;
+}
+
+void Map::ResetBaseInfo(std::vector<std::unique_ptr<BaseInfo>>& output)
+{
+	for (auto& area : BWEM::Map::Instance().Areas())
+	{
+		for (auto& base : area.Bases())
+		{
+			base.SetPtr(output.emplace_back(std::make_unique<BaseInfo>()).get());
+		}
+	}
+
+	((BaseInfo*)BWEB::Map::getMainArea()->Bases().front().Ptr())->_owner = Base::Owner::PLAYER;
+}
+
+const BWEM::Base* Map::NextScoutBase()
+{
+	//cycle start locations, skip own
+	for (auto& loc : BWEM::Map::Instance().StartingLocations())
+	{
+		if (loc == BWAPI::Broodwar->self()->getStartLocation())
+			continue;
+
+		auto area = BWEM::Map::Instance().GetNearestArea(loc);
+		if (!area || area->Bases().empty())
+			continue;
+
+		for (auto &base : area->Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+			{
+				return &base;
+			}
+		}
+	}
 	return nullptr;
 }
 
