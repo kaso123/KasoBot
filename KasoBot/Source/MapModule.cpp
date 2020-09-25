@@ -157,6 +157,25 @@ const BWEM::Base* Map::NextScoutBase()
 	return nullptr;
 }
 
+const BWEM::Area* Map::ClosestStart(BWAPI::TilePosition pos)
+{
+	const BWEM::Area* area = nullptr;
+	int dist = INT_MAX;
+	//cycle start locations, skip own
+	for (auto& loc : BWEM::Map::Instance().StartingLocations())
+	{
+		if (loc == BWAPI::Broodwar->self()->getStartLocation())
+			continue;
+
+		if (loc.getDistance(pos) < dist)
+		{
+			dist = loc.getDistance(pos);
+			area = BWEM::Map::Instance().GetNearestArea(loc);
+		}
+	}
+	return area;
+}
+
 void Map::Global::Initialize()
 {
 	BWEB::Map::mapBWEM.Initialize(BWAPI::BroodwarPtr);

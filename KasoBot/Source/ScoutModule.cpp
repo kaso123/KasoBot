@@ -71,6 +71,18 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva)
 		return;
 
+	//set enemy start if not found before
+	if (!_enemyStart && unit->getType().isBuilding())
+	{
+		_enemyStart = Map::ClosestStart(unit->getTilePosition());
+
+		//set base as belonging to enemy
+		if (_enemyStart && !_enemyStart->Bases().empty())
+		{
+			((BaseInfo*)_enemyStart->Bases().front().Ptr())->_owner = Base::Owner::ENEMY;
+		}
+	}
+
 	auto it_type = _enemies.find(unit->getType()); //find type
 
 	if (it_type != _enemies.end())

@@ -33,7 +33,7 @@ namespace KasoBot {
 		std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>> _enemies; //List of enemy units we discovered
 		std::vector<std::unique_ptr<BaseInfo>> _baseInfo; //list of baseInfo structs, should be accessed through bWEM, this is only for memory management
 
-		BWEM::Area* _enemyStart; //enemy starting area
+		const BWEM::Area* _enemyStart; //enemy starting area
 
 		//cycle all enemies and save new position for visible enemies
 		void ResetEnemyInfo();
@@ -59,7 +59,7 @@ namespace KasoBot {
 		//getters and setters
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }
-		BWEM::Area* EnemyStart() { return _enemyStart; }
+		const BWEM::Area* EnemyStart() const { return _enemyStart; }
 
 	};
 }

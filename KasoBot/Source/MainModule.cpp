@@ -41,6 +41,7 @@ void MainModule::onFrame()
   ProductionModule::Instance()->OnFrame();
   WorkersModule::Instance()->OnFrame();
   ArmyModule::Instance()->OnFrame();
+  ScoutModule::Instance()->OnFrame();
 
   DebugModule::Instance()->DrawDebug();
 }

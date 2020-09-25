@@ -35,6 +35,9 @@ namespace KasoBot
 
 		//@return pointer to next area that should be scouted
 		const BWEM::Base* NextScoutBase();
+
+		//@return one of the starting areas (except ours) that is closest to this position
+		const BWEM::Area* ClosestStart(BWAPI::TilePosition pos);
 	}
 	
 }
