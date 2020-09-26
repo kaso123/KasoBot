@@ -13,7 +13,8 @@
     "orderDelay": 7,
     "clearTileLock":  150,
     "enemyPositionReset": 50,
-    "hiddenPositionReset": 2000
+    "hiddenPositionReset": 2000,
+    "scoutBaseRadius":  400
   },
   "production": {
     "freeSupplyMultiplier": 1.3

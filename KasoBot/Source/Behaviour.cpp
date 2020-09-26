@@ -27,9 +27,19 @@ void Behaviour::Scout(KasoBot::Unit & unit)
 {
 	if (ScoutModule::Instance()->EnemyStart())
 	{
-		//TODO scout enemy tech inside base
+		//scout enemy tech inside base
+		auto pos = Map::NextScoutPosition(ScoutModule::Instance()->EnemyStart(), unit.GetPointer()->getPosition());
+		if (!pos.isValid())
+			return;
+
+		//TODO this is debug drawing
+		BWAPI::Broodwar->registerEvent([pos](BWAPI::Game*) { BWAPI::Broodwar->drawCircleMap(pos,5,BWAPI::Colors::Blue,true); },   // action
+			nullptr,    // condition
+			BWAPI::Broodwar->getLatencyFrames());  // frames to run
+
+		Move(unit.GetPointer(), pos);
+
 		//TODO scout natural timing
-		unit.SetRole(Units::Role::IDLE);
 		return;
 	}
 

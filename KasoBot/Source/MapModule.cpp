@@ -4,6 +4,13 @@
 #include "WorkersModule.h"
 #include "BaseInfo.h"
 
+#include <math.h>
+
+#define PI 3.141593
+#define TILE_SIZE 32
+#define DIST_LIMIT 90
+#define SCOUT_ANGLE_INCREASE 0.4
+
 using namespace KasoBot;
 
 BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
@@ -174,6 +181,48 @@ const BWEM::Area* Map::ClosestStart(BWAPI::TilePosition pos)
 		}
 	}
 	return area;
+}
+
+BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position currPos)
+{
+	if (area->Bases().empty())
+		return BWAPI::Positions::Invalid;
+
+	//calculate angle
+	int originX = area->Bases().front().Center().x;
+	int originY = area->Bases().front().Center().y;
+	int radius = (int)currPos.getDistance(area->Bases().front().Center());
+
+	float angle = acos((currPos.x - originX) / (float)radius);
+	
+	if (currPos.y < originY) //arccos only returns values <0,PI>, upper half of circle
+		angle += 2 * ((float)PI - angle);
+
+	radius = Config::Units::ScoutBaseRadius();
+
+	//calculate point
+	int newX = originX + int(radius * cos(angle));
+	int newY = originY + int(radius * sin(angle));
+	newX = std::clamp(newX, TILE_SIZE, (BWAPI::Broodwar->mapWidth() - 2) * TILE_SIZE);
+	newY = std::clamp(newY, TILE_SIZE, (BWAPI::Broodwar->mapHeight() - 2) * TILE_SIZE);
+
+	BWAPI::Position point = BWAPI::Position(newX, newY);
+	if (point.getDistance(currPos) > DIST_LIMIT)
+		return point;
+
+	//get next angle on circle
+	angle += (float)SCOUT_ANGLE_INCREASE;
+	if (angle > 2 * PI)
+		angle -= 2* (float)PI;
+
+	//calculate point
+	newX = originX + int(radius * cos(angle));
+	newY = originY + int(radius * sin(angle));
+	newX = std::clamp(newX, TILE_SIZE, (BWAPI::Broodwar->mapWidth() - 2) * TILE_SIZE);
+	newY = std::clamp(newY, TILE_SIZE, (BWAPI::Broodwar->mapHeight() - 2) * TILE_SIZE);
+
+	point = BWAPI::Position(newX, newY);
+		return point;
 }
 
 void Map::Global::Initialize()

@@ -38,6 +38,10 @@ namespace KasoBot
 
 		//@return one of the starting areas (except ours) that is closest to this position
 		const BWEM::Area* ClosestStart(BWAPI::TilePosition pos);
+
+		//@return position where the scout should move while scouting around the base
+		//@param currPos = current position of scouting unit
+		BWAPI::Position NextScoutPosition(const BWEM::Area* area, BWAPI::Position currPos);
 	}
 	
 }
