@@ -22,6 +22,7 @@ namespace KasoBot {
 		int _unitOrderDelay = 7;
 		int _clearTileLock = 150;
 		int _enemyPositionResetFrames = 50;
+		int _hiddenPositionResetFrames = 2000;
 
 		float _freeSupplyMultiplier = 1.5f;
 
@@ -55,6 +56,7 @@ namespace KasoBot {
 		int UnitOrderDelay() { return _unitOrderDelay; }
 		int ClearTileLock() { return _clearTileLock; }
 		int EnemyPositionResetFrames() { return _enemyPositionResetFrames; }
+		int HiddenPositionResetFrames() { return _hiddenPositionResetFrames; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 
@@ -110,6 +112,9 @@ namespace KasoBot {
 
 			//number of frames between each position saving for enemies
 			int EnemyPositionResetFrames();
+
+			//number of frames when last seen position of hidden units should be reset to unknown
+			int HiddenPositionResetFrames();
 		}
 
 		namespace Production {

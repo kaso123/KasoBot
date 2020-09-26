@@ -169,7 +169,7 @@ const BWEM::Area* Map::ClosestStart(BWAPI::TilePosition pos)
 
 		if (loc.getDistance(pos) < dist)
 		{
-			dist = loc.getDistance(pos);
+			dist = (int)loc.getDistance(pos);
 			area = BWEM::Map::Instance().GetNearestArea(loc);
 		}
 	}

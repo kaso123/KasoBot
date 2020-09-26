@@ -12,12 +12,13 @@ namespace KasoBot {
 	struct EnemyUnit {
 		int id;
 		BWAPI::TilePosition lastPos;
+		int lastSeenFrame;
 		BWAPI::UnitType type;
 		bool hidden;
 		
 		EnemyUnit(BWAPI::Unit unit) : 
 			id(unit->getID()), lastPos(unit->getTilePosition())
-			,type(unit->getType()), hidden(false) 
+			,type(unit->getType()), hidden(false), lastSeenFrame(BWAPI::Broodwar->getFrameCount())
 		{}
 	};
 

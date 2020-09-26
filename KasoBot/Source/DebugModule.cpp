@@ -219,7 +219,7 @@ void DebugModule::DrawEnemy(int y)
 	{
 		for (auto& unit : type.second)
 		{
-			if (unit.hidden) //only draw unit positions of units in fog-of-war
+			if (unit.hidden && unit.lastPos != BWAPI::TilePositions::Unknown) //only draw unit positions of units in fog-of-war
 			{
 				BWAPI::Broodwar->drawBoxMap(BWAPI::Position(unit.lastPos),
 					BWAPI::Position(unit.lastPos) + BWAPI::Position(BWAPI::TilePosition(unit.type.tileWidth(),

@@ -12,7 +12,8 @@
   "units": {
     "orderDelay": 7,
     "clearTileLock":  150,
-    "enemyPositionReset": 50
+    "enemyPositionReset": 50,
+    "hiddenPositionReset": 2000
   },
   "production": {
     "freeSupplyMultiplier": 1.3

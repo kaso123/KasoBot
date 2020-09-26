@@ -28,7 +28,16 @@ void ScoutModule::ResetEnemyInfo()
 		for (auto& enemy : type.second)
 		{
 			if (enemy.hidden)
+			{
+				if (!enemy.type.isBuilding() && enemy.lastPos != BWAPI::TilePositions::Unknown)
+				{
+					//set position to unknown when time has elapsed
+					if (BWAPI::Broodwar->getFrameCount() > enemy.lastSeenFrame + Config::Units::HiddenPositionResetFrames())
+						enemy.lastPos = BWAPI::TilePositions::Unknown;
+				}
 				continue;
+			}
+
 			auto pointer = BWAPI::Broodwar->getUnit(enemy.id);
 
 			if (!pointer)
@@ -39,6 +48,7 @@ void ScoutModule::ResetEnemyInfo()
 				continue;
 
 			enemy.lastPos = pos;
+			enemy.lastSeenFrame = BWAPI::Broodwar->getFrameCount();
 		}
 	}
 }
