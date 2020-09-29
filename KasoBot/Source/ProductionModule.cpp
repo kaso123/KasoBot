@@ -453,3 +453,30 @@ int ProductionModule::GetCountOf(BWAPI::UnitType type)
 	}
 	return 0;
 }
+
+void ProductionModule::TileOccupied(BWAPI::Unit unit)
+{
+	for (auto& item : _items)
+	{
+		if (item->GetState() == Production::State::DONE
+			|| item->GetState() == Production::State::BUILDING)
+			continue;
+
+		if (!item->GetLocation().isValid())
+			continue;
+
+		//check if this unit is in a way of building our build item
+		if (unit->getTilePosition().x + unit->getType().tileWidth() <= item->GetLocation().x)
+			continue;
+		if (unit->getTilePosition().y + unit->getType().tileHeight() <= item->GetLocation().y)
+			continue;
+		if (unit->getTilePosition().x > item->GetLocation().x + item->GetType().tileWidth())
+			continue;
+		if (unit->getTilePosition().y > item->GetLocation().y + item->GetType().tileHeight())
+			continue;
+		
+		//item's build position is occupied by discovered building
+		BWEB::Map::KasoBot::UnreserveTiles(item->GetLocation(), item->GetType());
+		item->SetLocation(BWAPI::TilePositions::Invalid);
+	}
+}

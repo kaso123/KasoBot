@@ -94,6 +94,9 @@ namespace KasoBot {
 		//@return number of units/buildings of this type (including in progress buildings)
 		int GetCountOf(BWAPI::UnitType type);
 
+		//check all build items and reset build position if it was this one
+		void TileOccupied(BWAPI::Unit unit);
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }

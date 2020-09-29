@@ -2,6 +2,8 @@
 #include "Config.h"
 #include "MapModule.h"
 #include "WorkersModule.h"
+#include "ProductionModule.h"
+
 #include "BaseInfo.h"
 
 using namespace KasoBot;
@@ -91,6 +93,11 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		{
 			((BaseInfo*)_enemyStart->Bases().front().Ptr())->_owner = Base::Owner::ENEMY;
 		}
+	}
+
+	if (unit->getType().isBuilding()) //reset build items, so they don't try to build on enemy buildings
+	{
+		ProductionModule::Instance()->TileOccupied(unit);
 	}
 
 	auto it_type = _enemies.find(unit->getType()); //find type

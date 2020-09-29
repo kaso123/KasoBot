@@ -102,6 +102,12 @@ void Worker::Work()
 	if (_playerControl)
 		return;
 
+	//set new build location if it was reset
+	if (_item && _item->GetLocation() == BWAPI::TilePositions::Invalid)
+	{
+		_item->SetLocation(Map::GetBuildPosition(_item->GetType()));
+	}
+
 	_ASSERT(_behaviour);
 	_behaviour->Work(*this);
 }
