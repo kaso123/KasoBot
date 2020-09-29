@@ -39,6 +39,12 @@ namespace KasoBot {
 		//cycle all enemies and save new position for visible enemies
 		void ResetEnemyInfo();
 
+		//remove specific unit from specific type list
+		void RemoveByID(int unitID, BWAPI::UnitType oldType);
+
+		//check if this unit was another type before and remove it from list
+		void CheckEnemyEvolution(BWAPI::Unit unit);
+
 	public:
 		static ScoutModule* Instance();
 

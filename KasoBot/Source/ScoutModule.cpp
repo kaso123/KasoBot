@@ -55,6 +55,52 @@ void ScoutModule::ResetEnemyInfo()
 	}
 }
 
+void ScoutModule::RemoveByID(int unitID, BWAPI::UnitType oldType)
+{
+	auto it_type = _enemies.find(oldType);
+
+	if (it_type == _enemies.end())
+		return;
+
+	for (auto it = it_type->second.begin(); it != it_type->second.end(); it++)
+	{
+		if (unitID == it->id)
+		{
+			it_type->second.erase(it);
+			return;
+		}
+	}
+}
+
+void ScoutModule::CheckEnemyEvolution(BWAPI::Unit unit)
+{
+	//if unit with this id was different type before -> remove it
+	if (unit->getType() == BWAPI::UnitTypes::Zerg_Lurker)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Hydralisk);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Guardian)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Mutalisk);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Devourer)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Mutalisk);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Sunken_Colony)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Creep_Colony);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Spore_Colony)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Creep_Colony);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Greater_Spire)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Spire);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Lair)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Hatchery);
+	else if (unit->getType() == BWAPI::UnitTypes::Zerg_Hive)
+	{
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Hatchery);
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Zerg_Lair);
+	}
+	//protoss
+	else if (unit->getType() == BWAPI::UnitTypes::Protoss_Archon)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Protoss_High_Templar);
+	else if (unit->getType() == BWAPI::UnitTypes::Protoss_Dark_Archon)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Protoss_Dark_Templar);
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
@@ -80,7 +126,8 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		return;
 
 	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg || unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine 
-		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva)
+		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva
+		|| unit->getType() == BWAPI::UnitTypes::Zerg_Cocoon || unit->getType() == BWAPI::UnitTypes::Zerg_Lurker_Egg)
 		return;
 
 	//set enemy start if not found before
@@ -124,6 +171,7 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		new_it.first->second.emplace_back(EnemyUnit(unit));
 	}
 
+	CheckEnemyEvolution(unit);
 }
 
 void ScoutModule::EnemyHidden(BWAPI::Unit unit)
@@ -148,7 +196,8 @@ void ScoutModule::EnemyDestroyed(BWAPI::Unit unit)
 		return;
 
 	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg || unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
-		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva)
+		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva
+		|| unit->getType() == BWAPI::UnitTypes::Zerg_Cocoon || unit->getType() == BWAPI::UnitTypes::Zerg_Lurker_Egg)
 		return;
 
 	auto it_type = _enemies.find(unit->getType()); //find type
