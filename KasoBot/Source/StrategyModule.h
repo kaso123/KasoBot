@@ -5,6 +5,8 @@
 
 namespace KasoBot {
 	
+	class EnemyStrategy;
+
 	namespace Production {
 		//things we cycle through in some order when figuring out what to do next
 		//order of these items can be specified in config
@@ -34,11 +36,16 @@ namespace KasoBot {
 		int _enemyLostGas;
 
 		std::map<std::string, std::unique_ptr<Opener>> _openers;
+
+		std::vector<std::unique_ptr<EnemyStrategy>> _stratsT;
+		std::vector<std::unique_ptr<EnemyStrategy>> _stratsP;
+		std::vector<std::unique_ptr<EnemyStrategy>> _stratsZ;
 		
 		std::vector<Production::Type> _productionCycle;
 
 		Opener* _activeOpener;
 		std::string _activeOpenerName;
+		EnemyStrategy* _activeEnemyStrat;
 
 		//try to build workers
 		bool MacroSaturation();
@@ -77,6 +84,9 @@ namespace KasoBot {
 
 		//@return next upgrade, tech or building that should be built
 		Production::TechMacro GetMacroTechType();
+
+		//load new enemy strategy from
+		void NewStrategy(BWAPI::Race race, nlohmann::json& strat, int id);
 
 		//getters and setters
 

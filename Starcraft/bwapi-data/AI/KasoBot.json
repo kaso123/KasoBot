@@ -43,5 +43,52 @@
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"]
+  },
+  "enemyStrategies": {
+    "terran": [
+      {"name": "m&m",
+       "types":[
+         {"type": "medic", "include": true, "value": 100},
+         {"type": "marine", "include": true, "value": 50, "count": 5},
+         {"type": "factory", "include": false, "value": 100},
+         {"type": "barracks", "include": true, "value": 100, "count": 3}
+       ]
+      }
+    ],
+    "protoss": [
+      {"name": "ZealotRush",
+       "types": [
+         {"type": "zealot","include": true, "value": 100, "count": 3},
+         {"type": "gateway", "include": true, "value": 100, "count": 2},
+         {"type": "dragoon", "include": false, "value": 30}
+       ]
+      },
+      {"name": "FastDT",
+       "types": [
+         {"type": "dragoon", "include": false, "value": 50},
+         {"type": "citadel", "include": true, "value": 75}, 
+         {"type": "archives", "include": true, "value": 100},
+         {"type": "dark_templar", "include": true, "value": 100} 
+       ]
+      }
+    ],
+    "zerg": [
+      {"name": "ZerglingRush",
+       "types": [
+         {"type": "zergling","include": true, "value": 100, "count": 6},
+         {"type": "pool", "include": true, "value": 100},
+         {"type": "assimilator", "include": false, "value": 100},
+         {"type": "drone","include": false, "value": 100, "count": 9}
+       ]
+      },
+      {"name": "HydraPush",
+       "types": [
+         {"type": "hydralisk", "include": true, "value": 100},
+         {"type": "spire", "include": false, "value": 100}, 
+         {"type": "hydralisk_den", "include": true, "value": 100},
+         {"type": "zergling","include": false, "value": 75, "count": 8}
+       ]
+      }
+    ]
   }
 }

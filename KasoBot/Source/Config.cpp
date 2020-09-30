@@ -105,6 +105,34 @@ void ConfigModule::Init()
 			}
 		}
 	}
+	//load known enemy strategies
+	if (j.contains("enemyStrategies"))
+	{
+		int i = 1;
+		for (auto it = j["enemyStrategies"].begin(); it != j["enemyStrategies"].end(); it++)
+		{
+			BWAPI::Race race;
+			if (it.key() == "terran")
+				race = BWAPI::Races::Terran;
+			else if (it.key() == "protoss")
+				race = BWAPI::Races::Protoss;
+			else if (it.key() == "zerg")
+				race = BWAPI::Races::Zerg;
+			else continue;
+
+			if (!it.value().is_array())
+				continue;
+
+			for (auto& strat : it.value())
+			{
+				if (!strat.contains("name") || !strat.contains("types")
+					|| !strat["types"].is_array())
+					continue;
+
+				StrategyModule::Instance()->NewStrategy(race, strat, i++);
+			}
+		}
+	}
 }
 
 
@@ -145,6 +173,14 @@ BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 		input = "supply_depot";
 	else if (input == "cc")
 		input = "command_center";
+	else if (input == "core")
+		input = "cybernetics_core";
+	else if (input == "archives")
+		input = "templar_archives";
+	else if (input == "citadel")
+		input = "citadel_of_adun";
+	else if (input == "pool")
+		input = "spawning_pool";
 
 	//cycle all types
 	for (const auto& type : BWAPI::UnitTypes::allUnitTypes())

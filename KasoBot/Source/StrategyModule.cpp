@@ -2,6 +2,8 @@
 #include "ProductionModule.h"
 #include "WorkersModule.h"
 #include "Config.h"
+#include "EnemyStrategy.h"
+
 #include "Opener.h"
 #include <time.h>
 
@@ -10,7 +12,7 @@ using namespace KasoBot;
 StrategyModule* StrategyModule::_instance = 0;
 
 StrategyModule::StrategyModule()
-	: _enemyLostMinerals(0), _enemyLostGas(0), _activeOpener(nullptr), _activeOpenerName("random")
+	: _enemyLostMinerals(0), _enemyLostGas(0), _activeOpener(nullptr), _activeOpenerName("random"), _activeEnemyStrat(nullptr)
 {
 	_productionCycle.clear();
 }
@@ -253,5 +255,34 @@ Production::TechMacro StrategyModule::GetMacroTechType()
 	}
 	macro.upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Plating;
 	return macro;
+}
+
+void StrategyModule::NewStrategy(BWAPI::Race race, nlohmann::json & strat, int id)
+{
+	_ASSERT(strat.contains("name"));
+	_ASSERT(strat["name"].is_string());
+
+	EnemyStrategy* strategy = nullptr;
+	if (race == BWAPI::Races::Terran)
+		strategy = _stratsT.emplace_back(std::make_unique<EnemyStrategy>(strat["name"].get<std::string>(), id)).get();
+	else if (race == BWAPI::Races::Protoss)
+		strategy = _stratsP.emplace_back(std::make_unique<EnemyStrategy>(strat["name"].get<std::string>(), id)).get();
+	else if (race == BWAPI::Races::Zerg)
+		strategy = _stratsZ.emplace_back(std::make_unique<EnemyStrategy>(strat["name"].get<std::string>(), id)).get();
+	else return;
+
+	for (auto& item : strat["types"])
+	{
+		_ASSERT(item.contains("type"));
+		_ASSERT(item["type"].is_string());
+		_ASSERT(item.contains("value"));
+		_ASSERT(item["value"].is_number_integer());
+		_ASSERT(item.contains("include"));
+		_ASSERT(item["include"].is_boolean());
+
+		strategy->AddItem(Config::Utils::TypeFromString(item["type"]), item["value"].get<int>(),
+			item.contains("limit") ? item["limit"].get<int>() : 1, item["include"].get<bool>());
+	}
+	
 }
 
