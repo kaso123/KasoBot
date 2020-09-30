@@ -34,6 +34,8 @@ namespace KasoBot {
 		std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>> _enemies; //List of enemy units we discovered
 		std::vector<std::unique_ptr<BaseInfo>> _baseInfo; //list of baseInfo structs, should be accessed through bWEM, this is only for memory management
 
+		BWAPI::Race _enemyRace;
+
 		const BWEM::Area* _enemyStart; //enemy starting area
 
 		//cycle all enemies and save new position for visible enemies
@@ -62,6 +64,14 @@ namespace KasoBot {
 
 		//@return true if first worker scout should be in progress 
 		bool ShouldWorkerScout();
+
+		//@return number of enemy units/buildings of this type
+		int GetCountOf(BWAPI::UnitType type);
+
+		//return enemy race and if it is random set race according to seen units
+		BWAPI::Race GetEnemyRace();
+
+
 
 		//getters and setters
 

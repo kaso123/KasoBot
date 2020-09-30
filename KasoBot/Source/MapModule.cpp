@@ -8,8 +8,8 @@
 
 #define PI 3.141593
 #define TILE_SIZE 32
-#define DIST_LIMIT 90
-#define SCOUT_ANGLE_INCREASE 0.4
+#define DIST_LIMIT 100
+#define SCOUT_ANGLE_INCREASE 0.35
 
 using namespace KasoBot;
 

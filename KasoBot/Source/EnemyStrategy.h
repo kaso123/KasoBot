@@ -21,11 +21,18 @@ namespace KasoBot {
 		int _id;
 		std::vector<std::unique_ptr<Enemy::StratItem>> _items;
 
+		//get score for this specific item
+		int Evaluate(Enemy::StratItem& item);
+
 	public:
 		EnemyStrategy(std::string& name, int id);
 		~EnemyStrategy();
 
 		void AddItem(BWAPI::UnitType type, int value, int limit, bool include);
+
+
+		//get score for this strategy considering known enemy buildings and units
+		int Score();
 
 		//getters and setters
 

@@ -1,9 +1,10 @@
 #include "StrategyModule.h"
 #include "ProductionModule.h"
 #include "WorkersModule.h"
+#include "ScoutModule.h"
 #include "Config.h"
-#include "EnemyStrategy.h"
 
+#include "EnemyStrategy.h"
 #include "Opener.h"
 #include <time.h>
 
@@ -284,5 +285,15 @@ void StrategyModule::NewStrategy(BWAPI::Race race, nlohmann::json & strat, int i
 			item.contains("limit") ? item["limit"].get<int>() : 1, item["include"].get<bool>());
 	}
 	
+}
+
+const std::vector<std::unique_ptr<EnemyStrategy>>& StrategyModule::GetEnemyStrategies()
+{
+	if (ScoutModule::Instance()->GetEnemyRace() == BWAPI::Races::Terran)
+		return _stratsT;
+	if (ScoutModule::Instance()->GetEnemyRace() == BWAPI::Races::Protoss)
+		return _stratsP;
+
+	return _stratsZ;
 }
 

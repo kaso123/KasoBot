@@ -12,6 +12,7 @@
 #include "ProductionItem.h"
 #include "Army.h"
 #include "BaseInfo.h"
+#include "EnemyStrategy.h"
 
 using namespace KasoBot;
 
@@ -98,7 +99,7 @@ int DebugModule::DrawArmy()
 
 void DebugModule::DrawProduction()
 {
-	int y = 60;
+	int y = 45;
 	char color = '\x02';
 
 	for (auto& item : ProductionModule::Instance()->GetItems())
@@ -197,9 +198,17 @@ void DebugModule::DrawResources()
 }
 
 void DebugModule::DrawStrategy()
-{
+{	
 	//draw opener
-	BWAPI::Broodwar->drawTextScreen(10, 40, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
+	BWAPI::Broodwar->drawTextScreen(120, 10, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
+	BWAPI::Broodwar->drawTextScreen(120, 25, "Enemy is: %s", ScoutModule::Instance()->GetEnemyRace().toString().c_str());
+	
+	int y = 35;
+	for (auto& strat : StrategyModule::Instance()->GetEnemyStrategies())
+	{
+		BWAPI::Broodwar->drawTextScreen(120, y, "%s : %i", strat->GetName().c_str(),strat->Score());
+		y += 10;
+	}
 }
 
 void DebugModule::DrawEnemy(int y)

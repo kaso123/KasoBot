@@ -35,7 +35,7 @@ void MainModule::onFrame()
   // Called once every game frame
 
   // Display the game frame rate as text in the upper left area of the screen
-  Broodwar->drawTextScreen(200, 0,  "FPS: %d", Broodwar->getFPS() );
+  Broodwar->drawTextScreen(300, 0,  "FPS: %d", Broodwar->getFPS() );
 
   StrategyModule::Instance()->OnFrame();
   ProductionModule::Instance()->OnFrame();

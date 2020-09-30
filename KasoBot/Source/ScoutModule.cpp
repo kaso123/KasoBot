@@ -11,7 +11,7 @@ using namespace KasoBot;
 ScoutModule* ScoutModule::_instance = 0;
 
 ScoutModule::ScoutModule()
-	: _enemyStart(nullptr)
+	: _enemyStart(nullptr), _enemyRace(BWAPI::Races::Unknown)
 {
 }
 
@@ -225,5 +225,41 @@ bool ScoutModule::ShouldWorkerScout()
 		return false;
 
 	return true;
+}
+
+int ScoutModule::GetCountOf(BWAPI::UnitType type)
+{
+	auto it = _enemies.find(type);
+
+	if (it == _enemies.end())
+		return 0;
+	return it->second.size();
+}
+
+BWAPI::Race ScoutModule::GetEnemyRace()
+{
+	if (_enemyRace != BWAPI::Races::Unknown)
+		return _enemyRace;
+
+	for (auto p : BWAPI::Broodwar->getPlayers())
+	{
+		if (BWAPI::Broodwar->self()->isEnemy(p))
+		{
+			if (p->getRace() != BWAPI::Races::Random
+				&& p->getRace() != BWAPI::Races::Unknown)
+			{
+				_enemyRace = p->getRace();
+				return _enemyRace;
+			}
+		}
+	}
+
+	if (!_enemies.empty())
+	{
+		auto it = _enemies.begin();
+		_enemyRace = it->first.getRace();
+	}
+	
+	return _enemyRace;
 }
 

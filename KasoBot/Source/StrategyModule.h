@@ -87,6 +87,9 @@ namespace KasoBot {
 
 		//load new enemy strategy from
 		void NewStrategy(BWAPI::Race race, nlohmann::json& strat, int id);
+		
+		//return list of possible enemy strategies according to his race
+		const std::vector<std::unique_ptr<EnemyStrategy>>& GetEnemyStrategies();
 
 		//getters and setters
 
