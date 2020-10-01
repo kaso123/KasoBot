@@ -6,6 +6,7 @@
 namespace KasoBot {
 	
 	class EnemyStrategy;
+	class OwnStrategy;
 
 	namespace Production {
 		//things we cycle through in some order when figuring out what to do next
@@ -18,9 +19,15 @@ namespace KasoBot {
 		};
 
 		struct TechMacro {
-			BWAPI::UnitType unit = BWAPI::UnitTypes::None;
-			BWAPI::UpgradeType upgrade = BWAPI::UpgradeTypes::None;
-			BWAPI::TechType tech = BWAPI::TechTypes::None;
+			BWAPI::UnitType _unit;
+			BWAPI::UpgradeType _upgrade;
+			BWAPI::TechType _tech;
+			TechMacro(BWAPI::UnitType type)
+				:_unit(type),_upgrade(BWAPI::UpgradeTypes::None), _tech(BWAPI::TechTypes::None) {};
+			TechMacro(BWAPI::UpgradeType type)
+				:_unit(BWAPI::UnitTypes::None), _upgrade(type), _tech(BWAPI::TechTypes::None) {};
+			TechMacro(BWAPI::TechType type)
+				:_unit(BWAPI::UnitTypes::None), _upgrade(BWAPI::UpgradeTypes::None), _tech(type) {};
 		};
 	}
 	class Opener;
@@ -36,6 +43,7 @@ namespace KasoBot {
 		int _enemyLostGas;
 
 		std::map<std::string, std::unique_ptr<Opener>> _openers;
+		std::map<std::string, std::unique_ptr<OwnStrategy>> _strategies;
 
 		std::vector<std::unique_ptr<EnemyStrategy>> _stratsT;
 		std::vector<std::unique_ptr<EnemyStrategy>> _stratsP;
@@ -45,6 +53,10 @@ namespace KasoBot {
 
 		Opener* _activeOpener;
 		std::string _activeOpenerName;
+
+		OwnStrategy* _activeStrat;
+		std::string _activeStratName;
+
 		EnemyStrategy* _activeEnemyStrat;
 
 		//try to build workers
@@ -73,6 +85,10 @@ namespace KasoBot {
 		//@param name = can have value of "random" which chooses randomly from list of openers
 		void SetOpener(const std::string& name);
 
+		//make this strategy active
+		//@param name = can have value of "random" which chooses randomly from list of strategies
+		void SetStrategy(const std::string& name);
+
 		//set order of saturation/army/production/tech
 		void SetCycle(nlohmann::json& itemsArray);
 
@@ -85,8 +101,11 @@ namespace KasoBot {
 		//@return next upgrade, tech or building that should be built
 		Production::TechMacro GetMacroTechType();
 
-		//load new enemy strategy from
-		void NewStrategy(BWAPI::Race race, nlohmann::json& strat, int id);
+		//parse new enemy strategy from json
+		void NewEnemyStrategy(BWAPI::Race race, nlohmann::json& strat, int id);
+
+		//parse new strategy from json
+		void NewOwnStrategy(nlohmann::json& strat);
 		
 		//return list of possible enemy strategies according to his race
 		const std::vector<std::unique_ptr<EnemyStrategy>>& GetEnemyStrategies();
@@ -96,6 +115,7 @@ namespace KasoBot {
 		int EnemyLostMinerals() const { return _enemyLostMinerals; }
 		int EnemyLostGas() const { return _enemyLostGas; }
 		const std::string& GetOpenerName() const { return _activeOpenerName; }
+		const std::string& GetStratName() const { return _activeStratName; }
 		bool IsOpenerActive() { return _activeOpener; }
 	};
 }

@@ -142,17 +142,17 @@ void DebugModule::DrawProduction()
 	y += 10;
 	//tech/upgrades
 	auto macro = StrategyModule::Instance()->GetMacroTechType();
-	if (macro.unit != BWAPI::UnitTypes::None)
+	if (macro._unit != BWAPI::UnitTypes::None)
 	{
-		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.unit.getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro._unit.getName().c_str());
 	}
-	else if (macro.upgrade != BWAPI::UpgradeTypes::None)
+	else if (macro._upgrade != BWAPI::UpgradeTypes::None)
 	{
-		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.upgrade.getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro._upgrade.getName().c_str());
 	}
-	else if (macro.tech != BWAPI::TechTypes::None)
+	else if (macro._tech != BWAPI::TechTypes::None)
 	{
-		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro.tech.getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro._tech.getName().c_str());
 	}
 }
 
@@ -201,9 +201,10 @@ void DebugModule::DrawStrategy()
 {	
 	//draw opener
 	BWAPI::Broodwar->drawTextScreen(120, 10, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
-	BWAPI::Broodwar->drawTextScreen(120, 25, "Enemy is: %s", ScoutModule::Instance()->GetEnemyRace().toString().c_str());
+	BWAPI::Broodwar->drawTextScreen(120, 20, "Strat: %s", StrategyModule::Instance()->GetStratName().c_str());
+	BWAPI::Broodwar->drawTextScreen(120, 35, "Enemy is: %s", ScoutModule::Instance()->GetEnemyRace().toString().c_str());
 	
-	int y = 35;
+	int y = 45;
 	for (auto& strat : StrategyModule::Instance()->GetEnemyStrategies())
 	{
 		BWAPI::Broodwar->drawTextScreen(120, y, "%s : %i", strat->GetName().c_str(),strat->Score());

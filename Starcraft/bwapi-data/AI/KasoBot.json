@@ -31,7 +31,7 @@
     "enemyInfo": true
   },
   "strategy": {
-    "opener": "test2" ,
+    "default": "default_mech",
     "cycle":  [ "saturation","army","tech","production"],
     "maxArmySupply": 30,
     "scout": {
@@ -48,7 +48,7 @@
     {"name": "default_mech",
      "opener": "test2",
      "units": {"tank":5, "vulture":2,"goliath":5,"marine":1},
-     "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_armor","starport","science_facility"]
+     "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_plating","starport","science_facility"]
     },
     {"name": "default_bio",
      "opener": "test1",

@@ -73,15 +73,20 @@ void ConfigModule::Init()
 			StrategyModule::Instance()->NewOpener(it.key(), it.value());
 		}
 	}
+	if (j.contains("strategies") && j["strategies"].is_array())
+	{
+		//parse strats
+		for (auto& strat : j["strategies"])
+		{
+			StrategyModule::Instance()->NewOwnStrategy(strat);
+		}
+	}
 	if (j.contains("strategy"))
 	{
 		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
 
-		if (j["strategy"].contains("opener"))
-		{
-			//be sure to call this after openers have been loaded
-			StrategyModule::Instance()->SetOpener(j["strategy"]["opener"]);
-		}
+		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");
+
 		if (j["strategy"].contains("cycle"))
 		{
 			StrategyModule::Instance()->SetCycle(j["strategy"]["cycle"]);
@@ -129,7 +134,7 @@ void ConfigModule::Init()
 					|| !strat["types"].is_array())
 					continue;
 
-				StrategyModule::Instance()->NewStrategy(race, strat, i++);
+				StrategyModule::Instance()->NewEnemyStrategy(race, strat, i++);
 			}
 		}
 	}
@@ -166,21 +171,39 @@ bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
 
+namespace {
+	std::map<std::string, std::string> aliases{
+		{"depot", "supply_depot"},
+		{"cc", "command_center"},
+		{"tank", "tank_tank_mode"},
+		{"core", "cybernetics_core"},
+		{"archives", "templar_archives"},
+		{"citadel", "citadel_of_adun"},
+		{"pool", "spawning_pool"},
+		{"siege", "tank_siege_mode"},
+		{"mines", "spider_mines"},
+		{"yamato", "yamato_gun"},
+		{"stim", "stim_packs"},
+		{"infantry_weapons", "terran_infantry_weapons"},
+		{"infantry_armor", "terran_infantry_armor"},
+		{"vehicle_weapons", "terran_vehicle_weapons"},
+		{"vehicle_plating", "terran_vehicle_plating"},
+		{"ship_weapons", "terran_ship_weapons"},
+		{"ship_plating", "terran_ship_plating"}
+	};
+
+	void Alias(std::string& name)
+	{
+		if (aliases.find(name) != aliases.end())
+		{
+			name = aliases[name];
+		}
+	}
+}
+
 BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 {
-	//aliases for some unit types
-	if (input == "depot")
-		input = "supply_depot";
-	else if (input == "cc")
-		input = "command_center";
-	else if (input == "core")
-		input = "cybernetics_core";
-	else if (input == "archives")
-		input = "templar_archives";
-	else if (input == "citadel")
-		input = "citadel_of_adun";
-	else if (input == "pool")
-		input = "spawning_pool";
+	Alias(input);
 
 	//cycle all types
 	for (const auto& type : BWAPI::UnitTypes::allUnitTypes())
@@ -198,4 +221,48 @@ BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 
 	_ASSERT(false);
 	return BWAPI::UnitTypes::None;
+}
+
+KasoBot::Production::TechMacro Config::Utils::TechTypeFromString(std::string input)
+{
+	Alias(input);
+
+	//cycle unit types
+	for (const auto& type : BWAPI::UnitTypes::allUnitTypes())
+	{
+		//compare without race part of string
+		const std::string& race = type.getRace().getName();
+		std::string name = type.getName();
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+		if ((name.length() > race.length()) && (name.compare(race.length() + 1, name.length(), input) == 0))
+		{
+			return KasoBot::Production::TechMacro(type);
+		}
+	}
+	//cycle tech types
+	for (const auto& type : BWAPI::TechTypes::allTechTypes())
+	{
+		std::string name = type.getName();
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+		if (name.compare(input) == 0)
+		{
+			return KasoBot::Production::TechMacro(type);
+		}
+	}
+	//cycle tech types
+	for (const auto& type : BWAPI::UpgradeTypes::allUpgradeTypes())
+	{
+		std::string name = type.getName();
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+		if (name.compare(input) == 0)
+		{
+			return KasoBot::Production::TechMacro(type);
+		}
+	}
+
+	_ASSERT(false);
+	return KasoBot::Production::TechMacro(BWAPI::UnitTypes::None);
 }

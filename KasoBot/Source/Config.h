@@ -3,6 +3,10 @@
 
 namespace KasoBot {
 
+	namespace Production {
+		struct TechMacro;
+	}
+
 	class ConfigModule
 	{
 	private:
@@ -170,6 +174,9 @@ namespace KasoBot {
 		namespace Utils {
 			//@return BWAPI type parsed from config string
 			BWAPI::UnitType TypeFromString(std::string input);
+
+			//@return Macro item (unit, tech or upgrade) parsed from config string
+			KasoBot::Production::TechMacro TechTypeFromString(std::string input);
 		}
 	}
 }

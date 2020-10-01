@@ -5,6 +5,7 @@
 #include "Config.h"
 
 #include "EnemyStrategy.h"
+#include "OwnStrategy.h"
 #include "Opener.h"
 #include <time.h>
 
@@ -14,6 +15,7 @@ StrategyModule* StrategyModule::_instance = 0;
 
 StrategyModule::StrategyModule()
 	: _enemyLostMinerals(0), _enemyLostGas(0), _activeOpener(nullptr), _activeOpenerName("random"), _activeEnemyStrat(nullptr)
+	, _activeStrat(nullptr), _activeStratName("random")
 {
 	_productionCycle.clear();
 }
@@ -57,18 +59,18 @@ bool StrategyModule::MacroTech()
 {
 	auto macro = GetMacroTechType();
 
-	if (macro.unit != BWAPI::UnitTypes::None)
+	if (macro._unit != BWAPI::UnitTypes::None)
 	{
-		_ASSERT(macro.unit.isBuilding());
-		return ProductionModule::Instance()->BuildBuilding(macro.unit);
+		_ASSERT(macro._unit.isBuilding());
+		return ProductionModule::Instance()->BuildBuilding(macro._unit);
 	}
-	if (macro.upgrade != BWAPI::UpgradeTypes::None)
+	if (macro._upgrade != BWAPI::UpgradeTypes::None)
 	{
-		return ProductionModule::Instance()->MakeTech(macro.upgrade);
+		return ProductionModule::Instance()->MakeTech(macro._upgrade);
 	}
-	if (macro.tech != BWAPI::TechTypes::None)
+	if (macro._tech != BWAPI::TechTypes::None)
 	{
-		return ProductionModule::Instance()->MakeTech(macro.tech);
+		return ProductionModule::Instance()->MakeTech(macro._tech);
 	}
 
 	return false;
@@ -165,6 +167,28 @@ void StrategyModule::SetOpener(const std::string & name)
 	_activeOpener = _openers[name].get();
 }
 
+void StrategyModule::SetStrategy(const std::string& name)
+{
+	_ASSERT(!_strategies.empty());
+
+	if (name == "random" || _strategies.find(name) == _strategies.end())
+	{
+		srand(unsigned int(time(NULL)));
+		//choose random strat
+		auto it = _strategies.begin();
+		std::advance(it, rand() % _strategies.size());
+		_activeStrat = it->second.get();
+		_activeStratName = "random: " + it->first;
+		SetOpener(_activeStrat->GetOpener());
+		return;
+	}
+
+	//set strat
+	_activeStratName = name;
+	_activeStrat = _strategies[name].get();
+	SetOpener(_activeStrat->GetOpener());
+}
+
 void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 {
 	_ASSERT(itemsArray.is_array());
@@ -220,45 +244,45 @@ BWAPI::UnitType StrategyModule::GetMacroProductionType()
 Production::TechMacro StrategyModule::GetMacroTechType()
 {
 	//TODO this is for testing only
-	Production::TechMacro macro;
-	
+	Production::TechMacro macro{BWAPI::UnitTypes::Unknown};
+
 	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 1)
 	{
-		macro.unit = BWAPI::UnitTypes::Terran_Armory;
+		macro._unit = BWAPI::UnitTypes::Terran_Armory;
 		return macro;
 	}
 	if (BWAPI::Broodwar->canResearch(BWAPI::TechTypes::Tank_Siege_Mode) && !BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Tank_Siege_Mode))
 	{
-		macro.tech = BWAPI::TechTypes::Tank_Siege_Mode;
+		macro._tech = BWAPI::TechTypes::Tank_Siege_Mode;
 		return macro;
 	}
 	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 2 && BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0)
 	{
-		macro.unit = BWAPI::UnitTypes::Terran_Armory;
+		macro._unit = BWAPI::UnitTypes::Terran_Armory;
 		return macro;
 	}
 	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) <= 0)
 	{
-		macro.unit = BWAPI::UnitTypes::Terran_Starport;
+		macro._unit = BWAPI::UnitTypes::Terran_Starport;
 		return macro;
 	}
 	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) > 0
 		&& !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Starport) && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Science_Facility) <= 0)
 	{
-		macro.unit = BWAPI::UnitTypes::Terran_Science_Facility;
+		macro._unit = BWAPI::UnitTypes::Terran_Science_Facility;
 		return macro;
 	}
-	if (!BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) && 
+	if (!BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) &&
 		BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) <= BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Plating))
 	{
-		macro.upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Weapons;
+		macro._upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Weapons;
 		return macro;
 	}
-	macro.upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Plating;
+	macro._upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Plating;
 	return macro;
 }
 
-void StrategyModule::NewStrategy(BWAPI::Race race, nlohmann::json & strat, int id)
+void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, int id)
 {
 	_ASSERT(strat.contains("name"));
 	_ASSERT(strat["name"].is_string());
@@ -284,7 +308,36 @@ void StrategyModule::NewStrategy(BWAPI::Race race, nlohmann::json & strat, int i
 		strategy->AddItem(Config::Utils::TypeFromString(item["type"]), item["value"].get<int>(),
 			item.contains("limit") ? item["limit"].get<int>() : 1, item["include"].get<bool>());
 	}
+}
+
+void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
+{
+	_ASSERT(strat.contains("name"));
+	_ASSERT(strat["name"].is_string());
+	_ASSERT(strat.contains("opener"));
+	_ASSERT(strat["opener"].is_string());
+
+	OwnStrategy* strategy = _strategies.emplace(strat["name"].get<std::string>(), 
+		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), strat["opener"].get<std::string>())).first->second.get();
 	
+	if (strat.contains("units"))
+	{
+		_ASSERT(strat["units"].is_object());
+
+		for (auto it = strat["units"].begin(); it != strat["units"].end(); it++)
+		{
+			strategy->AddUnit(Config::Utils::TypeFromString(it.key()), it.value());
+		}
+	}
+	if (strat.contains("tech"))
+	{
+		_ASSERT(strat["tech"].is_array());
+
+		for (auto& item : strat["tech"])
+		{
+			strategy->AddTech(Config::Utils::TechTypeFromString(item));
+		}
+	}
 }
 
 const std::vector<std::unique_ptr<EnemyStrategy>>& StrategyModule::GetEnemyStrategies()
