@@ -175,7 +175,7 @@ namespace {
 	std::map<std::string, std::string> aliases{
 		{"depot", "supply_depot"},
 		{"cc", "command_center"},
-		{"tank", "tank_tank_mode"},
+		{"tank", "siege_tank_tank_mode"},
 		{"core", "cybernetics_core"},
 		{"archives", "templar_archives"},
 		{"citadel", "citadel_of_adun"},

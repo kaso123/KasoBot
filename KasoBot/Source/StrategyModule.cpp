@@ -244,7 +244,7 @@ BWAPI::UnitType StrategyModule::GetMacroProductionType()
 Production::TechMacro StrategyModule::GetMacroTechType()
 {
 	//TODO this is for testing only
-	Production::TechMacro macro{BWAPI::UnitTypes::Unknown};
+	Production::TechMacro macro{BWAPI::UnitTypes::None};
 
 	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 1)
 	{
