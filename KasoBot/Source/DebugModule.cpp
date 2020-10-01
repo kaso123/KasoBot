@@ -13,6 +13,7 @@
 #include "Army.h"
 #include "BaseInfo.h"
 #include "EnemyStrategy.h"
+#include "OwnStrategy.h"
 
 using namespace KasoBot;
 
@@ -129,11 +130,11 @@ void DebugModule::DrawProduction()
 	//draw next unit type for all macro production types
 	y += 10;
 	//production
-	BWAPI::Broodwar->drawTextScreen(10, y, "Next:\n%s", StrategyModule::Instance()->GetMacroProductionType().getName().c_str());
+	BWAPI::Broodwar->drawTextScreen(10, y, "Next:\n%s", StrategyModule::Instance()->GetActiveStrat()->GetMacroProductionType().getName().c_str());
 	
 	y += 30;
 	//army
-	for (auto& type : StrategyModule::Instance()->GetMacroArmyTypes())
+	for (auto& type : StrategyModule::Instance()->GetActiveStrat()->GetMacroArmyTypes())
 	{
 		BWAPI::Broodwar->drawTextScreen(10, y, "%s", type.getName().c_str());
 		y += 10;
@@ -141,7 +142,7 @@ void DebugModule::DrawProduction()
 
 	y += 10;
 	//tech/upgrades
-	auto macro = StrategyModule::Instance()->GetMacroTechType();
+	auto macro = StrategyModule::Instance()->GetActiveStrat()->GetMacroTechType();
 	if (macro._unit != BWAPI::UnitTypes::None)
 	{
 		BWAPI::Broodwar->drawTextScreen(10, y, "%s", macro._unit.getName().c_str());

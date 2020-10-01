@@ -177,6 +177,15 @@ namespace KasoBot {
 
 			//@return Macro item (unit, tech or upgrade) parsed from config string
 			KasoBot::Production::TechMacro TechTypeFromString(std::string input);
+
+			//@return next type that needs to be built to unlock inputed type, UnitType::None if already unlocked
+			BWAPI::UnitType NextPrerequisite(BWAPI::UnitType type);
+
+			//@return next type that needs to be built to unlock inputed type, UnitType::None if already unlocked
+			BWAPI::UnitType NextPrerequisite(BWAPI::TechType type);
+
+			//@return next type that needs to be built to unlock inputed type, UnitType::None if already unlocked
+			BWAPI::UnitType NextPrerequisite(BWAPI::UpgradeType type);
 		}
 	}
 }

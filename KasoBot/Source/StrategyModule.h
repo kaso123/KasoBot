@@ -92,15 +92,6 @@ namespace KasoBot {
 		//set order of saturation/army/production/tech
 		void SetCycle(nlohmann::json& itemsArray);
 
-		//@return vector with next army units that should be built in order of priority
-		std::vector<BWAPI::UnitType> GetMacroArmyTypes();
-
-		//@return next production building that should be built
-		BWAPI::UnitType GetMacroProductionType();
-
-		//@return next upgrade, tech or building that should be built
-		Production::TechMacro GetMacroTechType();
-
 		//parse new enemy strategy from json
 		void NewEnemyStrategy(BWAPI::Race race, nlohmann::json& strat, int id);
 
@@ -116,6 +107,7 @@ namespace KasoBot {
 		int EnemyLostGas() const { return _enemyLostGas; }
 		const std::string& GetOpenerName() const { return _activeOpenerName; }
 		const std::string& GetStratName() const { return _activeStratName; }
+		const OwnStrategy* GetActiveStrat() const { return _activeStrat; }
 		bool IsOpenerActive() { return _activeOpener; }
 	};
 }

@@ -47,7 +47,7 @@ bool StrategyModule::MacroSaturation()
 
 bool StrategyModule::MacroArmy()
 {
-	for (auto& type : GetMacroArmyTypes())
+	for (auto& type : _activeStrat->GetMacroArmyTypes())
 	{
 		if (ProductionModule::Instance()->BuildUnit(type))
 			return true;
@@ -57,7 +57,7 @@ bool StrategyModule::MacroArmy()
 
 bool StrategyModule::MacroTech()
 {
-	auto macro = GetMacroTechType();
+	auto macro = _activeStrat->GetMacroTechType();
 
 	if (macro._unit != BWAPI::UnitTypes::None)
 	{
@@ -78,10 +78,10 @@ bool StrategyModule::MacroTech()
 
 bool StrategyModule::MacroProduction()
 {
-	if (!ProductionModule::Instance()->CheckResources(GetMacroProductionType()) || ProductionModule::Instance()->IsInQueue(GetMacroProductionType()))
+	if (!ProductionModule::Instance()->CheckResources(_activeStrat->GetMacroProductionType()) || ProductionModule::Instance()->IsInQueue(_activeStrat->GetMacroProductionType()))
 		return false;
 
-	return ProductionModule::Instance()->BuildBuilding(GetMacroProductionType());
+	return ProductionModule::Instance()->BuildBuilding(_activeStrat->GetMacroProductionType());
 }
 
 StrategyModule* StrategyModule::Instance()
@@ -208,78 +208,6 @@ void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 			_productionCycle.emplace_back(Production::Type::PRODUCTION);
 
 	}
-}
-
-std::vector<BWAPI::UnitType> StrategyModule::GetMacroArmyTypes()
-{
-	//TODO this is for testing only
-	std::vector<BWAPI::UnitType> result = {};
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) > 0)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory) > 0 && BWAPI::Broodwar->self()->gas() < 400)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Vulture);
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
-		result.emplace_back(BWAPI::UnitTypes::Terran_Marine);
-
-	return result;
-}
-
-BWAPI::UnitType StrategyModule::GetMacroProductionType()
-{
-	//TODO this is for testing only
-	if ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) > 0)
-		&& ((ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Barracks) * 3) >= ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory)))
-	{
-		if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Refinery) > 0)
-		{
-			if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Machine_Shop) < ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Factory))
-				return BWAPI::UnitTypes::Terran_Machine_Shop;
-
-			return BWAPI::UnitTypes::Terran_Factory;
-		}
-	}
-	return BWAPI::UnitTypes::Terran_Barracks;
-}
-
-Production::TechMacro StrategyModule::GetMacroTechType()
-{
-	//TODO this is for testing only
-	Production::TechMacro macro{BWAPI::UnitTypes::None};
-
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 1)
-	{
-		macro._unit = BWAPI::UnitTypes::Terran_Armory;
-		return macro;
-	}
-	if (BWAPI::Broodwar->canResearch(BWAPI::TechTypes::Tank_Siege_Mode) && !BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Tank_Siege_Mode))
-	{
-		macro._tech = BWAPI::TechTypes::Tank_Siege_Mode;
-		return macro;
-	}
-	if (ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Armory) < 2 && BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0)
-	{
-		macro._unit = BWAPI::UnitTypes::Terran_Armory;
-		return macro;
-	}
-	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) <= 0)
-	{
-		macro._unit = BWAPI::UnitTypes::Terran_Starport;
-		return macro;
-	}
-	if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) > 0 && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Starport) > 0
-		&& !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Starport) && ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Science_Facility) <= 0)
-	{
-		macro._unit = BWAPI::UnitTypes::Terran_Science_Facility;
-		return macro;
-	}
-	if (!BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) &&
-		BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons) <= BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Plating))
-	{
-		macro._upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Weapons;
-		return macro;
-	}
-	macro._upgrade = BWAPI::UpgradeTypes::Terran_Vehicle_Plating;
-	return macro;
 }
 
 void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, int id)

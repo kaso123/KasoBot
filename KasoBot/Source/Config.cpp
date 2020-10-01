@@ -1,5 +1,7 @@
 #include "Config.h"
 #include "StrategyModule.h"
+#include "ProductionModule.h"
+
 #include "libs/nlohmann/json.hpp"
 #include <fstream>
 
@@ -265,4 +267,35 @@ KasoBot::Production::TechMacro Config::Utils::TechTypeFromString(std::string inp
 
 	_ASSERT(false);
 	return KasoBot::Production::TechMacro(BWAPI::UnitTypes::None);
+}
+
+BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UnitType type)
+{
+	for (auto req : type.requiredUnits())
+	{
+		if (ProductionModule::Instance()->GetCountOf(req.first) < req.second)
+			return Config::Utils::NextPrerequisite(req.first); //recursively check requirements
+	}
+	return type;
+}
+
+BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::TechType type)
+{
+	if (ProductionModule::Instance()->GetCountOf(type.requiredUnit()) < 1)
+			return Config::Utils::NextPrerequisite(type.requiredUnit()); //recursively check requirements
+
+	return BWAPI::UnitTypes::None;
+}
+
+BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UpgradeType type)
+{
+	_ASSERT(!BWAPI::Broodwar->self()->isUpgrading(type));
+
+	int currLevel = BWAPI::Broodwar->self()->getUpgradeLevel(type);
+	_ASSERT(currLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(type));
+
+	if (ProductionModule::Instance()->GetCountOf(type.whatsRequired(currLevel + 1)) < 1)
+		return Config::Utils::NextPrerequisite(type.whatsRequired(currLevel + 1)); //recursively check requirements
+
+	return BWAPI::UnitTypes::None;
 }
