@@ -44,6 +44,23 @@
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"]
   },
+  "strategies": [
+    {"name": "default_mech",
+     "opener": "test2",
+     "units": {"tank":5, "vulture":2,"goliath":5,"marine":1},
+     "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_armor","starport","science_facility"]
+    },
+    {"name": "default_bio",
+     "opener": "test1",
+     "units": {"marine":5, "medic":2,"firebat":2},
+     "tech": ["stim","infantry_weapons"]
+    },
+    {"name": "rush_bc",
+     "opener": "test2",
+     "units": {"marine": 3, "battlecruiser": 5, "tank": 1},
+      "tech": [ "starport", "armory", "control_tower", "ship_weapons", "science_facility", "physics_lab", "yamato" ]
+    }
+  ],
   "enemyStrategies": {
     "terran": [
       {"name": "m&m",
