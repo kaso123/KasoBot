@@ -26,6 +26,9 @@ namespace KasoBot {
 		std::vector<Production::TechMacro> _tech;
 		std::string _opener;
 
+		//get new tech to do after everything specified in strategy tech path was done
+		Production::TechMacro GetMacroAfterTechPathDone() const;
+
 	public:
 		OwnStrategy(std::string& name, std::string& opener);
 		~OwnStrategy();

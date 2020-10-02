@@ -53,7 +53,7 @@
     {"name": "default_bio",
      "opener": "test1",
      "units": {"marine":5, "medic":2, "firebat":2, "science_vessel": 1},
-     "tech": ["stim","infantry_weapons","irradiate"]
+      "tech": [ "stim", "engineering_bay", "infantry_weapons"]
     },
     {"name": "rush_bc",
      "opener": "test2",

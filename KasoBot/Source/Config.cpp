@@ -273,6 +273,9 @@ BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UnitType type)
 {
 	for (auto req : type.requiredUnits())
 	{
+		if (req.first.isWorker()) //SCV is part of requirements for buildings, skip that
+			continue;
+
 		if (ProductionModule::Instance()->GetCountOf(req.first) < req.second)
 			return Config::Utils::NextPrerequisite(req.first); //recursively check requirements
 	}

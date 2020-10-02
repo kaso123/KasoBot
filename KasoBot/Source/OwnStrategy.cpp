@@ -5,6 +5,75 @@
 
 using namespace KasoBot;
 
+Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
+{
+	//unlock units
+	for (auto& unit : _units)
+	{
+		if (unit._proportion < 0.0f)
+		{
+			BWAPI::UnitType req = Config::Utils::NextPrerequisite(unit._type);
+			if (req != BWAPI::UnitTypes::None)
+				return Production::TechMacro(req);
+		}
+	}
+
+	//finish upgrades
+	for (auto& item : _tech)
+	{
+		if (item._upgrade == BWAPI::UpgradeTypes::None)
+			continue;
+		if (BWAPI::Broodwar->self()->isUpgrading(item._upgrade)) //skip in progress
+			continue;
+		if (BWAPI::Broodwar->self()->getUpgradeLevel(item._upgrade) == item._upgrade.maxRepeats()) //skip max level
+			continue;
+
+		BWAPI::UnitType req = Config::Utils::NextPrerequisite(item._upgrade);
+		if (req != BWAPI::UnitTypes::None)
+			return Production::TechMacro(req);
+
+		return Production::TechMacro(item._upgrade);
+	}
+
+	//anything for units that we use
+	for (auto& it = _units.rbegin(); it != _units.rend(); it++)
+	{
+		for (auto& upgrade : it->_type.upgrades())
+		{
+			if (upgrade == BWAPI::UpgradeTypes::None)
+				continue;
+			if (BWAPI::Broodwar->self()->isUpgrading(upgrade)) //skip in progress
+				continue;
+			if (BWAPI::Broodwar->self()->getUpgradeLevel(upgrade) == upgrade.maxRepeats()) //skip max level
+				continue;
+
+			BWAPI::UnitType req = Config::Utils::NextPrerequisite(upgrade);
+			if (req != BWAPI::UnitTypes::None)
+				return Production::TechMacro(req);
+
+			return Production::TechMacro(upgrade);
+		}
+		for (auto& tech : BWAPI::TechTypes::allTechTypes()) //cycle through tech and check if anything is useful for this unit
+		{
+			if (BWAPI::Broodwar->self()->hasResearched(tech))
+				continue;
+			if (BWAPI::Broodwar->self()->isResearching(tech))
+				continue;
+			if (tech.whatUses().find(it->_type) == tech.whatUses().end())
+				continue;
+
+			BWAPI::UnitType prereq = Config::Utils::NextPrerequisite(tech);
+			if (prereq != BWAPI::UnitTypes::None)
+				return Production::TechMacro{ prereq }; //build prerequisites before, if needed
+
+			return Production::TechMacro{ tech };
+		}
+	}
+
+	//everything is done for tech
+	return Production::TechMacro(BWAPI::UnitTypes::None);
+}
+
 OwnStrategy::OwnStrategy(std::string& name, std::string& opener)
 	:_name(name), _opener(opener)
 {
@@ -236,5 +305,6 @@ Production::TechMacro OwnStrategy::GetMacroTechType() const
 			return Production::TechMacro{ (*it)._upgrade };
 		}
 	}
-	return Production::TechMacro(BWAPI::UnitTypes::None);
+	
+	return GetMacroAfterTechPathDone();
 }
