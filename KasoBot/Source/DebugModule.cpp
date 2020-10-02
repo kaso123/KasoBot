@@ -130,13 +130,16 @@ void DebugModule::DrawProduction()
 	//draw next unit type for all macro production types
 	y += 10;
 	//production
-	BWAPI::Broodwar->drawTextScreen(10, y, "Next:\n%s", StrategyModule::Instance()->GetActiveStrat()->GetMacroProductionType().getName().c_str());
-	
+	for (auto& type : StrategyModule::Instance()->GetActiveStrat()->GetProductionItems())
+	{
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s %.2f", type._type.getName().c_str(), type._proportion);
+		y += 10;
+	}
 	y += 30;
 	//army
-	for (auto& type : StrategyModule::Instance()->GetActiveStrat()->GetMacroArmyTypes())
+	for (auto& type : StrategyModule::Instance()->GetActiveStrat()->GetUnitItems())
 	{
-		BWAPI::Broodwar->drawTextScreen(10, y, "%s", type.getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(10, y, "%s %.2f", type._type.getName().c_str(), type._proportion);
 		y += 10;
 	}
 

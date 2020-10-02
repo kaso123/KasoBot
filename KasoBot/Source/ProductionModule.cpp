@@ -266,7 +266,7 @@ bool ProductionModule::BuildUnit(BWAPI::UnitType type)
 
 	for (auto& building : (*it).second)
 	{
-		if (building->GetPointer()->isIdle())
+		if (building->GetPointer()->isIdle() && !building->IsLocked())
 		{
 			if (building->GetPointer()->train(type)) //training started
 			{
@@ -445,6 +445,9 @@ int ProductionModule::GetCountOf(BWAPI::UnitType type)
 	}
 	else
 	{
+		if (type.isWorker())
+			return WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas();
+
 		auto it = _unitList.find(type);
 
 		if (it == _unitList.end())

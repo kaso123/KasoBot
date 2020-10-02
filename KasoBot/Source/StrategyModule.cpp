@@ -78,10 +78,14 @@ bool StrategyModule::MacroTech()
 
 bool StrategyModule::MacroProduction()
 {
-	if (!ProductionModule::Instance()->CheckResources(_activeStrat->GetMacroProductionType()) || ProductionModule::Instance()->IsInQueue(_activeStrat->GetMacroProductionType()))
+	BWAPI::UnitType next = _activeStrat->GetMacroProductionType();
+	if (next == BWAPI::UnitTypes::None)
 		return false;
 
-	return ProductionModule::Instance()->BuildBuilding(_activeStrat->GetMacroProductionType());
+	if (!ProductionModule::Instance()->CheckResources(next) || ProductionModule::Instance()->IsInQueue(next))
+		return false;
+
+	return ProductionModule::Instance()->BuildBuilding(next);
 }
 
 StrategyModule* StrategyModule::Instance()
@@ -266,6 +270,7 @@ void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
 			strategy->AddTech(Config::Utils::TechTypeFromString(item));
 		}
 	}
+	strategy->CalculateProduction();
 }
 
 const std::vector<std::unique_ptr<EnemyStrategy>>& StrategyModule::GetEnemyStrategies()

@@ -281,8 +281,8 @@ BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UnitType type)
 
 BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::TechType type)
 {
-	if (ProductionModule::Instance()->GetCountOf(type.requiredUnit()) < 1)
-			return Config::Utils::NextPrerequisite(type.requiredUnit()); //recursively check requirements
+	if (ProductionModule::Instance()->GetCountOf(type.whatResearches()) < 1)
+			return Config::Utils::NextPrerequisite(type.whatResearches()); //recursively check requirements
 
 	return BWAPI::UnitTypes::None;
 }
@@ -294,8 +294,11 @@ BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UpgradeType type)
 	int currLevel = BWAPI::Broodwar->self()->getUpgradeLevel(type);
 	_ASSERT(currLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(type));
 
-	if (ProductionModule::Instance()->GetCountOf(type.whatsRequired(currLevel + 1)) < 1)
+	BWAPI::UnitType reqType = type.whatsRequired(currLevel + 1);
+	if(reqType != BWAPI::UnitTypes::None && ProductionModule::Instance()->GetCountOf(reqType) < 1)
 		return Config::Utils::NextPrerequisite(type.whatsRequired(currLevel + 1)); //recursively check requirements
 
+	if (ProductionModule::Instance()->GetCountOf(type.whatUpgrades()) < 1)
+		return Config::Utils::NextPrerequisite(type.whatUpgrades()); //recursively check building which upgrades this
 	return BWAPI::UnitTypes::None;
 }
