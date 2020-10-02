@@ -249,32 +249,32 @@ bool ProductionModule::BuildRefineryAtExpansion(Expansion& exp)
 
 }
 
-bool ProductionModule::BuildUnit(BWAPI::UnitType type)
+std::pair<bool,bool> ProductionModule::BuildUnit(BWAPI::UnitType type)
 {
 	_ASSERT(!type.isBuilding());
 
-	if (!CheckResources(type))
-		return false;
-
 	if (type.isWorker())
-		return WorkersModule::Instance()->BuildWorker();
+		return { WorkersModule::Instance()->BuildWorker(), false };
 
 	//find building type that builds this
 	auto it = _buildingList.find(type.whatBuilds().first);
 	if (it == _buildingList.end())
-		return false;
+		return { false,false };
 
 	for (auto& building : (*it).second)
 	{
 		if (building->GetPointer()->isIdle() && !building->IsLocked())
 		{
+			if (!CheckResources(type))
+				return { false, true };
+
 			if (building->GetPointer()->train(type)) //training started
 			{
-				return true;
+				return { true,false };
 			}
 		}
 	}
-	return false;
+	return { false, false };
 }
 
 bool ProductionModule::MakeTech(BWAPI::UpgradeType type)
@@ -353,9 +353,9 @@ void ProductionModule::FreeResources(BWAPI::UnitType type)
 
 bool ProductionModule::CheckResources(BWAPI::UnitType type)
 {
-	if (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice())
+	if ((type.mineralPrice() > 0) && (BWAPI::Broodwar->self()->minerals() - _reservedMinerals < type.mineralPrice()))
 		return false;
-	if (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice())
+	if ((type.gasPrice() > 0) && (BWAPI::Broodwar->self()->gas() - _reservedGas < type.gasPrice()))
 		return false;
 
 	return true;
@@ -403,7 +403,7 @@ bool ProductionModule::NewTask(BWAPI::UnitType type)
 		return BuildBuilding(type);
 	}
 
-	return BuildUnit(type);
+	return BuildUnit(type).first;
 }
 
 bool ProductionModule::IsInQueue(BWAPI::UnitType type)

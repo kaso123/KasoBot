@@ -42,15 +42,17 @@ bool StrategyModule::MacroSaturation()
 	if (WorkersModule::Instance()->BasesFull())
 		return false;
 
-	return ProductionModule::Instance()->BuildUnit(BWAPI::UnitTypes::Terran_SCV);
+	return ProductionModule::Instance()->BuildUnit(BWAPI::UnitTypes::Terran_SCV).first;
 }
 
 bool StrategyModule::MacroArmy()
 {
 	for (auto& type : _activeStrat->GetMacroArmyTypes())
 	{
-		if (ProductionModule::Instance()->BuildUnit(type))
-			return true;
+		std::pair<bool, bool> retVal; //training started / resources block
+		retVal = ProductionModule::Instance()->BuildUnit(type);
+		if (retVal.first || retVal.second)
+			return true; //return true also when resource blocked, so we do not continue in macro chain
 	}
 	return false;
 }

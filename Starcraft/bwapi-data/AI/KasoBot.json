@@ -31,7 +31,7 @@
     "enemyInfo": true
   },
   "strategy": {
-    "default": "default_bio",
+    "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
     "maxArmySupply": 30,
     "scout": {
@@ -41,7 +41,7 @@
     }
   },
   "openers": {
-    "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine" ],
+    "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"]
   },
   "strategies": [
@@ -56,8 +56,8 @@
       "tech": [ "stim", "engineering_bay", "infantry_weapons"]
     },
     {"name": "rush_bc",
-     "opener": "test2",
-     "units": {"marine":3, "battlecruiser":5, "tank":1},
+     "opener": "test1",
+     "units": {"marine":3, "battlecruiser":2, "tank":1, "vulture": 3 },
       "tech": [ "starport", "armory", "control_tower", "ship_weapons", "science_facility", "physics_lab", "yamato" ]
     }
   ],

@@ -51,8 +51,8 @@ namespace KasoBot {
 		bool BuildRefineryAtExpansion(Expansion& exp);
 
 		//find building that builds this unit and build it
-		//@return true if unit was started
-		bool BuildUnit(BWAPI::UnitType type);
+		//@return pair of booleans, first whether training started, second is true when resource blocked
+		std::pair<bool, bool> BuildUnit(BWAPI::UnitType type);
 
 		//find building that can make this upgrade and try to do it
 		bool MakeTech(BWAPI::UpgradeType type);
