@@ -15,6 +15,9 @@
 #include "EnemyStrategy.h"
 #include "OwnStrategy.h"
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
 using namespace KasoBot;
 
 DebugModule* DebugModule::_instance = 0;
@@ -92,7 +95,7 @@ int DebugModule::DrawArmy()
 	int i = 1;
 	for (auto& army : ArmyModule::Instance()->Armies())
 	{
-		BWAPI::Broodwar->drawTextScreen(420, y, "Army no. %i: %i supply", i++, army->GetSupply() / 2);
+		BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "Army no. %i: %i supply", i++, army->GetSupply() / 2);
 		y += 10;
 	}
 	return y+5;
@@ -204,14 +207,14 @@ void DebugModule::DrawResources()
 void DebugModule::DrawStrategy()
 {	
 	//draw opener
-	BWAPI::Broodwar->drawTextScreen(120, 10, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
-	BWAPI::Broodwar->drawTextScreen(120, 20, "Strat: %s", StrategyModule::Instance()->GetStratName().c_str());
-	BWAPI::Broodwar->drawTextScreen(120, 35, "Enemy is: %s", ScoutModule::Instance()->GetEnemyRace().toString().c_str());
+	BWAPI::Broodwar->drawTextScreen(200, 10, "Opening: %s", StrategyModule::Instance()->GetOpenerName().c_str());
+	BWAPI::Broodwar->drawTextScreen(200, 20, "Strat: %s", StrategyModule::Instance()->GetStratName().c_str());
+	BWAPI::Broodwar->drawTextScreen(200, 35, "Enemy is: %s", ScoutModule::Instance()->GetEnemyRace().toString().c_str());
 	
 	int y = 45;
 	for (auto& strat : StrategyModule::Instance()->GetEnemyStrategies())
 	{
-		BWAPI::Broodwar->drawTextScreen(120, y, "%s : %i", strat->GetName().c_str(),strat->Score());
+		BWAPI::Broodwar->drawTextScreen(200, y, "%s : %i", strat->GetName().c_str(),strat->Score());
 		y += 10;
 	}
 }
@@ -219,12 +222,12 @@ void DebugModule::DrawStrategy()
 void DebugModule::DrawEnemy(int y)
 {
 	//draw enemy counts for unit types
-	BWAPI::Broodwar->drawTextScreen(420, y, "Enemies:");
+	BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "Enemies:");
 	y += 10;
 
 	for (auto& type : ScoutModule::Instance()->GetEnemies())
 	{
-		BWAPI::Broodwar->drawTextScreen(420, y, "%i %s", type.second.size(), type.first.getName().c_str());
+		BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "%i %s", type.second.size(), type.first.getName().c_str());
 		y += 10;
 	}
 
