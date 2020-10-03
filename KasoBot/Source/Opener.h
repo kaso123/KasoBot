@@ -18,6 +18,9 @@ namespace KasoBot {
 		//remove first element for queue
 		//@return true if opener was finished
 		bool Pop();
+
+		//remove all items that are done, only called when switching openers mid game
+		void ResetProgress();
 	};
 
 }

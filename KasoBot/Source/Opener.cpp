@@ -1,5 +1,6 @@
 #include "Opener.h"
 #include "Config.h"
+#include "ProductionModule.h"
 
 using namespace KasoBot;
 
@@ -38,4 +39,28 @@ bool Opener::Pop()
 	_queue.pop_front();
 	
 	return _queue.size() <= 0;
+}
+
+void Opener::ResetProgress()
+{
+	std::deque<BWAPI::UnitType> newQueue;
+
+	//check how much of opener is already done
+	std::map<BWAPI::UnitType, int> previous;
+
+	for (auto& type : _queue)
+	{
+		auto typeIt = previous.find(type);
+		if (typeIt != previous.end()) //not first
+			typeIt->second++;
+		else typeIt = previous.emplace(type, 1).first;
+
+		if (ProductionModule::Instance()->GetCountOf(typeIt->first) >= typeIt->second)
+			continue;
+
+		newQueue.emplace_back(type);
+	}
+
+	_queue.clear();
+	_queue = newQueue;
 }

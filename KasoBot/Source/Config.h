@@ -43,6 +43,7 @@ namespace KasoBot {
 
 		int _maxArmySupply = 60;
 		int _firstScoutSupply = 8;
+		int _skipOpenerAt = 4320; //3 minutes
 
 	public:
 		static ConfigModule* Instance();
@@ -78,6 +79,7 @@ namespace KasoBot {
 
 		int MaxArmySupply() { return _maxArmySupply; }
 		int FirstScoutSupply() { return _firstScoutSupply; }
+		int SkipOpenerAt() { return _skipOpenerAt; }
 	};
 
 	namespace Config {
@@ -169,6 +171,9 @@ namespace KasoBot {
 
 			//@return number of workers when first scout should start
 			int FirstScoutSupply();
+
+			//@return number of frames when we no longer do openers of strategies after switch
+			int SkipOpenerAt();
 		}
 
 		namespace Utils {

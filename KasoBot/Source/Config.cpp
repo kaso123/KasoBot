@@ -86,6 +86,7 @@ void ConfigModule::Init()
 	if (j.contains("strategy"))
 	{
 		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
+		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
 
 		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");
 
@@ -172,6 +173,7 @@ bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
+int Config::Strategy::SkipOpenerAt() { return ConfigModule::Instance()->SkipOpenerAt(); }
 
 namespace {
 	std::map<std::string, std::string> aliases{

@@ -101,6 +101,12 @@ namespace KasoBot {
 		//return list of possible enemy strategies according to his race
 		const std::vector<std::unique_ptr<EnemyStrategy>>& GetEnemyStrategies();
 
+		//change used strategy, also check if everything in opener is done
+		void SwitchStrategy(OwnStrategy* newStrat, const std::string& name);
+
+		//change used strategy, also check if everything in opener is done
+		void SwitchOpener(Opener* newOpener, const std::string& name);
+
 		//getters and setters
 
 		int EnemyLostMinerals() const { return _enemyLostMinerals; }

@@ -163,14 +163,12 @@ void StrategyModule::SetOpener(const std::string & name)
 		//choose random opener
 		auto it = _openers.begin();
 		std::advance(it, rand() % _openers.size());
-		_activeOpener = it->second.get();
-		_activeOpenerName = "random: "+it->first;
+		SwitchOpener(it->second.get(), "(rnd) " + it->first);
 		return;
 	}
 
 	//set opener
-	_activeOpenerName = name;
-	_activeOpener = _openers[name].get();
+	SwitchOpener(_openers[name].get(), name);
 }
 
 void StrategyModule::SetStrategy(const std::string& name)
@@ -183,16 +181,13 @@ void StrategyModule::SetStrategy(const std::string& name)
 		//choose random strat
 		auto it = _strategies.begin();
 		std::advance(it, rand() % _strategies.size());
-		_activeStrat = it->second.get();
-		_activeStratName = "random: " + it->first;
-		SetOpener(_activeStrat->GetOpener());
+
+		SwitchStrategy(it->second.get(),"(rnd) " + it->first);
 		return;
 	}
 
 	//set strat
-	_activeStratName = name;
-	_activeStrat = _strategies[name].get();
-	SetOpener(_activeStrat->GetOpener());
+	SwitchStrategy(_strategies[name].get(),name);
 }
 
 void StrategyModule::SetCycle(nlohmann::json & itemsArray)
@@ -283,5 +278,28 @@ const std::vector<std::unique_ptr<EnemyStrategy>>& StrategyModule::GetEnemyStrat
 		return _stratsP;
 
 	return _stratsZ;
+}
+
+void StrategyModule::SwitchStrategy(OwnStrategy * newStrat, const std::string& name)
+{
+	_activeStrat = newStrat;
+	_activeStratName = name;
+	SetOpener(_activeStrat->GetOpener());
+	return;
+}
+
+void StrategyModule::SwitchOpener(Opener * newOpener, const std::string & name)
+{
+	if (BWAPI::Broodwar->getFrameCount() > Config::Strategy::SkipOpenerAt())
+	{
+		//opener was finished
+		_activeOpener = nullptr;
+		_activeOpenerName = "skipped";
+	}
+		
+	_activeOpener = newOpener;
+	_activeOpenerName = name;
+
+	_activeOpener->ResetProgress();
 }
 
