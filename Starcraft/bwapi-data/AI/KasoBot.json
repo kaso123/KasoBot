@@ -65,6 +65,7 @@
   "enemyStrategies": {
     "terran": [
       {"name": "m&m",
+       "counters": ["default_mech"],
        "types":[
          {"type": "medic", "include": true, "value": 100},
          {"type": "marine", "include": true, "value": 50, "count": 5},
@@ -75,6 +76,7 @@
     ],
     "protoss": [
       {"name": "ZealotRush",
+       "counters":  ["default_bio"],
        "types": [
          {"type": "zealot","include": true, "value": 100, "count": 3},
          {"type": "gateway", "include": true, "value": 100, "count": 2},
@@ -82,6 +84,7 @@
        ]
       },
       {"name": "FastDT",
+       "counters": ["rush_bc"],
        "types": [
          {"type": "dragoon", "include": false, "value": 50},
          {"type": "citadel", "include": true, "value": 75}, 
@@ -92,6 +95,7 @@
     ],
     "zerg": [
       {"name": "ZerglingRush",
+       "counters": ["default_bio"],
        "types": [
          {"type": "zergling","include": true, "value": 100, "count": 6},
          {"type": "pool", "include": true, "value": 100},
@@ -100,6 +104,7 @@
        ]
       },
       {"name": "HydraPush",
+       "counters": ["default_bio", "rush_bc"],
        "types": [
          {"type": "hydralisk", "include": true, "value": 100},
          {"type": "spire", "include": false, "value": 100}, 

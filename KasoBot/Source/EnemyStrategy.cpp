@@ -35,6 +35,11 @@ void EnemyStrategy::AddItem(BWAPI::UnitType type, int value, int limit, bool inc
 	_items.emplace_back(std::make_unique<Enemy::StratItem>(type, value, limit, include));
 }
 
+void EnemyStrategy::AddCounter(std::string & name)
+{
+	_counters.emplace_back(name);
+}
+
 int EnemyStrategy::Score()
 {
 	int result = 0;

@@ -90,6 +90,57 @@ bool StrategyModule::MacroProduction()
 	return ProductionModule::Instance()->BuildBuilding(next);
 }
 
+void StrategyModule::CheckEnemyStrat()
+{
+	auto race = ScoutModule::Instance()->GetEnemyRace();
+	
+	if (race == BWAPI::Races::Unknown)
+		return;
+
+	EnemyStrategy* best = nullptr;
+	int scoreBest = INT_MIN;
+
+	for (auto& strat : GetEnemyStrategies())
+	{
+		int score = strat->Score();
+		if (score > scoreBest)
+		{
+			scoreBest = score;
+			best = strat.get();
+		}
+	}
+
+	if (best && best != _activeEnemyStrat)
+	{
+		_activeEnemyStrat = best;
+		ChooseNewStrat();
+	}
+}
+
+void StrategyModule::ChooseNewStrat()
+{
+	if (!_activeEnemyStrat)
+		return;
+
+	auto& vec = _activeEnemyStrat->GetCounters();
+
+	if (vec.empty())
+		return;
+	
+	//if we are already doing counter stay on it
+	if (_activeStrat && std::find(vec.begin(), vec.end(), _activeStrat->GetName()) != vec.end())
+		return;
+
+	//choose randomly from counters
+	//TODO do some scoring system when enemy strat has multiple counters
+
+	srand(unsigned int(time(NULL)));
+	auto it = vec.begin();
+	std::advance(it, rand() % vec.size());
+
+	SetStrategy(*it);
+}
+
 StrategyModule* StrategyModule::Instance()
 {
 	if (!_instance)
@@ -99,6 +150,8 @@ StrategyModule* StrategyModule::Instance()
 
 void StrategyModule::OnFrame()
 {
+	CheckEnemyStrat();
+	
 	if (_activeOpener)
 	{
 		if (ProductionModule::Instance()->NewTask(_activeOpener->Next()))
@@ -138,8 +191,6 @@ void StrategyModule::OnFrame()
 				break;
 		}			
 	}
-
-
 }
 
 void StrategyModule::EnemyDestroyed(BWAPI::UnitType type)
@@ -235,7 +286,15 @@ void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, 
 		_ASSERT(item["include"].is_boolean());
 
 		strategy->AddItem(Config::Utils::TypeFromString(item["type"]), item["value"].get<int>(),
-			item.contains("limit") ? item["limit"].get<int>() : 1, item["include"].get<bool>());
+			item.contains("count") ? item["count"].get<int>() : 1, item["include"].get<bool>());
+	}
+
+	if (strat.contains("counters") && strat["counters"].is_array())
+	{
+		for (auto& counter : strat["counters"])
+		{
+			strategy->AddCounter(counter.get<std::string>());
+		}
 	}
 }
 

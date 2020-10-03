@@ -71,6 +71,12 @@ namespace KasoBot {
 		//try to build more production buildings
 		bool MacroProduction();
 
+		//cycle through all possible enemy strategies and choose which has best score
+		void CheckEnemyStrat();
+
+		//choose new strategy that counters enemy strategy
+		void ChooseNewStrat();
+
 	public:
 		static StrategyModule* Instance();
 

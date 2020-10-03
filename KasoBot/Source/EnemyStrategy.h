@@ -20,6 +20,7 @@ namespace KasoBot {
 		std::string _name;
 		int _id;
 		std::vector<std::unique_ptr<Enemy::StratItem>> _items;
+		std::vector<std::string> _counters;
 
 		//get score for this specific item
 		int Evaluate(Enemy::StratItem& item);
@@ -30,6 +31,7 @@ namespace KasoBot {
 
 		void AddItem(BWAPI::UnitType type, int value, int limit, bool include);
 
+		void AddCounter(std::string& name);
 
 		//get score for this strategy considering known enemy buildings and units
 		int Score();
@@ -38,5 +40,6 @@ namespace KasoBot {
 
 		const std::string& GetName() const { return _name; }
 		const int GetID() const { return _id; }
+		const std::vector<std::string>& GetCounters() const { return _counters; }
 	};
 }
