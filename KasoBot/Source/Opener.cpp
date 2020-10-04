@@ -41,13 +41,17 @@ bool Opener::Pop()
 	return _queue.size() <= 0;
 }
 
-void Opener::ResetProgress()
+bool Opener::ResetProgress()
 {
 	std::deque<BWAPI::UnitType> newQueue;
 
 	//check how much of opener is already done
 	std::map<BWAPI::UnitType, int> previous;
-
+	
+	//add starting units to map
+	previous.emplace(BWAPI::UnitTypes::Terran_Command_Center, 1);
+	previous.emplace(BWAPI::UnitTypes::Terran_SCV, 4);
+	
 	for (auto& type : _queue)
 	{
 		auto typeIt = previous.find(type);
@@ -63,4 +67,6 @@ void Opener::ResetProgress()
 
 	_queue.clear();
 	_queue = newQueue;
+
+	return _queue.empty();
 }

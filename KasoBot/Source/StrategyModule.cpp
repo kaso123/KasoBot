@@ -359,6 +359,10 @@ void StrategyModule::SwitchOpener(Opener * newOpener, const std::string & name)
 	_activeOpener = newOpener;
 	_activeOpenerName = name;
 
-	_activeOpener->ResetProgress();
+	if (_activeOpener->ResetProgress())
+	{
+		_activeOpener = nullptr;
+		_activeOpenerName = "finished";
+	}
 }
 

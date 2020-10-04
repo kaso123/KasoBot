@@ -118,7 +118,10 @@ void MainModule::onUnitDestroy(BWAPI::Unit unit)
 		if (unit->getType().isBuilding())
 		{
 			if (!unit->isCompleted())
+			{
 				ProductionModule::Instance()->RemoveBuilding(unit);
+				return;
+			}
 
 			if (unit->getType().isResourceDepot())
 			{

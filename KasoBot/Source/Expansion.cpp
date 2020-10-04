@@ -85,7 +85,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	_ASSERT(VerifyWorkers());
 
 	//check if refinery should be built, don't interfere with opener
-	if (!_refinery && !StrategyModule::Instance()->IsOpenerActive())
+	if (!_refinery && !StrategyModule::Instance()->IsOpenerActive() && !_station->getBWEMBase()->Geysers().empty())
 	{
 		if(_workersMinerals >= Config::Workers::StartGasAfter() && !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Refinery))
 			ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Refinery);
@@ -182,6 +182,10 @@ bool Expansion::IsSaturated()
 	if (_refinery && _workersGas < Config::Workers::SaturationPerGas())
 		return false;
 
+	//no minerals left so exp is full with 0 workers
+	if (_station->getBWEMBase()->Minerals().empty())
+		return true;
+
 	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() > _workersMinerals)
 		return false;
 
@@ -192,6 +196,10 @@ bool Expansion::IsFull()
 {
 	if (_refinery && _workersGas < Config::Workers::MaxPerGas())
 		return false;
+
+	//no minerals left so exp is full with 0 workers
+	if (_station->getBWEMBase()->Minerals().empty())
+		return true;
 
 	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::MaxPerMineral() > _workersMinerals)
 		return false;

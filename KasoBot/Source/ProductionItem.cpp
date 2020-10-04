@@ -66,7 +66,9 @@ void ProductionItem::WorkerDied()
 	if (_state == Production::State::ASSIGNED)
 	{
 		//when only assigned -> go to waiting
-		_state = Production::State::WAITING;
+		if(_unfinished)
+			_state = Production::State::UNFINISHED;
+		else _state = Production::State::WAITING;
 		return;
 	}
 
@@ -81,7 +83,7 @@ void ProductionItem::WorkerDied()
 
 void ProductionItem::BuildingDestroyed()
 {
-	if (_state == Production::State::BUILDING || _state == Production::State::ASSIGNED)
+	if (_state == Production::State::BUILDING)
 	{
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
@@ -96,6 +98,20 @@ void ProductionItem::BuildingDestroyed()
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 		ProductionModule::Instance()->ReserveResources(_type);
+		return;
+	}
+	if (_state == Production::State::ASSIGNED && !_unfinished)
+	{
+		_state = Production::State::WAITING;
+		WorkersModule::Instance()->BuildFailed(this);
+		return;
+	}
+	if (_state == Production::State::ASSIGNED && _unfinished)
+	{
+		_unfinished = false;
+		_state = Production::State::WAITING;
+		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
+		WorkersModule::Instance()->BuildFailed(this);
 		return;
 	}
 

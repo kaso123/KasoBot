@@ -53,7 +53,7 @@ ProductionModule* ProductionModule::Instance()
 
 void ProductionModule::OnFrame()
 {
-	if(!StrategyModule::Instance()->IsOpenerActive())
+	if(!StrategyModule::Instance()->IsOpenerActive() || BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 2)
 		PreventSupplyBlock();
 
 	//sort items by status

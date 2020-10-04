@@ -20,7 +20,8 @@ namespace KasoBot {
 		bool Pop();
 
 		//remove all items that are done, only called when switching openers mid game
-		void ResetProgress();
+		//@return true if there is nothing left in opener queue
+		bool ResetProgress();
 	};
 
 }

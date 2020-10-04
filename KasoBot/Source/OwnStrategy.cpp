@@ -2,6 +2,7 @@
 #include "StrategyModule.h"
 #include "ProductionModule.h"
 #include "Config.h"
+#include "Unit.h"
 
 using namespace KasoBot;
 
@@ -31,6 +32,21 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 		BWAPI::UnitType req = Config::Utils::NextPrerequisite(item._upgrade);
 		if (req != BWAPI::UnitTypes::None)
 			return Production::TechMacro(req);
+		
+		//double up on upgrade buildings
+		if (ProductionModule::Instance()->GetCountOf(item._upgrade.whatUpgrades()) < 2)
+		{
+			auto it = ProductionModule::Instance()->Buildings().find(item._upgrade.whatUpgrades());
+			if (it != ProductionModule::Instance()->Buildings().end())
+			{
+				//if the only building is upgrading sth else build another
+				if (!it->second.empty() && it->second.front()->GetPointer()->isUpgrading()) 
+				{
+					return Production::TechMacro(item._upgrade.whatUpgrades());
+				}
+			}
+			else return Production::TechMacro(item._upgrade.whatUpgrades());
+		}
 
 		return Production::TechMacro(item._upgrade);
 	}
@@ -51,6 +67,20 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 			if (req != BWAPI::UnitTypes::None)
 				return Production::TechMacro(req);
 
+			//double up on upgrade buildings
+			if (ProductionModule::Instance()->GetCountOf(upgrade.whatUpgrades()) < 2)
+			{
+				auto it = ProductionModule::Instance()->Buildings().find(upgrade.whatUpgrades());
+				if (it != ProductionModule::Instance()->Buildings().end())
+				{
+					//if the only building is upgrading sth else build another
+					if (!it->second.empty() && it->second.front()->GetPointer()->isUpgrading())
+					{
+						return Production::TechMacro(upgrade.whatUpgrades());
+					}
+				}
+				else return Production::TechMacro(upgrade.whatUpgrades());
+			}
 			return Production::TechMacro(upgrade);
 		}
 		for (auto& tech : BWAPI::TechTypes::allTechTypes()) //cycle through tech and check if anything is useful for this unit
