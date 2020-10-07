@@ -11,6 +11,7 @@ namespace KasoBot {
 	}
 
 	class Worker;
+	class Task;
 
 	class DebugModule
 	{
@@ -22,6 +23,7 @@ namespace KasoBot {
 		bool _drawMap;
 		bool _drawWorkers;
 		bool _drawArmy;
+		bool _drawTasks;
 		bool _drawProduction;
 		bool _drawStrategy;
 		bool _drawOrders;
@@ -33,6 +35,7 @@ namespace KasoBot {
 		void DrawWorkers();
 		void DrawSingleWorker(const Worker& worker);
 		int DrawArmy();
+		void DrawTasks();
 		void DrawProduction();
 		void DrawBases();
 		void DrawResources();
@@ -47,6 +50,9 @@ namespace KasoBot {
 
 		//@return string representation of worker role enum
 		const char* UnitRoleString(Units::Role role);
+
+		//@return string representation of task
+		const char* GetTaskString(Task* task);
 	
 	public:
 		static DebugModule* Instance();

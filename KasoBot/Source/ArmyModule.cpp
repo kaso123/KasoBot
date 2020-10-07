@@ -68,6 +68,11 @@ void ArmyModule::OnFrame()
 	}
 
 	AssignTasks();
+
+	for (auto& army : _armies)
+	{
+		army->OnFrame();
+	}
 	
 }
 

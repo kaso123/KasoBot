@@ -24,7 +24,7 @@ using namespace KasoBot;
 DebugModule* DebugModule::_instance = 0;
 
 DebugModule::DebugModule()
-	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army())
+	:_drawMap(Config::Debug::Map()), _drawWorkers(Config::Debug::Workers()), _drawArmy(Config::Debug::Army()), _drawTasks(Config::Debug::Tasks())
 	, _drawProduction(Config::Debug::BuildOrder()), _drawStrategy(Config::Debug::Strategy()), _drawOrders(Config::Debug::Orders())
 	, _drawResources(Config::Debug::Resources()), _drawEnemy(Config::Debug::Enemy()), _drawBases(Config::Debug::Bases())
 {
@@ -96,10 +96,39 @@ int DebugModule::DrawArmy()
 	int i = 1;
 	for (auto& army : ArmyModule::Instance()->Armies())
 	{
-		BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "Army no. %i: %i supply", i++, army->GetSupply() / 2);
+		BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "Army no. %i: %i supply, task: %s", i++, army->GetSupply() / 2, GetTaskString(army->Task()));
 		y += 10;
+
+		BWAPI::Broodwar->drawBoxMap(army->BoundingBox()._topLeft, army->BoundingBox()._bottomRight, BWAPI::Colors::Orange, false);
 	}
 	return y+5;
+}
+
+void DebugModule::DrawTasks()
+{
+	BWAPI::Color color;
+
+	for (auto& task : ArmyModule::Instance()->Tasks())
+	{
+		if (!task->Position().isValid())
+			continue;
+		//TODO draw tasks with area instead of pos
+
+		if (task->Type() == Tasks::Type::ATTACK) color = BWAPI::Colors::Red; //red
+		if (task->Type() == Tasks::Type::DEFEND) color = BWAPI::Colors::Green; //green
+		if (task->Type() == Tasks::Type::SCOUT) color = BWAPI::Colors::Green; //teal
+
+		BWAPI::Broodwar->drawCircleMap(task->Position(), 100, color, false);
+	}
+
+	for (auto& army : ArmyModule::Instance()->Armies())
+	{
+		if (!army->Task() || !army->Task()->Position().isValid())
+			continue;
+		//TODO draw tasks with areas instead of pos
+
+		BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->Position(), BWAPI::Colors::White);
+	}
 }
 
 void DebugModule::DrawProduction()
@@ -319,6 +348,21 @@ const char* DebugModule::UnitRoleString(Units::Role role)
 	return "Idle";
 }
 
+const char* DebugModule::GetTaskString(Task * task)
+{
+	if (task)
+	{
+		if (task->Type() == Tasks::Type::ATTACK)
+			return "Att";
+		if (task->Type() == Tasks::Type::DEFEND)
+			return "Def";
+		if (task->Type() == Tasks::Type::SCOUT)
+			return "Sct";
+	}
+
+	return "NaN";
+}
+
 DebugModule* DebugModule::Instance()
 {
 	if (!_instance)
@@ -357,6 +401,8 @@ void DebugModule::DrawDebug()
 		DrawResources();
 	if (_drawStrategy)
 		DrawStrategy();
+	if (_drawTasks)
+		DrawTasks();
 
 	int y = 15; //stop overlaping text
 	if (_drawArmy)
@@ -411,6 +457,6 @@ void DebugModule::DebugCommand(std::string& text)
 	}
 	else if (text == "ap")
 	{
-		ArmyModule::Instance()->AddTask(Tasks::Type::ATTACK, BWAPI::Broodwar->getMousePosition());
+		ArmyModule::Instance()->AddTask(Tasks::Type::ATTACK, BWAPI::Broodwar->getMousePosition() + BWAPI::Broodwar->getScreenPosition());
 	}
 }

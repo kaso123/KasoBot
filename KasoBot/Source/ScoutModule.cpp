@@ -57,6 +57,9 @@ void ScoutModule::ResetEnemyInfo()
 
 void ScoutModule::ResetBaseInfo()
 {
+	if (!_enemyStart) //don't reset state until we find enemy base
+		return;
+
 	for (auto& station : BWEB::Stations::getStations())
 	{
 		auto base = station.getBWEMBase();

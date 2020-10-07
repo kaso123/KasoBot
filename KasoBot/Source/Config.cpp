@@ -62,6 +62,7 @@ void ConfigModule::Init()
 		_debugMap = j["debug"].contains("map") ? j["debug"]["map"] : _debugMap;
 		_debugWorkers = j["debug"].contains("workers") ? j["debug"]["workers"] : _debugWorkers;
 		_debugArmy = j["debug"].contains("army") ? j["debug"]["army"] : _debugArmy;
+		_debugTasks = j["debug"].contains("tasks") ? j["debug"]["tasks"] : _debugTasks;
 		_debugBuildOrder = j["debug"].contains("build") ? j["debug"]["build"] : _debugBuildOrder;
 		_debugStrategy = j["debug"].contains("strategy") ? j["debug"]["strategy"] : _debugStrategy;
 		_debugOrders = j["debug"].contains("orders") ? j["debug"]["orders"] : _debugOrders;
@@ -166,6 +167,7 @@ float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance
 bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
 bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }
 bool Config::Debug::Army() { return ConfigModule::Instance()->DebugArmy(); }
+bool Config::Debug::Tasks() { return ConfigModule::Instance()->DebugTasks(); }
 bool Config::Debug::BuildOrder() { return ConfigModule::Instance()->DebugBuildOrder(); }
 bool Config::Debug::Strategy() { return ConfigModule::Instance()->DebugStrategy(); }
 bool Config::Debug::Orders() { return ConfigModule::Instance()->DebugOrders(); }

@@ -35,6 +35,7 @@ namespace KasoBot {
 		bool _debugMap = false;
 		bool _debugWorkers = false;
 		bool _debugArmy = false;
+		bool _debugTasks = false;
 		bool _debugBuildOrder = false;
 		bool _debugStrategy = false;
 		bool _debugOrders = false;
@@ -72,6 +73,7 @@ namespace KasoBot {
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
 		bool DebugArmy() { return _debugArmy; }
+		bool DebugTasks() { return _debugTasks; }
 		bool DebugBuildOrder() { return _debugBuildOrder; }
 		bool DebugStrategy() { return _debugStrategy; }
 		bool DebugOrders() { return _debugOrders; }
@@ -149,6 +151,9 @@ namespace KasoBot {
 
 			//@return whether to draw unit debug info on screen
 			bool Army();
+
+			//@return whether to draw tasks for army on screen
+			bool Tasks();
 
 			//@return whether to draw build order debug info on screen
 			bool BuildOrder();

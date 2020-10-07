@@ -5,15 +5,46 @@
 
 using namespace KasoBot;
 
+void Army::CalculateCenter()
+{
+	int minX = INT_MAX;
+	int minY = INT_MAX;
+	int maxX = INT_MIN;
+	int maxY = INT_MIN;
+
+	_ASSERT(!_soldiers.empty());
+
+	for (auto& unit : _soldiers)
+	{
+		auto pos = unit->GetPointer()->getPosition();
+		if (pos.x < minX) minX = pos.x;
+		if (pos.x > maxX) maxX = pos.x;
+		if (pos.y < minY) minY = pos.y;
+		if (pos.y > maxY) maxY = pos.y;
+	}
+
+	_box._topLeft = BWAPI::Position(minX, minY);
+	_box._bottomRight = BWAPI::Position(maxX, maxY);
+	_box._center = BWAPI::Position(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+}
+
 Army::Army()
 	:_task(nullptr)
 {
+	_box._topLeft = BWAPI::Position(0, 0);
+	_box._bottomRight = BWAPI::Position(0, 0);
+	_box._center = BWAPI::Position(0, 0);
 }
 
 Army::~Army()
 {
 	if (_task)
 		_task->Stop();
+}
+
+void Army::OnFrame()
+{
+	CalculateCenter();
 }
 
 bool Army::AddSoldier(KasoBot::Unit* unit)

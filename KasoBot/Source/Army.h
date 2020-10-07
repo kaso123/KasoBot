@@ -3,6 +3,13 @@
 
 namespace KasoBot {
 
+	namespace Armies {
+		struct Box {
+			BWAPI::Position _topLeft;
+			BWAPI::Position _bottomRight;
+			BWAPI::Position _center;
+		};
+	}
 	class Unit;
 	class Task;
 
@@ -11,9 +18,16 @@ namespace KasoBot {
 	private:
 		std::vector <KasoBot::Unit*> _soldiers;
 		Task* _task;
+		Armies::Box _box; //bounding box around all units
+
+		//calculate center point between all units
+		void CalculateCenter();
+
 	public:
 		Army();
 		~Army();
+
+		void OnFrame();
 
 		//add new soldier, army can decline unit for various reasons
 		//@return true if soldier was added to this army
@@ -34,6 +48,7 @@ namespace KasoBot {
 		//getters and setters
 
 		Task* Task() { return _task; }
+		const Armies::Box& BoundingBox() { return _box; }
 	};
 
 }

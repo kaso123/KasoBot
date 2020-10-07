@@ -24,6 +24,7 @@
     "map": true,
     "workers": true,
     "army": true,
+    "tasks":  true,
     "build": true,
     "strategy": true,
     "orders": true,
