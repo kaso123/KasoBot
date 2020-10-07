@@ -27,8 +27,19 @@ void Behaviour::Scout(KasoBot::Unit & unit)
 {
 	if (ScoutModule::Instance()->EnemyStart())
 	{
-		//scout enemy tech inside base
-		auto pos = Map::NextScoutPosition(ScoutModule::Instance()->EnemyStart(), unit.GetPointer()->getPosition());
+		BWAPI::Position pos = BWAPI::Positions::Invalid;
+
+		//scout enemy natural
+		if (ScoutModule::Instance()->EnemyNatural()
+			&& ((BaseInfo*)ScoutModule::Instance()->EnemyNatural()->Bases().front().Ptr())->_owner == Base::Owner::UNKNOWN)
+		{
+			pos = ScoutModule::Instance()->EnemyNatural()->Bases().front().Center();
+		}
+		else //scout enemy tech inside base
+		{
+			pos = Map::NextScoutPosition(ScoutModule::Instance()->EnemyStart(), unit.GetPointer()->getPosition());
+		}
+
 		if (!pos.isValid())
 			return;
 
@@ -39,7 +50,6 @@ void Behaviour::Scout(KasoBot::Unit & unit)
 
 		Move(unit.GetPointer(), pos);
 
-		//TODO scout natural timing
 		return;
 	}
 

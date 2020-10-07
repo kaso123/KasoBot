@@ -14,6 +14,7 @@
     "clearTileLock":  150,
     "enemyPositionReset": 50,
     "hiddenPositionReset": 2000,
+    "hiddenBaseReset": 1000,
     "scoutBaseRadius":  500
   },
   "production": {

@@ -50,6 +50,7 @@ void ConfigModule::Init()
 		_clearTileLock = j["units"].contains("clearTileLock") ? j["units"]["clearTileLock"] : _clearTileLock;
 		_enemyPositionResetFrames = j["units"].contains("enemyPositionReset") ? j["units"]["enemyPositionReset"] : _enemyPositionResetFrames;
 		_hiddenPositionResetFrames = j["units"].contains("hiddenPositionReset") ? j["units"]["hiddenPositionReset"] : _hiddenPositionResetFrames;
+		_hiddenBaseResetFrames = j["units"].contains("hiddenBaseReset") ? j["units"]["hiddenBaseReset"] : _hiddenBaseResetFrames;
 		_scoutBaseRadius = j["units"].contains("scoutBaseRadius") ? j["units"]["scoutBaseRadius"] : _scoutBaseRadius;
 	}
 	if (j.contains("production"))
@@ -157,6 +158,7 @@ int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDela
 int Config::Units::ClearTileLock() { return ConfigModule::Instance()->ClearTileLock(); }
 int Config::Units::EnemyPositionResetFrames() { return ConfigModule::Instance()->EnemyPositionResetFrames(); }
 int Config::Units::HiddenPositionResetFrames() { return ConfigModule::Instance()->HiddenPositionResetFrames(); }
+int Config::Units::HiddenBaseResetFrames() { return ConfigModule::Instance()->HiddenBaseResetFrames(); }
 int Config::Units::ScoutBaseRadius() { return ConfigModule::Instance()->ScoutBaseRadius(); }
 
 float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }

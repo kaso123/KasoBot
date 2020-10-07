@@ -37,9 +37,13 @@ namespace KasoBot {
 		BWAPI::Race _enemyRace;
 
 		const BWEM::Area* _enemyStart; //enemy starting area
+		const BWEM::Area* _enemyNatural;
 
 		//cycle all enemies and save new position for visible enemies
 		void ResetEnemyInfo();
+
+		//cycle all bases and check if they are visible and set appropriate status
+		void ResetBaseInfo();
 
 		//remove specific unit from specific type list
 		void RemoveByID(int unitID, BWAPI::UnitType oldType);
@@ -77,6 +81,7 @@ namespace KasoBot {
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }
 		const BWEM::Area* EnemyStart() const { return _enemyStart; }
+		const BWEM::Area* EnemyNatural() const { return _enemyNatural; }
 
 	};
 }

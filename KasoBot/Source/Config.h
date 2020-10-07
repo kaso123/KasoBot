@@ -27,6 +27,7 @@ namespace KasoBot {
 		int _clearTileLock = 150;
 		int _enemyPositionResetFrames = 50;
 		int _hiddenPositionResetFrames = 2000;
+		int _hiddenBaseResetFrames = 1000;
 		int _scoutBaseRadius = 200;
 
 		float _freeSupplyMultiplier = 1.5f;
@@ -63,6 +64,7 @@ namespace KasoBot {
 		int ClearTileLock() { return _clearTileLock; }
 		int EnemyPositionResetFrames() { return _enemyPositionResetFrames; }
 		int HiddenPositionResetFrames() { return _hiddenPositionResetFrames; }
+		int HiddenBaseResetFrames() { return _hiddenBaseResetFrames; }
 		int ScoutBaseRadius() { return _scoutBaseRadius; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
@@ -123,6 +125,9 @@ namespace KasoBot {
 
 			//number of frames when last seen position of hidden units should be reset to unknown
 			int HiddenPositionResetFrames();
+			
+			//number of frames when empty base should switch state to unknown
+			int HiddenBaseResetFrames();
 
 			//radius of circle when scouting around enemy base
 			int ScoutBaseRadius();

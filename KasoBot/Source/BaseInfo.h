@@ -15,6 +15,7 @@ namespace KasoBot {
 
 	struct BaseInfo {
 		Base::Owner _owner = Base::Owner::UNKNOWN;
+		int _lastSeenFrame = 0;
 	};
 }
 

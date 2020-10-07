@@ -11,7 +11,7 @@ using namespace KasoBot;
 ScoutModule* ScoutModule::_instance = 0;
 
 ScoutModule::ScoutModule()
-	: _enemyStart(nullptr), _enemyRace(BWAPI::Races::Unknown)
+	: _enemyStart(nullptr), _enemyNatural(nullptr), _enemyRace(BWAPI::Races::Unknown)
 {
 }
 
@@ -52,6 +52,41 @@ void ScoutModule::ResetEnemyInfo()
 			enemy.lastPos = pos;
 			enemy.lastSeenFrame = BWAPI::Broodwar->getFrameCount();
 		}
+	}
+}
+
+void ScoutModule::ResetBaseInfo()
+{
+	for (auto& station : BWEB::Stations::getStations())
+	{
+		auto base = station.getBWEMBase();
+		BaseInfo* info = (BaseInfo*)base->Ptr();
+		_ASSERT(info);
+
+		if (info->_owner == Base::Owner::UNKNOWN)
+		{
+			if (BWAPI::Broodwar->isVisible(base->Location()))
+			{
+				info->_owner = Base::Owner::NONE;
+				info->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+			}
+			continue;
+		}
+		if (info->_owner == Base::Owner::NONE)
+		{
+			if (BWAPI::Broodwar->isVisible(base->Location()))
+			{
+				info->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+			}
+			else
+			{
+				if (info->_lastSeenFrame + Config::Units::HiddenBaseResetFrames() < BWAPI::Broodwar->getFrameCount())
+				{
+					info->_owner = Base::Owner::UNKNOWN;
+				}
+			}
+		}
+
 	}
 }
 
@@ -111,7 +146,7 @@ ScoutModule* ScoutModule::Instance()
 void ScoutModule::OnFrame()
 {
 	ResetEnemyInfo();
-
+	ResetBaseInfo();
 }
 
 void ScoutModule::OnStart()
@@ -134,6 +169,10 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 	if (!_enemyStart && unit->getType().isBuilding())
 	{
 		_enemyStart = Map::ClosestStart(unit->getTilePosition());
+		_ASSERT(!_enemyStart->Bases().empty());
+		auto station = BWEB::Stations::getClosestNaturalStation(_enemyStart->Bases().front().Location());
+		_ASSERT(station && station->getBWEMBase());
+		_enemyNatural = station->getBWEMBase()->GetArea();
 
 		//set base as belonging to enemy
 		if (_enemyStart && !_enemyStart->Bases().empty())
