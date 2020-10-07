@@ -8,10 +8,88 @@
 
 #define PI 3.141593
 #define TILE_SIZE 32
-#define DIST_LIMIT 100
-#define SCOUT_ANGLE_INCREASE 0.35
+#define SCOUT_ANGLE_INCREASE 0.2
 
 using namespace KasoBot;
+
+namespace {
+
+	//check calculated point, make sure it is not blocked and is in same area as the base
+	BWAPI::Position GetSafeScoutPoint(BWAPI::Position oldPoint, BWAPI::Position base)
+	{
+		auto area = BWEM::Map::Instance().GetArea(BWAPI::TilePosition(base));
+		_ASSERT(area);
+
+		auto tile = BWAPI::TilePosition(oldPoint);
+		//check area
+		
+		int counter = 0; //safe check
+		bool outOfArea = false; //set to true, when generated point was already outside of area (then we always move the point closer to base)
+		while (counter < 200) //TODO make configurable
+		{
+			counter++;
+			if (tile.isValid() && BWEM::Map::Instance().GetArea(tile) != area)
+			{
+				outOfArea = true;
+				//move point closer
+				auto vector = base - oldPoint;
+
+				//normalized vector
+				float normalLength = sqrt((float)vector.x * (float)vector.x + (float)vector.y * (float)vector.y);
+				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
+				
+				//move closer on vector
+				oldPoint = BWAPI::Position((int)(oldPoint.x + 10 * normalized[0]), (int)(oldPoint.y + 10 * normalized[1])); //TODO make configurable
+				tile = BWAPI::TilePosition(oldPoint);
+				continue;
+			}
+
+			if (!tile.isValid())
+				outOfArea = true;
+
+			if (tile.isValid() && BWEB::Map::isWalkable(tile) && BWEB::Map::isUsed(tile) == BWAPI::UnitTypes::None)
+				return BWAPI::Position(tile) + BWAPI::Position(16,16);
+
+			//try to go outwards first
+			if (!outOfArea)
+			{
+				//move point further away from base
+				auto vector = base - oldPoint;
+
+				//normalized vector
+				float normalLength = sqrt((float)vector.x * (float)vector.x + (float)vector.y * (float)vector.y);
+				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
+
+				//move further on vector
+				oldPoint = BWAPI::Position((int)(oldPoint.x - 10 * normalized[0]), (int)(oldPoint.y - 10 * normalized[1])); //TODO make configurable
+				tile = BWAPI::TilePosition(oldPoint);
+				continue;
+			}
+			else //else go closer
+			{
+				//move point closer
+				auto vector = base - oldPoint;
+
+				//normalized vector
+				float normalLength = sqrt((float)vector.x * (float)vector.x + (float)vector.y * (float)vector.y);
+				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
+
+				//move closer on vector
+				oldPoint = BWAPI::Position((int)(oldPoint.x + 10 * normalized[0]), (int)(oldPoint.y + 10 * normalized[1])); //TODO make configurable
+				tile = BWAPI::TilePosition(oldPoint);
+
+				if (oldPoint.getDistance(base) < 30) //TODO make configurable
+					return base;
+
+				continue;
+			}
+		}
+		
+		//couldn't find suitable point, just move towards base
+		return base;
+		
+	}
+}
 
 BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
 {
@@ -194,21 +272,13 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 	int radius = (int)currPos.getDistance(area->Bases().front().Center());
 
 	float angle = acos((currPos.x - originX) / (float)radius);
-	
 	if (currPos.y < originY) //arccos only returns values <0,PI>, upper half of circle
 		angle += 2 * ((float)PI - angle);
-
+	//use angles in steps
+	int steps = (int)ceil(angle / SCOUT_ANGLE_INCREASE);
+	angle = steps * (float)SCOUT_ANGLE_INCREASE;
+	
 	radius = Config::Units::ScoutBaseRadius();
-
-	//calculate point
-	int newX = originX + int(radius * cos(angle));
-	int newY = originY + int(radius * sin(angle));
-	newX = std::clamp(newX, TILE_SIZE, (BWAPI::Broodwar->mapWidth() - 2) * TILE_SIZE);
-	newY = std::clamp(newY, TILE_SIZE, (BWAPI::Broodwar->mapHeight() - 2) * TILE_SIZE);
-
-	BWAPI::Position point = BWAPI::Position(newX, newY);
-	if (point.getDistance(currPos) > DIST_LIMIT)
-		return point;
 
 	//get next angle on circle
 	angle += (float)SCOUT_ANGLE_INCREASE;
@@ -216,12 +286,11 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 		angle -= 2* (float)PI;
 
 	//calculate point
-	newX = originX + int(radius * cos(angle));
-	newY = originY + int(radius * sin(angle));
-	newX = std::clamp(newX, TILE_SIZE, (BWAPI::Broodwar->mapWidth() - 2) * TILE_SIZE);
-	newY = std::clamp(newY, TILE_SIZE, (BWAPI::Broodwar->mapHeight() - 2) * TILE_SIZE);
+	int newX = originX + int(radius * cos(angle));
+	int newY = originY + int(radius * sin(angle));
 
-	point = BWAPI::Position(newX, newY);
+	BWAPI::Position point = BWAPI::Position(newX, newY);
+	point = GetSafeScoutPoint(point, area->Bases().front().Center());
 		return point;
 }
 
