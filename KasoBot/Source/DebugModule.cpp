@@ -14,6 +14,7 @@
 #include "BaseInfo.h"
 #include "EnemyStrategy.h"
 #include "OwnStrategy.h"
+#include "Task.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -407,5 +408,9 @@ void DebugModule::DebugCommand(std::string& text)
 	else if (text == "ba")
 	{
 		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Academy);
+	}
+	else if (text == "ap")
+	{
+		ArmyModule::Instance()->AddTask(Tasks::Type::ATTACK, BWAPI::Broodwar->getMousePosition());
 	}
 }

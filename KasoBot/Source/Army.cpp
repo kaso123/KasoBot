@@ -1,15 +1,19 @@
 #include "Army.h"
 #include "Unit.h"
 #include "Config.h"
+#include "Task.h"
 
 using namespace KasoBot;
 
 Army::Army()
+	:_task(nullptr)
 {
 }
 
 Army::~Army()
 {
+	if (_task)
+		_task->Stop();
 }
 
 bool Army::AddSoldier(KasoBot::Unit* unit)
@@ -57,4 +61,13 @@ void Army::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 			&& (pos.y) - 1 <= y && y < (pos.y + type.tileHeight()))
 			soldier->ClearTile();
 	}
+}
+
+void Army::AssignTask(KasoBot::Task * task)
+{
+	if (_task)
+		_task->Stop();
+
+	_task = task;
+	_task->Start();
 }

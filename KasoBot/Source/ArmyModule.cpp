@@ -1,8 +1,10 @@
 #include "ArmyModule.h"
 #include "Worker.h"
 #include "Army.h"
+#include "MapModule.h"
 #include "ScoutModule.h"
 #include "Config.h"
+#include "Task.h"
 
 using namespace KasoBot;
 
@@ -15,6 +17,23 @@ ArmyModule::ArmyModule()
 ArmyModule::~ArmyModule()
 {
 	delete(_instance);
+}
+
+void ArmyModule::AssignTasks()
+{
+	for (auto& task : _tasks)
+	{
+		if (task->InProgress())
+			continue;
+
+		for (auto& army : _armies)
+		{
+			if (army->Task())
+				continue;
+
+			army->AssignTask(task.get());
+		}
+	}
 }
 
 ArmyModule* ArmyModule::Instance()
@@ -47,6 +66,8 @@ void ArmyModule::OnFrame()
 		if (worker->GetRole() == Units::Role::SCOUT)
 			worker->Scout();
 	}
+
+	AssignTasks();
 	
 }
 
@@ -163,4 +184,26 @@ bool ArmyModule::NeedScout()
 	if (_workers.size() <= 0)
 		return true;
 	return false;
+}
+
+void ArmyModule::AddTask(Tasks::Type type, BWAPI::Position pos)
+{
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == type && task->Position() == pos)
+			return;
+	}
+
+	_tasks.emplace_back(std::make_unique<Task>(type, pos));
+}
+
+void ArmyModule::AddTask(Tasks::Type type, const BWEM::Area * area)
+{
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == type && task->Area() == area)
+			return;
+	}
+
+	_tasks.emplace_back(std::make_unique<Task>(type, area));
 }

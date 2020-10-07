@@ -135,6 +135,7 @@
     <ClCompile Include="source\ProductionModule.cpp" />
     <ClCompile Include="Source\ScoutModule.cpp" />
     <ClCompile Include="Source\StrategyModule.cpp" />
+    <ClCompile Include="Source\Task.cpp" />
     <ClCompile Include="source\Unit.cpp" />
     <ClCompile Include="source\Worker.cpp" />
     <ClCompile Include="source\WorkersModule.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="source\ProductionModule.h" />
     <ClInclude Include="Source\ScoutModule.h" />
     <ClInclude Include="Source\StrategyModule.h" />
+    <ClInclude Include="Source\Task.h" />
     <ClInclude Include="source\Unit.h" />
     <ClInclude Include="source\Worker.h" />
     <ClInclude Include="source\WorkersModule.h" />

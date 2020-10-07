@@ -1,11 +1,15 @@
 #pragma once
 #include <BWAPI.h>
 
+namespace BWEM { class Area; }
+
 namespace KasoBot {
 	
+	namespace Tasks { enum Type; }
 	class Worker;
 	class Unit;
 	class Army;
+	class Task;
 
 	class ArmyModule
 	{
@@ -18,6 +22,12 @@ namespace KasoBot {
 		std::vector<std::shared_ptr<Worker>> _workers;
 
 		std::vector <std::unique_ptr<Army>> _armies;
+
+		std::vector <std::unique_ptr<Task>> _tasks;
+
+		//cycle through tasks and try to assign each to an army
+		void AssignTasks();
+
 	public:
 		static ArmyModule* Instance();
 
@@ -46,6 +56,12 @@ namespace KasoBot {
 		//@return true if no worker is available to scout
 		bool NeedScout();
 
+		//create new task if it doesn't exist already
+		void AddTask(Tasks::Type type, BWAPI::Position pos);
+
+		//create new task if it doesn't exist already
+		void AddTask(Tasks::Type type, const BWEM::Area* area);
+		
 		//getters and setters
 
 		const std::vector <std::unique_ptr<Army>>& Armies() const { return _armies; }

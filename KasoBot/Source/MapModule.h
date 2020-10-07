@@ -2,9 +2,6 @@
 #include <BWAPI.h>
 #include "libs/BWEB/BWEB.h"
 
-namespace BWEB {
-	class Station;
-}
 namespace KasoBot
 {
 	class Expansion;
