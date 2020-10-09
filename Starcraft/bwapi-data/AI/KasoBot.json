@@ -13,6 +13,7 @@
     "orderDelay": 7,
     "clearTileLock":  150,
     "enemyPositionReset": 50,
+    "enemyArmyRange": 6,
     "hiddenPositionReset": 2000,
     "hiddenBaseReset": 1000,
     "scoutBaseRadius":  500

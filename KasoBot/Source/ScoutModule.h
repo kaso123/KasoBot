@@ -8,21 +8,24 @@ namespace BWEM {
 namespace KasoBot {
 
 	struct BaseInfo;
+	class EnemyArmy;
 
 	struct EnemyUnit {
-		int id;
-		BWAPI::TilePosition lastPos;
-		int lastSeenFrame;
-		BWAPI::UnitType type;
-		bool hidden;
+		int _id;
+		BWAPI::TilePosition _lastPos;
+		int _lastSeenFrame;
+		BWAPI::UnitType _type;
+		bool _hidden;
+		EnemyArmy* _army;
 		
 		EnemyUnit(BWAPI::Unit unit) : 
-			id(unit->getID()), lastPos(unit->getTilePosition())
-			,type(unit->getType()), hidden(false), lastSeenFrame(BWAPI::Broodwar->getFrameCount())
+			_id(unit->getID()), _lastPos(unit->getTilePosition()), _army(nullptr)
+			,_type(unit->getType()), _hidden(false), _lastSeenFrame(BWAPI::Broodwar->getFrameCount())
 		{}
+		~EnemyUnit();
 	};
 
-	typedef std::vector<EnemyUnit> EnemyList;
+	typedef std::vector<std::unique_ptr<EnemyUnit>> EnemyList;
 
 	class ScoutModule
 	{
@@ -34,6 +37,7 @@ namespace KasoBot {
 		std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>> _enemies; //List of enemy units we discovered
 		std::vector<std::unique_ptr<BaseInfo>> _baseInfo; //list of baseInfo structs, should be accessed through bWEM, this is only for memory management
 
+		std::vector<std::unique_ptr<EnemyArmy>> _armies; //list of enemy armies that are visible
 		BWAPI::Race _enemyRace;
 
 		const BWEM::Area* _enemyStart; //enemy starting area
@@ -50,6 +54,9 @@ namespace KasoBot {
 
 		//check if this unit was another type before and remove it from list
 		void CheckEnemyEvolution(BWAPI::Unit unit);
+
+		//merge together armies that are close together
+		void MergeArmies();
 
 	public:
 		static ScoutModule* Instance();
@@ -75,11 +82,13 @@ namespace KasoBot {
 		//return enemy race and if it is random set race according to seen units
 		BWAPI::Race GetEnemyRace();
 
-
+		//assign enemy unit to an existing army if close, or to new army
+		void AssignToArmy(EnemyUnit* enemy);
 
 		//getters and setters
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }
+		const std::vector<std::unique_ptr<EnemyArmy>>& GetArmies() const { return _armies; }
 		const BWEM::Area* EnemyStart() const { return _enemyStart; }
 		const BWEM::Area* EnemyNatural() const { return _enemyNatural; }
 

@@ -15,6 +15,7 @@
 #include "EnemyStrategy.h"
 #include "OwnStrategy.h"
 #include "Task.h"
+#include "EnemyArmy.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -99,7 +100,7 @@ int DebugModule::DrawArmy()
 		BWAPI::Broodwar->drawTextScreen(SCREEN_WIDTH - 180, y, "Army no. %i: %i supply, task: %s", i++, army->GetSupply() / 2, GetTaskString(army->Task()));
 		y += 10;
 
-		BWAPI::Broodwar->drawBoxMap(army->BoundingBox()._topLeft, army->BoundingBox()._bottomRight, BWAPI::Colors::Orange, false);
+		BWAPI::Broodwar->drawBoxMap(army->BoundingBox()._topLeft, army->BoundingBox()._bottomRight, BWAPI::Colors::Green, false);
 	}
 	return y+5;
 }
@@ -266,13 +267,19 @@ void DebugModule::DrawEnemy(int y)
 	{
 		for (auto& unit : type.second)
 		{
-			if (unit.hidden && unit.lastPos != BWAPI::TilePositions::Unknown) //only draw unit positions of units in fog-of-war
+			if (unit->_hidden && unit->_lastPos != BWAPI::TilePositions::Unknown) //only draw unit positions of units in fog-of-war
 			{
-				BWAPI::Broodwar->drawBoxMap(BWAPI::Position(unit.lastPos),
-					BWAPI::Position(unit.lastPos) + BWAPI::Position(BWAPI::TilePosition(unit.type.tileWidth(),
-						unit.type.tileHeight())), BWAPI::Colors::Red, false);
+				BWAPI::Broodwar->drawBoxMap(BWAPI::Position(unit->_lastPos),
+					BWAPI::Position(unit->_lastPos) + BWAPI::Position(BWAPI::TilePosition(unit->_type.tileWidth(),
+						unit->_type.tileHeight())), BWAPI::Colors::Yellow, false);
 			}	
 		}
+	}
+
+	//draw army rectangles
+	for (auto& army : ScoutModule::Instance()->GetArmies())
+	{
+		BWAPI::Broodwar->drawBoxMap(army->BoundingBox()._topLeft, army->BoundingBox()._bottomRight, BWAPI::Colors::Red, false);
 	}
 }
 

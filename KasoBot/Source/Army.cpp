@@ -23,17 +23,18 @@ void Army::CalculateCenter()
 		if (pos.y > maxY) maxY = pos.y;
 	}
 
-	_box._topLeft = BWAPI::Position(minX, minY);
-	_box._bottomRight = BWAPI::Position(maxX, maxY);
-	_box._center = BWAPI::Position(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+	_box->_topLeft = BWAPI::Position(minX, minY);
+	_box->_bottomRight = BWAPI::Position(maxX, maxY);
+	_box->_center = BWAPI::Position(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
 }
 
 Army::Army()
 	:_task(nullptr)
 {
-	_box._topLeft = BWAPI::Position(0, 0);
-	_box._bottomRight = BWAPI::Position(0, 0);
-	_box._center = BWAPI::Position(0, 0);
+	_box = std::make_unique<Armies::Box>();
+	_box->_topLeft = BWAPI::Position(0, 0);
+	_box->_bottomRight = BWAPI::Position(0, 0);
+	_box->_center = BWAPI::Position(0, 0);
 }
 
 Army::~Army()

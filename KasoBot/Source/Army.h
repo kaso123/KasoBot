@@ -18,7 +18,7 @@ namespace KasoBot {
 	private:
 		std::vector <KasoBot::Unit*> _soldiers;
 		Task* _task;
-		Armies::Box _box; //bounding box around all units
+		std::unique_ptr<Armies::Box> _box; //bounding box around all units
 
 		//calculate center point between all units
 		void CalculateCenter();
@@ -48,7 +48,7 @@ namespace KasoBot {
 		//getters and setters
 
 		Task* Task() { return _task; }
-		const Armies::Box& BoundingBox() { return _box; }
+		const Armies::Box& BoundingBox() { return *_box; }
 	};
 
 }

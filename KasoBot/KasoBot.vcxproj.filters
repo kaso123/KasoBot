@@ -79,6 +79,7 @@
     <ClCompile Include="Source\EnemyStrategy.cpp" />
     <ClCompile Include="Source\OwnStrategy.cpp" />
     <ClCompile Include="Source\Task.cpp" />
+    <ClCompile Include="Source\EnemyArmy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Source\EnemyStrategy.h" />
     <ClInclude Include="Source\OwnStrategy.h" />
     <ClInclude Include="Source\Task.h" />
+    <ClInclude Include="Source\EnemyArmy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

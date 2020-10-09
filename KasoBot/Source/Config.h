@@ -26,6 +26,7 @@ namespace KasoBot {
 		int _unitOrderDelay = 7;
 		int _clearTileLock = 150;
 		int _enemyPositionResetFrames = 50;
+		int _enemyArmyRange = 6;
 		int _hiddenPositionResetFrames = 2000;
 		int _hiddenBaseResetFrames = 1000;
 		int _scoutBaseRadius = 200;
@@ -64,6 +65,7 @@ namespace KasoBot {
 		int UnitOrderDelay() { return _unitOrderDelay; }
 		int ClearTileLock() { return _clearTileLock; }
 		int EnemyPositionResetFrames() { return _enemyPositionResetFrames; }
+		int EnemyArmyRange() { return _enemyArmyRange; }
 		int HiddenPositionResetFrames() { return _hiddenPositionResetFrames; }
 		int HiddenBaseResetFrames() { return _hiddenBaseResetFrames; }
 		int ScoutBaseRadius() { return _scoutBaseRadius; }
@@ -124,6 +126,9 @@ namespace KasoBot {
 
 			//number of frames between each position saving for enemies
 			int EnemyPositionResetFrames();
+
+			//max allowed distance from center point of army to unit to be considered part of that army (in Tiles!)
+			int EnemyArmyRange();
 
 			//number of frames when last seen position of hidden units should be reset to unknown
 			int HiddenPositionResetFrames();

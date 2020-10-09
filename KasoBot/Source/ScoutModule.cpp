@@ -4,11 +4,20 @@
 #include "WorkersModule.h"
 #include "ProductionModule.h"
 
+#include "EnemyArmy.h"
+#include "Army.h"
 #include "BaseInfo.h"
 
 using namespace KasoBot;
 
 ScoutModule* ScoutModule::_instance = 0;
+
+
+EnemyUnit::~EnemyUnit()
+{
+	if (_army)
+		_army->RemoveEnemy(this);
+}
 
 ScoutModule::ScoutModule()
 	: _enemyStart(nullptr), _enemyNatural(nullptr), _enemyRace(BWAPI::Races::Unknown)
@@ -29,18 +38,18 @@ void ScoutModule::ResetEnemyInfo()
 	{
 		for (auto& enemy : type.second)
 		{
-			if (enemy.hidden)
+			if (enemy->_hidden)
 			{
-				if (!enemy.type.isBuilding() && enemy.lastPos != BWAPI::TilePositions::Unknown)
+				if (!enemy->_type.isBuilding() && enemy->_lastPos != BWAPI::TilePositions::Unknown)
 				{
 					//set position to unknown when time has elapsed
-					if (BWAPI::Broodwar->getFrameCount() > enemy.lastSeenFrame + Config::Units::HiddenPositionResetFrames())
-						enemy.lastPos = BWAPI::TilePositions::Unknown;
+					if (BWAPI::Broodwar->getFrameCount() > enemy->_lastSeenFrame + Config::Units::HiddenPositionResetFrames())
+						enemy->_lastPos = BWAPI::TilePositions::Unknown;
 				}
 				continue;
 			}
 
-			auto pointer = BWAPI::Broodwar->getUnit(enemy.id);
+			auto pointer = BWAPI::Broodwar->getUnit(enemy->_id);
 
 			if (!pointer)
 				continue;
@@ -49,17 +58,24 @@ void ScoutModule::ResetEnemyInfo()
 			if (!pos.isValid() || pos == BWAPI::TilePositions::Unknown)
 				continue;
 
-			enemy.lastPos = pos;
-			enemy.lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+			enemy->_lastPos = pos;
+			enemy->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+
+			if (!enemy->_army)
+				AssignToArmy(enemy.get());
 		}
 	}
+
+	_armies.erase(std::remove_if(_armies.begin(), _armies.end(), //remove uarmies without units
+		[](auto& x)
+		{
+			return x->Units().empty();
+		}
+	), _armies.end());
 }
 
 void ScoutModule::ResetBaseInfo()
 {
-	if (!_enemyStart) //don't reset state until we find enemy base
-		return;
-
 	for (auto& station : BWEB::Stations::getStations())
 	{
 		auto base = station.getBWEMBase();
@@ -83,6 +99,9 @@ void ScoutModule::ResetBaseInfo()
 			}
 			else
 			{
+				if (!_enemyStart) //don't reset state until we find enemy base
+					return;
+
 				if (info->_lastSeenFrame + Config::Units::HiddenBaseResetFrames() < BWAPI::Broodwar->getFrameCount())
 				{
 					info->_owner = Base::Owner::UNKNOWN;
@@ -102,7 +121,7 @@ void ScoutModule::RemoveByID(int unitID, BWAPI::UnitType oldType)
 
 	for (auto it = it_type->second.begin(); it != it_type->second.end(); it++)
 	{
-		if (unitID == it->id)
+		if (unitID == (*it)->_id)
 		{
 			it_type->second.erase(it);
 			return;
@@ -139,6 +158,34 @@ void ScoutModule::CheckEnemyEvolution(BWAPI::Unit unit)
 		RemoveByID(unit->getID(), BWAPI::UnitTypes::Protoss_Dark_Templar);
 }
 
+void ScoutModule::MergeArmies()
+{
+	bool allGood = false;
+	while (!allGood)
+	{
+		allGood = true;
+
+		for (auto& x : _armies)
+		{
+			if (!allGood)
+				break;
+			for (auto it = _armies.begin(); it != _armies.end(); it++)
+			{
+				if (x == *it)
+					continue;
+
+				if (x->BoundingBox()._center.getDistance((*it)->BoundingBox()._center) < Config::Units::EnemyArmyRange())
+				{
+					x->Join((*it).get());
+					_armies.erase(it);
+					allGood = false;
+					break;
+				}
+			}
+		}
+	}
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
@@ -150,6 +197,13 @@ void ScoutModule::OnFrame()
 {
 	ResetEnemyInfo();
 	ResetBaseInfo();
+	MergeArmies();
+
+	for (auto& army : _armies)
+	{
+		if(!army->Units().empty())
+			army->OnFrame();
+	}
 }
 
 void ScoutModule::OnStart()
@@ -189,30 +243,32 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		ProductionModule::Instance()->TileOccupied(unit);
 	}
 
+	EnemyUnit* newUnit = nullptr;
 	auto it_type = _enemies.find(unit->getType()); //find type
 
 	if (it_type != _enemies.end())
 	{
 		for (auto& enemy : it_type->second)
 		{
-			if (enemy.id == unit->getID()) //find this unit by ID
+			if (enemy->_id == unit->getID()) //find this unit by ID
 			{
-				enemy.lastPos = BWAPI::TilePosition(unit->getPosition());
-				enemy.hidden = false;
+				enemy->_lastPos = BWAPI::TilePosition(unit->getPosition());
+				enemy->_hidden = false;
 				return;
 			}
 		}
 		//if not in the list, create new entry
-		it_type->second.emplace_back(EnemyUnit(unit));
+		newUnit = it_type->second.emplace_back(std::make_unique<EnemyUnit>(unit)).get();
 
 	}
 	//if first enemy of this type add new vector to list
 	else
 	{
 		auto new_it = _enemies.insert({ unit->getType(), EnemyList{} });
-		new_it.first->second.emplace_back(EnemyUnit(unit));
+		newUnit = new_it.first->second.emplace_back(std::make_unique<EnemyUnit>(unit)).get();
 	}
 
+	AssignToArmy(newUnit);
 	CheckEnemyEvolution(unit);
 }
 
@@ -222,9 +278,9 @@ void ScoutModule::EnemyHidden(BWAPI::Unit unit)
 	{
 		for (auto& enemy : type.second)
 		{
-			if (enemy.id == unit->getID()) //find this unit by ID
+			if (enemy->_id == unit->getID()) //find this unit by ID
 			{
-				enemy.hidden = true;
+				enemy->_hidden = true;
 				return;
 			}
 		}
@@ -248,7 +304,7 @@ void ScoutModule::EnemyDestroyed(BWAPI::Unit unit)
 	{
 		for (auto it = it_type->second.begin(); it != it_type->second.end(); it++)
 		{
-			if ((*it).id == unit->getID()) //find this unit by ID
+			if ((*it)->_id == unit->getID()) //find this unit by ID
 			{
 				it_type->second.erase(it);
 				break;
@@ -305,3 +361,22 @@ BWAPI::Race ScoutModule::GetEnemyRace()
 	return _enemyRace;
 }
 
+void ScoutModule::AssignToArmy(EnemyUnit * enemy)
+{
+	if (!enemy || enemy->_type.isBuilding() || enemy->_type.isWorker())
+		return;
+
+	_ASSERT(enemy->_lastPos != BWAPI::TilePositions::Unknown);
+
+	for (auto& army : _armies)
+	{
+		if (BWAPI::TilePosition(army->BoundingBox()._center).getDistance(enemy->_lastPos) <= Config::Units::EnemyArmyRange())
+		{
+			army->AddEnemy(enemy);
+			return;
+		}
+	}
+	EnemyArmy* newArmy = _armies.emplace_back(std::make_unique<EnemyArmy>()).get();
+	_ASSERT(newArmy);
+	newArmy->AddEnemy(enemy);
+}
