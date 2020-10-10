@@ -294,6 +294,22 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 		return point;
 }
 
+bool Map::IsVisible(const BWEM::Base * base)
+{
+	_ASSERT(base);
+	_ASSERT(base->Location().isValid());
+
+	for (int x = 0; x < BWAPI::UnitTypes::Terran_Command_Center.tileWidth(); x++)
+	{
+		for (int y = 0; y < BWAPI::UnitTypes::Terran_Command_Center.tileHeight(); y++)
+		{
+			if (BWAPI::Broodwar->isVisible(base->Location() + BWAPI::TilePosition(x, y)))
+				return true;
+		}
+	}
+	return false;
+}
+
 void Map::Global::Initialize()
 {
 	BWEB::Map::mapBWEM.Initialize(BWAPI::BroodwarPtr);

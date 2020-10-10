@@ -58,6 +58,9 @@ namespace KasoBot {
 		//merge together armies that are close together
 		void MergeArmies();
 
+		//try to create defend task for every enemy army that is close to our base
+		void CreateDefendTasks();
+
 	public:
 		static ScoutModule* Instance();
 

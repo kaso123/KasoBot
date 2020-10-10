@@ -23,6 +23,9 @@ namespace KasoBot {
 		//calculate center point between all units
 		void CalculateCenter();
 
+		//check if task is not finished and remove it if needed
+		void CheckTask();
+
 	public:
 		Army();
 		~Army();
@@ -44,6 +47,9 @@ namespace KasoBot {
 
 		//assign new task and overwrite previous task
 		void AssignTask(Task* task);
+
+		//remove pointer to task, if any
+		void RemoveTask();
 
 		//getters and setters
 

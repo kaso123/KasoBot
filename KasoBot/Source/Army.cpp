@@ -28,6 +28,18 @@ void Army::CalculateCenter()
 	_box->_center = BWAPI::Position(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
 }
 
+void Army::CheckTask()
+{
+	if (!_task)
+		return;
+
+	if (_task->IsFinished())
+	{
+		_task->Stop();
+		_task = nullptr;
+	}
+}
+
 Army::Army()
 	:_task(nullptr)
 {
@@ -46,6 +58,8 @@ Army::~Army()
 void Army::OnFrame()
 {
 	CalculateCenter();
+
+	CheckTask();
 }
 
 bool Army::AddSoldier(KasoBot::Unit* unit)
@@ -97,9 +111,18 @@ void Army::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 
 void Army::AssignTask(KasoBot::Task * task)
 {
+	_ASSERT(task);
+
 	if (_task)
 		_task->Stop();
 
 	_task = task;
 	_task->Start();
+}
+
+void Army::RemoveTask()
+{
+	_ASSERT(_task);
+	_task->Stop();
+	_task = nullptr;
 }

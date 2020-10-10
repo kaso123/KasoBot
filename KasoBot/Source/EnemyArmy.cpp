@@ -1,6 +1,7 @@
 #include "EnemyArmy.h"
 #include "ScoutModule.h"
 #include "Army.h"
+#include "ArmyModule.h"
 #include "Config.h"
 
 using namespace KasoBot;
@@ -72,6 +73,7 @@ EnemyArmy::EnemyArmy()
 EnemyArmy::~EnemyArmy()
 {
 	_ASSERT(_units.empty());
+	ArmyModule::Instance()->EnemyArmyRemoved(this);
 }
 
 void EnemyArmy::OnFrame()
@@ -107,6 +109,12 @@ void EnemyArmy::Join(EnemyArmy * toJoin)
 {
 	for (auto& unit : toJoin->Units())
 	{
-		_units.emplace_back(unit);
+		AddEnemy(unit);
 	}
+	toJoin->ClearUnits();
+}
+
+void EnemyArmy::ClearUnits()
+{
+	_units.clear();
 }

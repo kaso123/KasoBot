@@ -36,6 +36,7 @@ namespace KasoBot {
 		void DrawSingleWorker(const Worker& worker);
 		int DrawArmy();
 		void DrawTasks();
+		void DrawSingleTask(const Task& task);
 		void DrawProduction();
 		void DrawBases();
 		void DrawResources();

@@ -10,6 +10,7 @@ namespace KasoBot {
 	class Unit;
 	class Army;
 	class Task;
+	class EnemyArmy;
 
 	class ArmyModule
 	{
@@ -27,6 +28,9 @@ namespace KasoBot {
 
 		//cycle through tasks and try to assign each to an army
 		void AssignTasks();
+
+		//check if we have enough attack tasks and create more if not
+		void CreateAttackTasks();
 
 	public:
 		static ArmyModule* Instance();
@@ -56,11 +60,20 @@ namespace KasoBot {
 		//@return true if no worker is available to scout
 		bool NeedScout();
 
-		//create new task if it doesn't exist already
-		void AddTask(Tasks::Type type, BWAPI::Position pos);
+		//create new attackArea task if it doesn't exist already
+		bool AddAttackTask(const BWEM::Area* area);
 
-		//create new task if it doesn't exist already
-		void AddTask(Tasks::Type type, const BWEM::Area* area);
+		//create new defendArmy task if it doesn't exist already
+		bool AddDefendTask(EnemyArmy* enemy);
+
+		//create new holdPosition task if it doesn't exist already
+		bool AddHoldTask(BWAPI::Position pos);
+
+		//create new scoutArea task if it doesn't exist already
+		bool AddScoutTask(const BWEM::Area* area);
+
+		//find task for this army and remove it
+		void EnemyArmyRemoved(EnemyArmy* enemy);
 		
 		//getters and setters
 

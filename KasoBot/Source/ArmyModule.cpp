@@ -5,6 +5,8 @@
 #include "ScoutModule.h"
 #include "Config.h"
 #include "Task.h"
+#include "EnemyArmy.h"
+#include "BaseInfo.h"
 
 using namespace KasoBot;
 
@@ -31,8 +33,44 @@ void ArmyModule::AssignTasks()
 			if (army->Task())
 				continue;
 
+			if (!task->IsArmySuitable(*army))
+				continue;
+
 			army->AssignTask(task.get());
 		}
+	}
+}
+
+void ArmyModule::CreateAttackTasks()
+{
+	//count current attack tasks
+	int count = 0;
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::ATTACK)
+			count++;
+	}
+
+	if (count >= 2) //TODO max attack tasks configurable
+		return;
+
+	//find next area where enemies are
+	for (auto& area : BWEM::Map::Instance().Areas())
+	{
+		bool enemy = false;
+		for (auto& base : area.Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
+			{
+				enemy = true;
+				break;
+			}
+		}
+		if (!enemy)
+			continue;
+
+		if (AddAttackTask(&area))
+			return;
 	}
 }
 
@@ -67,13 +105,33 @@ void ArmyModule::OnFrame()
 			worker->Scout();
 	}
 
+	CreateAttackTasks();
 	AssignTasks();
 
 	for (auto& army : _armies)
 	{
 		army->OnFrame();
 	}
-	
+
+	//remove selected from army
+	_tasks.erase(std::remove_if(_tasks.begin(), _tasks.end(),
+		[this](auto& x)
+		{
+			if (x->IsFinished())
+			{
+				if (x->InProgress())
+				{
+					for (auto& army : _armies)
+					{
+						if (army->Task() == x.get())
+							army->RemoveTask();
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+	), _tasks.end());
 }
 
 std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
@@ -191,24 +249,76 @@ bool ArmyModule::NeedScout()
 	return false;
 }
 
-void ArmyModule::AddTask(Tasks::Type type, BWAPI::Position pos)
+bool ArmyModule::AddAttackTask(const BWEM::Area * area)
 {
+	_ASSERT(area);
+
 	for (auto& task : _tasks)
 	{
-		if (task->Type() == type && task->Position() == pos)
-			return;
+		if (task->Type() == Tasks::Type::ATTACK && task->Area() == area)
+			return false;
 	}
-
-	_tasks.emplace_back(std::make_unique<Task>(type, pos));
+	_tasks.emplace_back(std::make_unique<AttackAreaTask>(area));
+	return true;
 }
 
-void ArmyModule::AddTask(Tasks::Type type, const BWEM::Area * area)
+bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 {
+	_ASSERT(enemy);
+
 	for (auto& task : _tasks)
 	{
-		if (task->Type() == type && task->Area() == area)
-			return;
+		if (task->Type() == Tasks::Type::DEFEND && task->EnemyArmy() == enemy)
+			return false;
 	}
 
-	_tasks.emplace_back(std::make_unique<Task>(type, area));
+	_tasks.emplace_back(std::make_unique<DefendArmyTask>(enemy));
+	return true;
+}
+
+bool ArmyModule::AddHoldTask(BWAPI::Position pos)
+{
+	_ASSERT(pos.isValid());
+
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::HOLD && task->Position() == pos)
+			return false;
+	}
+
+	_tasks.emplace_back(std::make_unique<HoldPositionTask>(pos));
+	return true;
+}
+
+bool ArmyModule::AddScoutTask(const BWEM::Area * area)
+{
+	_ASSERT(area);
+
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::SCOUT && task->Area() == area)
+			return false;
+	}
+	_tasks.emplace_back(std::make_unique<ScoutAreaTask>(area));
+	return true;
+}
+
+void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
+{
+	for (auto& army : _armies)
+	{
+		if (army->Task() && army->Task()->EnemyArmy() == enemy)
+			army->RemoveTask();
+	}
+
+	//remove selected from army
+	_tasks.erase(std::remove_if(_tasks.begin(), _tasks.end(),
+		[enemy](auto& x)
+		{
+			if (x->EnemyArmy() == enemy)
+				return true;
+
+			return false;
+		}
+	), _tasks.end());
 }

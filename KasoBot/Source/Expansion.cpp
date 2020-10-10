@@ -5,6 +5,7 @@
 #include "ProductionModule.h"
 #include "Worker.h"
 #include "Config.h"
+#include "BaseInfo.h"
 
 #include <algorithm>
 
@@ -23,6 +24,8 @@ Expansion::Expansion(BWAPI::Unit unit)
 	_station = KasoBot::Map::GetStation(unit->getTilePosition());
 
 	_ASSERT(_station);
+
+	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::PLAYER;
 }
 
 Expansion::~Expansion()
@@ -42,6 +45,9 @@ Expansion::~Expansion()
 		WorkersModule::Instance()->RefineryCreated(_refinery, true);
 		_refinery = nullptr;
 	}
+
+	_ASSERT(_station);
+	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::NONE;
 }
 
 void Expansion::OnFrame()

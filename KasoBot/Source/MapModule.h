@@ -39,6 +39,9 @@ namespace KasoBot
 		//@return position where the scout should move while scouting around the base
 		//@param currPos = current position of scouting unit
 		BWAPI::Position NextScoutPosition(const BWEM::Area* area, BWAPI::Position currPos);
+
+		//@return true if any of tiles belonging to base is visible
+		bool IsVisible(const BWEM::Base* base);
 	}
 	
 }

@@ -111,25 +111,75 @@ void DebugModule::DrawTasks()
 
 	for (auto& task : ArmyModule::Instance()->Tasks())
 	{
-		if (!task->Position().isValid())
-			continue;
-		//TODO draw tasks with area instead of pos
-
-		if (task->Type() == Tasks::Type::ATTACK) color = BWAPI::Colors::Red; //red
-		if (task->Type() == Tasks::Type::DEFEND) color = BWAPI::Colors::Green; //green
-		if (task->Type() == Tasks::Type::SCOUT) color = BWAPI::Colors::Green; //teal
-
-		BWAPI::Broodwar->drawCircleMap(task->Position(), 100, color, false);
+		DrawSingleTask(*task);
 	}
 
 	for (auto& army : ArmyModule::Instance()->Armies())
 	{
-		if (!army->Task() || !army->Task()->Position().isValid())
+		if (!army->Task())
 			continue;
-		//TODO draw tasks with areas instead of pos
+		
+		if (army->Task()->Type() == Tasks::Type::ATTACK)
+		{
+			for (auto& base : army->Task()->Area()->Bases())
+			{
 
-		BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->Position(), BWAPI::Colors::White);
+				if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+					|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+				{
+					BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, base.Center(), BWAPI::Colors::White);
+					break;
+				}
+			}
+		}
+		else if (army->Task()->Type() == Tasks::Type::SCOUT)
+		{
+			for (auto& base : army->Task()->Area()->Bases())
+			{
+
+				if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+				{
+					BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, base.Center(), BWAPI::Colors::White);
+					break;
+				}
+			}
+		}
+		else if (army->Task()->Type() == Tasks::Type::HOLD)
+		{
+			BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center,army->Task()->Position(), BWAPI::Colors::White);
+		}
+		else if (army->Task()->Type() == Tasks::Type::DEFEND)
+		{
+			BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->EnemyArmy()->BoundingBox()._center, BWAPI::Colors::White);
+		}
 	}
+}
+
+void DebugModule::DrawSingleTask(const Task & task)
+{
+	if (task.Type() == Tasks::Type::ATTACK)
+	{
+		for (auto& base : task.Area()->Bases())
+		{
+			
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+				|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+				BWAPI::Broodwar->drawCircleMap(base.Center(), 100, BWAPI::Colors::Red, false);
+		}
+	}
+	else if (task.Type() == Tasks::Type::SCOUT)
+	{
+		for (auto& base : task.Area()->Bases())
+		{
+
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+				BWAPI::Broodwar->drawCircleMap(base.Center(), 100, BWAPI::Colors::Blue, false);
+		}
+	}
+	else if (task.Type() == Tasks::Type::HOLD)
+	{
+		BWAPI::Broodwar->drawCircleMap(task.Position(), 100, BWAPI::Colors::Green, false);
+	}	
 }
 
 void DebugModule::DrawProduction()
@@ -462,8 +512,8 @@ void DebugModule::DebugCommand(std::string& text)
 	{
 		ProductionModule::Instance()->DebugBuild(BWAPI::UnitTypes::Terran_Academy);
 	}
-	else if (text == "ap")
+	else if (text == "aa")
 	{
-		ArmyModule::Instance()->AddTask(Tasks::Type::ATTACK, BWAPI::Broodwar->getMousePosition() + BWAPI::Broodwar->getScreenPosition());
+		ArmyModule::Instance()->AddAttackTask(BWEM::Map::Instance().GetNearestArea(BWAPI::TilePosition(BWAPI::Broodwar->getMousePosition() + BWAPI::Broodwar->getScreenPosition())));
 	}
 }

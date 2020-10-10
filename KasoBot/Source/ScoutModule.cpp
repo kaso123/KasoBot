@@ -3,6 +3,7 @@
 #include "MapModule.h"
 #include "WorkersModule.h"
 #include "ProductionModule.h"
+#include "ArmyModule.h"
 
 #include "EnemyArmy.h"
 #include "Army.h"
@@ -84,7 +85,7 @@ void ScoutModule::ResetBaseInfo()
 
 		if (info->_owner == Base::Owner::UNKNOWN)
 		{
-			if (BWAPI::Broodwar->isVisible(base->Location()))
+			if (Map::IsVisible(base))
 			{
 				info->_owner = Base::Owner::NONE;
 				info->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
@@ -93,7 +94,7 @@ void ScoutModule::ResetBaseInfo()
 		}
 		if (info->_owner == Base::Owner::NONE)
 		{
-			if (BWAPI::Broodwar->isVisible(base->Location()))
+			if (Map::IsVisible(base))
 			{
 				info->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
 			}
@@ -174,7 +175,7 @@ void ScoutModule::MergeArmies()
 				if (x == *it)
 					continue;
 
-				if (x->BoundingBox()._center.getDistance((*it)->BoundingBox()._center) < Config::Units::EnemyArmyRange())
+				if (x->BoundingBox()._center.getDistance((*it)->BoundingBox()._center) < Config::Units::EnemyArmyRange() * TILE_SIZE)
 				{
 					x->Join((*it).get());
 					_armies.erase(it);
@@ -183,6 +184,15 @@ void ScoutModule::MergeArmies()
 				}
 			}
 		}
+	}
+}
+
+void ScoutModule::CreateDefendTasks()
+{
+	for (auto& eArmy : _armies)
+	{
+		//TODO check distance to our buildings, skip armies that are no threat to our bases
+		ArmyModule::Instance()->AddDefendTask(eArmy.get());
 	}
 }
 
@@ -198,6 +208,7 @@ void ScoutModule::OnFrame()
 	ResetEnemyInfo();
 	ResetBaseInfo();
 	MergeArmies();
+	CreateDefendTasks();
 
 	for (auto& army : _armies)
 	{
@@ -241,6 +252,12 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 	if (unit->getType().isBuilding()) //reset build items, so they don't try to build on enemy buildings
 	{
 		ProductionModule::Instance()->TileOccupied(unit);
+
+		//set base ownership to enemy
+		if (unit->getType().isResourceDepot())
+		{
+			((BaseInfo*)Map::GetStation(unit->getTilePosition())->getBWEMBase()->Ptr())->_owner = Base::Owner::ENEMY;
+		}
 	}
 
 	EnemyUnit* newUnit = nullptr;
@@ -297,6 +314,12 @@ void ScoutModule::EnemyDestroyed(BWAPI::Unit unit)
 		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva
 		|| unit->getType() == BWAPI::UnitTypes::Zerg_Cocoon || unit->getType() == BWAPI::UnitTypes::Zerg_Lurker_Egg)
 		return;
+
+	//enemy base destroyed
+	if (unit->getType().isResourceDepot())
+	{
+		((BaseInfo*)Map::GetStation(unit->getTilePosition())->getBWEMBase()->Ptr())->_owner = Base::Owner::NONE;
+	}
 
 	auto it_type = _enemies.find(unit->getType()); //find type
 

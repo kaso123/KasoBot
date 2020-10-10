@@ -31,6 +31,9 @@ namespace KasoBot {
 		//move all units from one army to this one
 		void Join(EnemyArmy* toJoin);
 
+		//remove all units from this army, only should be used when joining two armies
+		void ClearUnits();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }
