@@ -89,6 +89,8 @@ void ConfigModule::Init()
 	if (j.contains("strategy"))
 	{
 		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
+		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
+		_maxScoutTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxScoutTasks;
 		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
 
 		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");
@@ -178,6 +180,8 @@ bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResource
 bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
+int Config::Strategy::MaxAttackTasks() { return ConfigModule::Instance()->MaxAttackTasks(); }
+int Config::Strategy::MaxScoutTasks() { return ConfigModule::Instance()->MaxScoutTasks(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
 int Config::Strategy::SkipOpenerAt() { return ConfigModule::Instance()->SkipOpenerAt(); }
 

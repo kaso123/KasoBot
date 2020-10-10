@@ -45,6 +45,8 @@ namespace KasoBot {
 		bool _debugEnemy = false;
 
 		int _maxArmySupply = 60;
+		int _maxAttackTasks = 2;
+		int _maxScoutTasks = 1;
 		int _firstScoutSupply = 8;
 		int _skipOpenerAt = 4320; //3 minutes
 
@@ -84,6 +86,8 @@ namespace KasoBot {
 		bool DebugEnemy() { return _debugEnemy; }
 
 		int MaxArmySupply() { return _maxArmySupply; }
+		int MaxAttackTasks() { return _maxAttackTasks; }
+		int MaxScoutTasks() { return _maxScoutTasks; }
 		int FirstScoutSupply() { return _firstScoutSupply; }
 		int SkipOpenerAt() { return _skipOpenerAt; }
 	};
@@ -183,6 +187,12 @@ namespace KasoBot {
 
 			//@return how much supply can be in one army
 			int MaxArmySupply();
+
+			//@return maximum number of attack tasks active in one moment
+			int MaxAttackTasks();
+
+			//@return maximum number of scout tasks active in one moment
+			int MaxScoutTasks();
 
 			//@return number of workers when first scout should start
 			int FirstScoutSupply();

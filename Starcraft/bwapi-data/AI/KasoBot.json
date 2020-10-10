@@ -37,6 +37,8 @@
     "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
     "maxArmySupply": 30,
+    "maxAttackTasks": 2,
+    "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,
     "scout": {
       "first": {

@@ -51,7 +51,7 @@ void ArmyModule::CreateAttackTasks()
 			count++;
 	}
 
-	if (count >= 2) //TODO max attack tasks configurable
+	if (count >= Config::Strategy::MaxAttackTasks()) 
 		return;
 
 	//find next area where enemies are
