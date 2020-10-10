@@ -36,7 +36,7 @@
   "strategy": {
     "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
-    "maxArmySupply": 30,
+    "maxArmySupply": 12,
     "maxAttackTasks": 2,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,

@@ -24,7 +24,7 @@ AttackAreaTask::AttackAreaTask(const BWEM::Area * area)
 
 bool AttackAreaTask::IsArmySuitable(Army & army)
 {
-	if (army.GetSupply() < Config::Strategy::MaxArmySupply())
+	if (army.GetSupply() < Config::Strategy::MaxArmySupply()*2)
 		return  false;
 	return true;
 }

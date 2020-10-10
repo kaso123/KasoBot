@@ -30,8 +30,8 @@ namespace KasoBot
 		//create BaseInfo struct for every base
 		void ResetBaseInfo(std::vector<std::unique_ptr<BaseInfo>>& output);
 
-		//@return pointer to next area that should be scouted
-		const BWEM::Base* NextScoutBase();
+		//@return pointer to next base that should be scouted at the start
+		const BWEM::Base* NextScoutBaseStart();
 
 		//@return one of the starting areas (except ours) that is closest to this position
 		const BWEM::Area* ClosestStart(BWAPI::TilePosition pos);

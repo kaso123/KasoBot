@@ -31,6 +31,9 @@ namespace KasoBot {
 
 		//check if we have enough attack tasks and create more if not
 		void CreateAttackTasks();
+		
+		//check if we have enough scout tasks and create more if not
+		void CreateScoutTasks();
 
 	public:
 		static ArmyModule* Instance();

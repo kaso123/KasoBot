@@ -237,7 +237,7 @@ void WorkersModule::RefineryDestroyed(BWAPI::Unit unit)
 			return;
 	}
 
-	//TODO refinery wasn't in any expansion, must be in unassigned list
+	//refinery wasn't in any expansion, must be in unassigned list
 	size_t before = _unassignedRefineries.size();
 	for (auto it = _unassignedRefineries.begin(); it != _unassignedRefineries.end(); it++)
 	{

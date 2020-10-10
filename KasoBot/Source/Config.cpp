@@ -90,7 +90,7 @@ void ConfigModule::Init()
 	{
 		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
 		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
-		_maxScoutTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxScoutTasks;
+		_maxScoutTasks = j["strategy"].contains("maxScoutTasks") ? j["strategy"]["maxScoutTasks"] : _maxScoutTasks;
 		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
 
 		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");

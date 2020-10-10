@@ -53,7 +53,7 @@ void Behaviour::Scout(KasoBot::Unit & unit)
 		return;
 	}
 
-	auto base = Map::NextScoutBase();
+	auto base = Map::NextScoutBaseStart();
 	if (base)
 	{
 		//if close to base and didn't see an enemy building set it as free

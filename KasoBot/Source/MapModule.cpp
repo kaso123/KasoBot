@@ -219,7 +219,7 @@ void Map::ResetBaseInfo(std::vector<std::unique_ptr<BaseInfo>>& output)
 	((BaseInfo*)BWEB::Map::getMainArea()->Bases().front().Ptr())->_owner = Base::Owner::PLAYER;
 }
 
-const BWEM::Base* Map::NextScoutBase()
+const BWEM::Base* Map::NextScoutBaseStart()
 {
 	//cycle start locations, skip own
 	for (auto& loc : BWEM::Map::Instance().StartingLocations())

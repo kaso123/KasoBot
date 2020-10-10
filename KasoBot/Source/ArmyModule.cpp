@@ -74,6 +74,55 @@ void ArmyModule::CreateAttackTasks()
 	}
 }
 
+void ArmyModule::CreateScoutTasks()
+{
+	//count current scout tasks
+	int count = 0;
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::SCOUT)
+			count++;
+	}
+
+	if (count >= Config::Strategy::MaxScoutTasks())
+		return;
+
+	const BWEM::Area* latest = nullptr;
+	int latestFrame = INT_MAX;
+
+	//find next area to scout
+	for (auto& area : BWEM::Map::Instance().Areas())
+	{
+		for (auto& base : area.Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+			{
+				bool isInTask = false;
+				for (auto& task : _tasks) //skip areas in other task
+				{
+					if (task->Area() == &area)
+					{
+						isInTask = true;
+						break;
+					}
+				}
+				if (isInTask)
+					continue;
+			 
+				int frame = ((BaseInfo*)base.Ptr())->_lastSeenFrame; //choose last seen base
+				if (latestFrame > frame)
+				{
+					latestFrame = frame;
+					latest = &area;
+				}
+			}
+		}	
+	}
+
+	if (latest)
+		AddScoutTask(latest);
+}
+
 ArmyModule* ArmyModule::Instance()
 {
 	if (!_instance)
@@ -106,6 +155,7 @@ void ArmyModule::OnFrame()
 	}
 
 	CreateAttackTasks();
+	CreateScoutTasks();
 	AssignTasks();
 
 	for (auto& army : _armies)
