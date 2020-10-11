@@ -60,10 +60,23 @@ void Army::OnFrame()
 	CalculateCenter();
 
 	CheckTask();
+
+	if (!_task)
+		return;
+
+	for (auto& unit : _soldiers)
+	{
+		unit->Fight(this);
+	}
+
 }
 
 bool Army::AddSoldier(KasoBot::Unit* unit)
 {
+	if (_task 
+		&& (_task->Type() == Tasks::Type::ATTACK || _task->Type() == Tasks::Type::SCOUT))
+		return false;
+
 	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > Config::Strategy::MaxArmySupply() * 2)
 		return false;
 

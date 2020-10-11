@@ -1,16 +1,42 @@
 #include "Unit.h"
 #include "BehaviourWorker.h"
+#include "BehaviourMedic.h"
+#include "BehaviourVessel.h"
 #include "ArmyModule.h"
 #include "MapModule.h"
+#include "Army.h"
+#include "Task.h"
 
 using namespace KasoBot;
+
+namespace {
+	void SetProperBehaviourType(std::unique_ptr<KasoBot::Behaviour>& outBehaviour, BWAPI::UnitType type)
+	{
+		if (type.isWorker())
+		{
+			outBehaviour = std::make_unique<BehaviourWorker>();
+			return;
+		}
+		
+		if (type == BWAPI::UnitTypes::Terran_Medic)
+		{
+			outBehaviour = std::make_unique<BehaviourMedic>();
+			return;
+		}
+		if (type == BWAPI::UnitTypes::Terran_Science_Vessel)
+		{
+			outBehaviour = std::make_unique<BehaviourVessel>();
+			return;
+		}
+		
+		outBehaviour = std::make_unique<Behaviour>();
+	}
+}
 
 Unit::Unit(BWAPI::Unit unit)
 	:_pointer(unit), _playerControl(false), _playerControlFrame(0), _lock(false), _clearTileLock(-1), _role(Units::Role::IDLE)
 {
-	if (unit->getType().isWorker())
-		_behaviour = std::make_unique<BehaviourWorker>();
-	else _behaviour = std::make_unique<Behaviour>();
+	SetProperBehaviourType(_behaviour,unit->getType());
 }
 
 Unit::~Unit()
@@ -21,7 +47,7 @@ Unit::~Unit()
 	ArmyModule::Instance()->SoldierKilled(this);
 }
 
-void Unit::Fight()
+void Unit::Fight(Army* army)
 {
 	if (_playerControl)
 		return;
@@ -37,7 +63,22 @@ void Unit::Fight()
 	}
 
 	_ASSERT(_behaviour);
-	//TODO call function from behaviour
+	_ASSERT(army && army->Task());
+	
+	//TODO do priority things (in close combat)
+
+	//move to center of army
+	if (_pointer->getPosition().getDistance(army->BoundingBox()._center) > Config::Units::ArmyRange() * TILE_SIZE) //TODO different value for our armies
+	{
+		_behaviour->MoveToArmyCenter(*this, army->BoundingBox()._center);
+		return;
+	}
+
+	//TODO do task things
+	if (army->Task()->Type() == Tasks::Type::ATTACK)
+	{
+		_behaviour->AttackArea(*this, army);
+	}
 }
 
 void Unit::Scout()

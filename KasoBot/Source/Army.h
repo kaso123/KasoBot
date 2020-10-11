@@ -55,6 +55,7 @@ namespace KasoBot {
 
 		Task* Task() { return _task; }
 		const Armies::Box& BoundingBox() { return *_box; }
+		const std::vector<KasoBot::Unit*>& Units() const { return _soldiers; }
 	};
 
 }

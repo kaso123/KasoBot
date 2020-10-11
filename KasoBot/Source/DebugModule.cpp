@@ -91,6 +91,13 @@ int DebugModule::DrawArmy()
 	{
 		//draw worker role
 		BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition(), UnitRoleString(worker->GetRole()));
+		
+		//draw orders
+		if(_drawOrders)
+		{
+			BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(25, 10), worker->GetPointer()->getOrder().getName().c_str());
+			BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - worker->GetPointer()->getLastCommandFrame(), 999));
+		}
 	}
 
 	int y = 15;
@@ -101,6 +108,16 @@ int DebugModule::DrawArmy()
 		y += 10;
 
 		BWAPI::Broodwar->drawBoxMap(army->BoundingBox()._topLeft, army->BoundingBox()._bottomRight, BWAPI::Colors::Green, false);
+
+		//draw orders
+		if (_drawOrders)
+		{
+			for (auto& unit : army->Units())
+			{
+				BWAPI::Broodwar->drawTextMap(unit->GetPointer()->getPosition() + BWAPI::Position(25, 10), unit->GetPointer()->getOrder().getName().c_str());
+				BWAPI::Broodwar->drawTextMap(unit->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - unit->GetPointer()->getLastCommandFrame(), 999));
+			}
+		}
 	}
 	return y+5;
 }

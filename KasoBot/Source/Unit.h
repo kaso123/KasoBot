@@ -11,6 +11,8 @@ namespace KasoBot {
 		};
 	}
 	class Behaviour;
+	class Task;
+	class Army;
 
 	class Unit
 	{
@@ -28,7 +30,7 @@ namespace KasoBot {
 		virtual ~Unit();
 
 		//equivalent to onFrame for army units, including workers that are in the army
-		virtual void Fight();
+		virtual void Fight(Army* army);
 
 		//equivalent to onFrame used in worker class (not for workers in army )
 		virtual void Work() { return; }

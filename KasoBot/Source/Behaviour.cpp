@@ -4,6 +4,8 @@
 #include "ScoutModule.h"
 #include "BaseInfo.h"
 #include "Config.h"
+#include "Army.h"
+#include "Task.h"
 
 using namespace KasoBot;
 
@@ -15,12 +17,45 @@ void Behaviour::Move(BWAPI::Unit unit, BWAPI::Position position)
 	unit->move(position);
 }
 
+void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
+{
+	if (unit->getOrder() == BWAPI::Orders::AttackMove && unit->getOrderTargetPosition().getDistance(position) < 50) //TODO set this value as configurable
+		return;
+	if (unit->getOrder() == BWAPI::Orders::AttackUnit)
+		return;
+
+	unit->attack(position);
+}
+
 Behaviour::Behaviour()
 {
 }
 
 Behaviour::~Behaviour()
 {
+}
+
+void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
+{
+	_ASSERT(army);
+	auto area = army->Task()->Area();
+	_ASSERT(!area->Bases().empty());
+	
+	for (auto & base : area->Bases())
+	{
+		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+			|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+		{
+			AttackMove(unit.GetPointer(),base.Center());
+		}
+	}
+}
+
+void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
+{
+	_ASSERT(position.isValid());
+
+	AttackMove(unit.GetPointer(), position);
 }
 
 void Behaviour::Scout(KasoBot::Unit & unit)
