@@ -31,6 +31,7 @@ namespace KasoBot {
 		int _hiddenPositionResetFrames = 2000;
 		int _hiddenBaseResetFrames = 1000;
 		int _scoutBaseRadius = 200;
+		int _enemyThreatRadius = 500;
 
 		float _freeSupplyMultiplier = 1.5f;
 
@@ -73,6 +74,7 @@ namespace KasoBot {
 		int HiddenPositionResetFrames() { return _hiddenPositionResetFrames; }
 		int HiddenBaseResetFrames() { return _hiddenBaseResetFrames; }
 		int ScoutBaseRadius() { return _scoutBaseRadius; }
+		int EnemyThreatRadius() { return _enemyThreatRadius; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 
@@ -147,6 +149,9 @@ namespace KasoBot {
 
 			//radius of circle when scouting around enemy base
 			int ScoutBaseRadius();
+
+			//distance from any building when enemy army is considered to be threat
+			int EnemyThreatRadius();
 		}
 
 		namespace Production {

@@ -62,6 +62,11 @@ DefendArmyTask::DefendArmyTask(KasoBot::EnemyArmy * army)
 {
 }
 
+bool DefendArmyTask::IsFinished()
+{
+	return !_army->IsThreat();
+}
+
 ScoutAreaTask::ScoutAreaTask(const BWEM::Area * area)
 	: Task(Tasks::Type::SCOUT), _area(area)
 {

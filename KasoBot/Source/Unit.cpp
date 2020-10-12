@@ -68,7 +68,7 @@ void Unit::Fight(Army* army)
 	//TODO do priority things (in close combat)
 
 	//move to center of army
-	if (_pointer->getPosition().getDistance(army->BoundingBox()._center) > Config::Units::ArmyRange() * TILE_SIZE) //TODO different value for our armies
+	if (_pointer->getPosition().getDistance(army->BoundingBox()._center) > Config::Units::ArmyRange() * TILE_SIZE) //different value for our armies
 	{
 		_behaviour->MoveToArmyCenter(*this, army->BoundingBox()._center);
 		return;
@@ -78,6 +78,10 @@ void Unit::Fight(Army* army)
 	if (army->Task()->Type() == Tasks::Type::ATTACK)
 	{
 		_behaviour->AttackArea(*this, army);
+	}
+	else if (army->Task()->Type() == Tasks::Type::DEFEND)
+	{
+		_behaviour->DefendArmy(*this, army);
 	}
 }
 

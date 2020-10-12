@@ -34,6 +34,9 @@ namespace KasoBot {
 		//remove all units from this army, only should be used when joining two armies
 		void ClearUnits();
 
+		//@return true if army is close to our buildings
+		bool IsThreat();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }

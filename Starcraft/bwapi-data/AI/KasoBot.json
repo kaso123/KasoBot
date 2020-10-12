@@ -17,7 +17,8 @@
     "armyRange": 4,
     "hiddenPositionReset": 2000,
     "hiddenBaseReset": 1000,
-    "scoutBaseRadius":  500
+    "scoutBaseRadius":  500,
+    "enemyThreatRadius": 500
   },
   "production": {
     "freeSupplyMultiplier": 1.3

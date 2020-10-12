@@ -191,8 +191,9 @@ void ScoutModule::CreateDefendTasks()
 {
 	for (auto& eArmy : _armies)
 	{
-		//TODO check distance to our buildings, skip armies that are no threat to our bases
-		ArmyModule::Instance()->AddDefendTask(eArmy.get());
+		//check distance to our buildings, skip armies that are no threat to our bases
+		if(eArmy->IsThreat())
+			ArmyModule::Instance()->AddDefendTask(eArmy.get());
 	}
 }
 

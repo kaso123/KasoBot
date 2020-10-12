@@ -5,6 +5,7 @@
 #include "BaseInfo.h"
 #include "Config.h"
 #include "Army.h"
+#include "EnemyArmy.h"
 #include "Task.h"
 
 using namespace KasoBot;
@@ -49,6 +50,15 @@ void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 			AttackMove(unit.GetPointer(),base.Center());
 		}
 	}
+}
+
+void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
+{
+	_ASSERT(army);
+	auto enemyArmy = army->Task()->EnemyArmy();
+	_ASSERT(enemyArmy);
+
+	AttackMove(unit.GetPointer(), enemyArmy->BoundingBox()._center);
 }
 
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)

@@ -86,6 +86,7 @@ namespace KasoBot {
 
 		bool IsArmySuitable(Army& army) override { return true; }
 
+		bool IsFinished() override;
 
 		//getters and setters
 		

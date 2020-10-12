@@ -3,6 +3,8 @@
 #include "Army.h"
 #include "ArmyModule.h"
 #include "Config.h"
+#include "ProductionModule.h"
+#include "Unit.h"
 
 using namespace KasoBot;
 
@@ -117,4 +119,19 @@ void EnemyArmy::Join(EnemyArmy * toJoin)
 void EnemyArmy::ClearUnits()
 {
 	_units.clear();
+}
+
+bool EnemyArmy::IsThreat()
+{
+	for (auto& type : ProductionModule::Instance()->Buildings())
+	{
+		_ASSERT(type.first.isBuilding());
+
+		for (auto& unit : type.second)
+		{
+			if (unit->GetPointer()->getDistance(_box->_center) < Config::Units::EnemyThreatRadius())
+				return true;
+		}
+	}
+	return false;
 }
