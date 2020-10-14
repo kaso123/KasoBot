@@ -202,6 +202,7 @@ namespace {
 		{"mines", "spider_mines"},
 		{"yamato", "yamato_gun"},
 		{"stim", "stim_packs"},
+		{"u238", "u_238_shells"},
 		{"infantry_weapons", "terran_infantry_weapons"},
 		{"infantry_armor", "terran_infantry_armor"},
 		{"vehicle_weapons", "terran_vehicle_weapons"},

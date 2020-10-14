@@ -3,6 +3,7 @@
 #include "WorkersModule.h"
 #include "StrategyModule.h"
 #include "ProductionModule.h"
+#include "ArmyModule.h"
 #include "Worker.h"
 #include "Config.h"
 #include "BaseInfo.h"
@@ -26,6 +27,7 @@ Expansion::Expansion(BWAPI::Unit unit)
 	_ASSERT(_station);
 
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::PLAYER;
+	ArmyModule::Instance()->ResetDefaultTask();
 }
 
 Expansion::~Expansion()
@@ -48,6 +50,7 @@ Expansion::~Expansion()
 
 	_ASSERT(_station);
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::NONE;
+	ArmyModule::Instance()->ResetDefaultTask();
 }
 
 void Expansion::OnFrame()

@@ -29,3 +29,9 @@ void BehaviourMedic::AttackArea(KasoBot::Unit & unit, Army * army)
 	_ASSERT(army);
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }
+
+void BehaviourMedic::DefendArmy(KasoBot::Unit & unit, Army * army)
+{
+	_ASSERT(army);
+	MoveToArmyCenter(unit, army->BoundingBox()._center);
+}

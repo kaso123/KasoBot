@@ -294,6 +294,47 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 		return point;
 }
 
+BWAPI::Position Map::DefaultTaskPosition()
+{
+	_ASSERT(BWEB::Map::getNaturalArea());
+	_ASSERT(BWEB::Map::getMainArea());
+
+	auto nat = BWEB::Map::getNaturalArea();
+	if (!nat->Bases().empty()) //if we have natural, defend there
+	{
+		for (auto& base : nat->Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::PLAYER)
+			{
+				if (!nat->ChokePoints().empty())
+				{
+					for (auto& choke : nat->ChokePoints())
+					{
+						if(choke->GetAreas().first != BWEB::Map::getMainArea() && choke->GetAreas().second != BWEB::Map::getMainArea())
+							return BWAPI::Position(choke->Center()) + (base.Center() - BWAPI::Position(choke->Center())) / 4;
+					}
+					
+				}
+			}
+		}
+	}
+	auto main = BWEB::Map::getMainArea(); //if no natural, defend main choke
+	_ASSERT(!main->Bases().empty());
+
+	for (auto& base : main->Bases())
+	{
+		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::PLAYER)
+		{
+			if (!main->ChokePoints().empty())
+			{
+				return BWAPI::Position(main->ChokePoints().front()->Center()) + (base.Center() - BWAPI::Position(main->ChokePoints().front()->Center())) / 3;
+			}
+		}
+	}
+
+	return BWEB::Map::getMainPosition();
+}
+
 bool Map::IsVisible(const BWEM::Base * base)
 {
 	_ASSERT(base);

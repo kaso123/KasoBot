@@ -118,13 +118,20 @@ int DebugModule::DrawArmy()
 				BWAPI::Broodwar->drawTextMap(unit->GetPointer()->getPosition() + BWAPI::Position(0, 10), "%i", std::min(BWAPI::Broodwar->getFrameCount() - unit->GetPointer()->getLastCommandFrame(), 999));
 			}
 		}
+
+		for (auto& unit : army->Units())
+		{
+			//draw if player controlled
+			if (unit->PlayerControlled())
+				BWAPI::Broodwar->drawCircleMap(unit->GetPointer()->getPosition(), 10, BWAPI::Colors::Red);
+		}
 	}
 	return y+5;
 }
 
 void DebugModule::DrawTasks()
 {
-	BWAPI::Color color;
+	DrawSingleTask(*ArmyModule::Instance()->DefaultTask());
 
 	for (auto& task : ArmyModule::Instance()->Tasks())
 	{

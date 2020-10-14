@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include "Config.h"
 #include "Task.h"
+#include "ArmyModule.h"
 
 using namespace KasoBot;
 
@@ -60,9 +61,6 @@ void Army::OnFrame()
 	CalculateCenter();
 
 	CheckTask();
-
-	if (!_task)
-		return;
 
 	for (auto& unit : _soldiers)
 	{
@@ -138,4 +136,9 @@ void Army::RemoveTask()
 	_ASSERT(_task);
 	_task->Stop();
 	_task = nullptr;
+}
+
+Task * Army::Task()
+{
+	return _task ? _task : ArmyModule::Instance()->DefaultTask();
 }

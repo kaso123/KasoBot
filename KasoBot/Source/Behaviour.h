@@ -16,13 +16,19 @@ namespace KasoBot {
 
 		virtual void AttackMove(BWAPI::Unit unit, BWAPI::Position position);
 
+		virtual void HoldPosition(BWAPI::Unit unit);
+
 	public:
 		Behaviour();
 		virtual ~Behaviour();
 
 		virtual void AttackArea(KasoBot::Unit& unit, Army* army);
 
+		virtual void ScoutArea(KasoBot::Unit& unit, Army* army);
+
 		virtual void DefendArmy(KasoBot::Unit& unit, Army* army);
+
+		virtual void HoldPosition(KasoBot::Unit& unit, Army* army);
 
 		virtual void MoveToArmyCenter(KasoBot::Unit& unit, BWAPI::Position position);
 

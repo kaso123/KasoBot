@@ -14,6 +14,7 @@ ArmyModule* ArmyModule::_instance = 0;
 
 ArmyModule::ArmyModule()
 {
+	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 }
 
 ArmyModule::~ArmyModule()
@@ -30,13 +31,14 @@ void ArmyModule::AssignTasks()
 
 		for (auto& army : _armies)
 		{
-			if (army->Task())
+			if (army->Task() != _defaultTask.get())
 				continue;
 
 			if (!task->IsArmySuitable(*army))
 				continue;
 
 			army->AssignTask(task.get());
+			break;
 		}
 	}
 }
@@ -371,4 +373,9 @@ void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
 			return false;
 		}
 	), _tasks.end());
+}
+
+void ArmyModule::ResetDefaultTask()
+{
+	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 }

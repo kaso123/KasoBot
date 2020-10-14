@@ -28,6 +28,14 @@ void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
 	unit->attack(position);
 }
 
+void Behaviour::HoldPosition(BWAPI::Unit unit)
+{
+	if (unit->getOrder() == BWAPI::Orders::HoldPosition)
+		return;
+
+	unit->holdPosition();
+}
+
 Behaviour::Behaviour()
 {
 }
@@ -52,6 +60,21 @@ void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 	}
 }
 
+void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
+{
+	_ASSERT(army);
+	auto area = army->Task()->Area();
+	_ASSERT(!area->Bases().empty());
+
+	for (auto & base : area->Bases())
+	{
+		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+		{
+			Move(unit.GetPointer(), base.Center());
+		}
+	}
+}
+
 void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 {
 	_ASSERT(army);
@@ -59,6 +82,18 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 	_ASSERT(enemyArmy);
 
 	AttackMove(unit.GetPointer(), enemyArmy->BoundingBox()._center);
+}
+
+void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
+{
+	_ASSERT(army);
+	auto pos = army->Task()->Position();
+	_ASSERT(pos.isValid());
+
+	if (unit.GetPointer()->getDistance(pos) > 40) //TODO make configurable
+		AttackMove(unit.GetPointer(), pos);
+	else
+		HoldPosition(unit.GetPointer());
 }
 
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)

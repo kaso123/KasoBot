@@ -13,6 +13,8 @@ namespace KasoBot {
 		~BehaviourVessel();
 
 		void AttackArea(KasoBot::Unit& unit, Army* army) override;
+
+		void DefendArmy(KasoBot::Unit& unit, Army* army) override;
 	};
 }
 

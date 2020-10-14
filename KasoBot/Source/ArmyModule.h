@@ -26,6 +26,8 @@ namespace KasoBot {
 
 		std::vector <std::unique_ptr<Task>> _tasks;
 
+		std::unique_ptr<Task> _defaultTask; //task that army does when it can't do other tasks
+
 		//cycle through tasks and try to assign each to an army
 		void AssignTasks();
 
@@ -77,12 +79,16 @@ namespace KasoBot {
 
 		//find task for this army and remove it
 		void EnemyArmyRemoved(EnemyArmy* enemy);
+
+		//check if default task should be changed
+		void ResetDefaultTask();
 		
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }
 		const std::vector<std::shared_ptr<Worker>>& Workers() const { return _workers; }
 		const std::vector<std::unique_ptr<Task>>& Tasks() const { return _tasks; }
+		Task* DefaultTask() const { return _defaultTask.get(); }
 	};
 }
 

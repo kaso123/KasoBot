@@ -101,7 +101,7 @@ void ScoutModule::ResetBaseInfo()
 			else
 			{
 				if (!_enemyStart) //don't reset state until we find enemy base
-					return;
+					break;
 
 				if (info->_lastSeenFrame + Config::Units::HiddenBaseResetFrames() < BWAPI::Broodwar->getFrameCount())
 				{
@@ -109,7 +109,6 @@ void ScoutModule::ResetBaseInfo()
 				}
 			}
 		}
-
 	}
 }
 

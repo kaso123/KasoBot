@@ -83,6 +83,14 @@ void Unit::Fight(Army* army)
 	{
 		_behaviour->DefendArmy(*this, army);
 	}
+	else if (army->Task()->Type() == Tasks::Type::SCOUT)
+	{
+		_behaviour->ScoutArea(*this, army);
+	}
+	else if (army->Task()->Type() == Tasks::Type::HOLD)
+	{
+		_behaviour->HoldPosition(*this, army);
+	}
 }
 
 void Unit::Scout()
