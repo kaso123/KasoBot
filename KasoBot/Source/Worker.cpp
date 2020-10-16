@@ -2,6 +2,8 @@
 #include "MapModule.h"
 #include "BehaviourWorker.h"
 #include "ProductionItem.h"
+#include "Task.h"
+#include "Army.h"
 
 using namespace KasoBot;
 
@@ -110,6 +112,14 @@ void Worker::Work()
 
 	_ASSERT(_behaviour);
 	_behaviour->Work(*this);
+}
+
+void Worker::Fight(Army* army)
+{
+	if (army->Task()->Type() == Tasks::Type::DEFEND)
+	{
+		_behaviour->DefendArmy(*this,army);
+	}
 }
 
 bool Worker::RemoveMineral()

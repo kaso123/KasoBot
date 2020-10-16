@@ -49,6 +49,8 @@ namespace KasoBot {
 
 		void Work() override;
 
+		void Fight(Army* army) override;
+
 		//remove mineral pointer and decrease mineral variable
 		//@return false if worker doesn't have mineral assigned
 		bool RemoveMineral();

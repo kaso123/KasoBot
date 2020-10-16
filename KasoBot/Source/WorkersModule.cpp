@@ -89,6 +89,9 @@ void WorkersModule::AssignIdleWorkers(Expansion& exp)
 
 void WorkersModule::AssignRefinery(Expansion& exp)
 {
+	if (exp.GetRefinery())
+		return;
+
 	for (auto it = _unassignedRefineries.begin(); it != _unassignedRefineries.end(); it++)
 	{
 		if (BWEM::Map::Instance().GetNearestArea((*it)->getTilePosition()) == exp.GetStation()->getBWEMBase()->GetArea())
@@ -421,4 +424,41 @@ int WorkersModule::RefineryCount()
 			result++;
 	}
 	return result;
+}
+
+void WorkersModule::WorkerDefence(size_t size)
+{
+	std::vector<std::shared_ptr<KasoBot::Worker>> toMove;
+
+	for (auto& exp : _expansionList) //select workers
+	{
+		for (auto& worker : exp->Workers())
+		{
+			toMove.emplace_back(worker);
+			if (toMove.size() >= size)
+				break;
+		}
+		if (toMove.size() >= size)
+			break;
+	}
+
+	for (auto& worker : toMove) //add selected to army
+	{
+		ArmyModule::Instance()->AddWorker(worker);
+	}
+
+	for (auto& worker : toMove) //remove from here
+	{
+		RemoveWorker(worker->GetPointer());
+		worker->RemoveMineral();
+	}
+
+}
+
+void WorkersModule::AskForWorkers()
+{
+	for (auto& exp : _expansionList)
+	{
+		AssignIdleWorkers(*exp);
+	}
 }

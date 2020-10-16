@@ -3,6 +3,7 @@
 #include "Army.h"
 #include "MapModule.h"
 #include "ScoutModule.h"
+#include "WorkersModule.h"
 #include "Config.h"
 #include "Task.h"
 #include "EnemyArmy.h"
@@ -15,6 +16,7 @@ ArmyModule* ArmyModule::_instance = 0;
 ArmyModule::ArmyModule()
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
+	_workers = std::make_unique<KasoBot::WorkerArmy>();
 }
 
 ArmyModule::~ArmyModule()
@@ -38,7 +40,19 @@ void ArmyModule::AssignTasks()
 				continue;
 
 			army->AssignTask(task.get());
+			if (task->Type() == Tasks::Type::DEFEND && army->GetSupply() < 10
+				&& task->EnemyArmy()->Units().size() * 2 > (size_t)army->GetSupply())
+			{
+				WorkersModule::Instance()->WorkerDefence(task->EnemyArmy()->Units().size());
+				_workers->AssignTask(task.get());
+			}
 			break;
+		}
+		if (task->Type() == Tasks::Type::DEFEND) //we didnt find army to defend
+		{
+			//start worker defence
+			WorkersModule::Instance()->WorkerDefence(task->EnemyArmy()->Units().size());
+			_workers->AssignTask(task.get());
 		}
 	}
 }
@@ -148,7 +162,7 @@ void ArmyModule::OnFrame()
 	if (ScoutModule::Instance()->ShouldWorkerScout())
 	{
 		bool isScout = false;
-		for (auto& worker : _workers)
+		for (auto& worker : _workers->Workers())
 		{
 			if (worker->GetRole() == Units::Role::SCOUT)
 			{
@@ -156,26 +170,22 @@ void ArmyModule::OnFrame()
 				break;
 			}
 		}
-		if (!isScout && !_workers.empty())
-			(_workers.front()->SetRole(Units::Role::SCOUT));
-	}
-
-	for (auto& worker : _workers)
-	{
-		if (worker->GetRole() == Units::Role::SCOUT)
-			worker->Scout();
+		if (!isScout && !_workers->Workers().empty())
+			(_workers->Workers().front()->SetRole(Units::Role::SCOUT));
 	}
 
 	CreateAttackTasks();
 	CreateScoutTasks();
 	AssignTasks();
 
+	_workers->OnFrame();
+
 	for (auto& army : _armies)
 	{
 		army->OnFrame();
 	}
 
-	//remove selected from army
+	//remove finished tasks
 	_tasks.erase(std::remove_if(_tasks.begin(), _tasks.end(),
 		[this](auto& x)
 		{
@@ -188,6 +198,8 @@ void ArmyModule::OnFrame()
 						if (army->Task() == x.get())
 							army->RemoveTask();
 					}
+					if (_workers->Task() == x.get())
+						_workers->RemoveTask();
 				}
 				return true;
 			}
@@ -198,56 +210,17 @@ void ArmyModule::OnFrame()
 
 std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
 {
-	std::vector<std::shared_ptr<Worker>> workers = {};
-
-	//TODO leave some workers for repair job when needed (when implemented)
-	
-	//select workers to transfer
-	for (auto worker : _workers)
-	{
-		if (worker->GetRole() == Units::Role::SCOUT)
-			continue;
-
-		workers.emplace_back(worker);
-		if (workers.size() >= max)
-			break;
-	}
-	
-	//remove selected from army
-	_workers.erase(std::remove_if(_workers.begin(),_workers.end(),
-		[workers](auto& x)
-		{
-			//cycle selected workers, erase if found
-			for (auto worker : workers)
-			{
-				if (worker == x)
-					return true;
-			}
-			return false;
-		}
-	),_workers.end());
-
-	return workers;
+	return _workers->GetFreeWorkers(max);
 }
 
 void ArmyModule::AddWorker(std::shared_ptr<Worker> worker)
 {
-	_workers.emplace_back(worker);
+	_workers->AddWorker(worker);
 }
 
 bool ArmyModule::WorkerKilled(BWAPI::Unit unit)
 {
-	size_t before = _workers.size();
-
-	_workers.erase(std::remove_if(_workers.begin(), _workers.end(),
-		[unit](auto& x)
-		{
-			return unit == x->GetPointer();
-		}
-	), _workers.end());
-
-	//check if worker was removed from list
-	return before > _workers.size();
+	return _workers->WorkerKilled(unit);
 }
 
 void ArmyModule::AddSoldier(KasoBot::Unit* unit)
@@ -291,7 +264,7 @@ int ArmyModule::GetArmySupply()
 		supply += army->GetSupply();
 	}
 
-	supply += _workers.size();
+	supply += _workers->Workers().size();
 
 	return supply;
 }
@@ -306,7 +279,7 @@ void ArmyModule::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 
 bool ArmyModule::NeedScout()
 {
-	if (_workers.size() <= 0)
+	if (_workers->Workers().size() <= 0)
 		return true;
 	return false;
 }
@@ -376,6 +349,8 @@ void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
 		if (army->Task() && army->Task()->EnemyArmy() == enemy)
 			army->RemoveTask();
 	}
+	if (_workers->Task() && _workers->Task()->EnemyArmy() == enemy)
+		_workers->RemoveTask();
 
 	//remove selected from army
 	_tasks.erase(std::remove_if(_tasks.begin(), _tasks.end(),

@@ -87,7 +87,7 @@ void DebugModule::DrawSingleWorker(const Worker& worker)
 
 int DebugModule::DrawArmy()
 {
-	for (auto& worker : ArmyModule::Instance()->Workers())
+	for (auto& worker : ArmyModule::Instance()->WorkerArmy()->Workers())
 	{
 		//draw worker role
 		BWAPI::Broodwar->drawTextMap(worker->GetPointer()->getPosition(), UnitRoleString(worker->GetRole()));

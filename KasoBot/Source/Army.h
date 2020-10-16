@@ -12,10 +12,11 @@ namespace KasoBot {
 	}
 	class Unit;
 	class Task;
+	class Worker;
 
 	class Army
 	{
-	private:
+	protected:
 		std::vector <KasoBot::Unit*> _soldiers;
 		Task* _task;
 		std::unique_ptr<Armies::Box> _box; //bounding box around all units
@@ -28,9 +29,9 @@ namespace KasoBot {
 
 	public:
 		Army();
-		~Army();
+		virtual ~Army();
 
-		void OnFrame();
+		virtual void OnFrame();
 
 		//add new soldier, army can decline unit for various reasons
 		//@return true if soldier was added to this army
@@ -49,7 +50,7 @@ namespace KasoBot {
 		void AssignTask(Task* task);
 
 		//remove pointer to task, if any
-		void RemoveTask();
+		virtual void RemoveTask();
 
 		//@return current task or default task if none
 		Task* Task();
@@ -60,4 +61,29 @@ namespace KasoBot {
 		const std::vector<KasoBot::Unit*>& Units() const { return _soldiers; }
 	};
 
+	class WorkerArmy : public Army {
+	private:
+		std::vector<std::shared_ptr<Worker>> _workers;
+	public:
+		WorkerArmy();
+		~WorkerArmy();
+
+		//@param max = max amount of workers needed
+		//@return vector of workers from army
+		std::vector<std::shared_ptr<Worker>> GetFreeWorkers(size_t max);
+
+		void AddWorker(std::shared_ptr<Worker> worker);
+
+		//@return true if killed worker was from army units
+		bool WorkerKilled(BWAPI::Unit unit);
+
+		void OnFrame() override;
+
+		//remove task and send workers back to workersModule
+		void RemoveTask() override;
+
+		//getters and setters
+
+		const std::vector<std::shared_ptr<KasoBot::Worker>>& Workers() const { return _workers; }
+	};
 }

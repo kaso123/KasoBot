@@ -86,6 +86,12 @@ namespace KasoBot {
 		//@return number of existing refineries
 		int RefineryCount();
 
+		//add workers to army for defence
+		void WorkerDefence(size_t size);
+
+		//cycle through expansion and get workers from army if free
+		void AskForWorkers();
+
 		//getters and setters
 		
 		const std::vector<std::unique_ptr<Expansion>>& ExpansionList() const { return _expansionList; }

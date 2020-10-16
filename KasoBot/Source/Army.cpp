@@ -1,8 +1,9 @@
 #include "Army.h"
-#include "Unit.h"
 #include "Config.h"
 #include "Task.h"
 #include "ArmyModule.h"
+#include "WorkersModule.h"
+#include "Worker.h"
 
 using namespace KasoBot;
 
@@ -141,4 +142,86 @@ void Army::RemoveTask()
 Task * Army::Task()
 {
 	return _task ? _task : ArmyModule::Instance()->DefaultTask();
+}
+
+WorkerArmy::WorkerArmy()
+{
+}
+
+WorkerArmy::~WorkerArmy()
+{
+}
+
+std::vector<std::shared_ptr<Worker>> WorkerArmy::GetFreeWorkers(size_t max)
+{
+	std::vector<std::shared_ptr<Worker>> workers = {};
+
+	//select workers to transfer
+	for (auto worker : _workers)
+	{
+		if (worker->GetRole() == Units::Role::SCOUT)
+			continue;
+
+		workers.emplace_back(worker);
+		if (workers.size() >= max)
+			break;
+	}
+
+	//remove selected from army
+	_workers.erase(std::remove_if(_workers.begin(), _workers.end(),
+		[workers](auto& x)
+		{
+			//cycle selected workers, erase if found
+			for (auto worker : workers)
+			{
+				if (worker == x)
+					return true;
+			}
+			return false;
+		}
+	), _workers.end());
+
+	return workers;
+}
+
+void WorkerArmy::AddWorker(std::shared_ptr<Worker> worker)
+{
+	_workers.emplace_back(worker);
+}
+
+bool WorkerArmy::WorkerKilled(BWAPI::Unit unit)
+{
+	size_t before = _workers.size();
+
+	_workers.erase(std::remove_if(_workers.begin(), _workers.end(),
+		[unit](auto& x)
+		{
+			return unit == x->GetPointer();
+		}
+	), _workers.end());
+
+	//check if worker was removed from list
+	return before > _workers.size();
+}
+
+void WorkerArmy::OnFrame()
+{	
+	for (auto& worker : _workers)
+	{
+		if (worker->GetRole() == Units::Role::SCOUT)
+		{
+			worker->Scout();
+		}
+		if (worker->GetRole() == Units::Role::IDLE)
+		{
+			worker->Fight(this);
+		}
+	}
+}
+
+void WorkerArmy::RemoveTask()
+{
+	Army::RemoveTask();
+
+	WorkersModule::Instance()->AskForWorkers();
 }

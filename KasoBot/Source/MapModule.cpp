@@ -100,8 +100,7 @@ BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
 BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 {
 	_ASSERT(base);
-	if (base->Minerals().empty())
-		return nullptr;
+	_ASSERT(!base->Minerals().empty());		
 
 	BWEM::Mineral* mineral = nullptr;
 	int dist = INT_MAX;
@@ -141,7 +140,8 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 			return mineral;
 	}
 	
-	return nullptr;
+	_ASSERT(false);
+	return base->Minerals().front();
 }
 
 BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)

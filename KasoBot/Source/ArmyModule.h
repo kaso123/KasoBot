@@ -9,6 +9,7 @@ namespace KasoBot {
 	class Worker;
 	class Unit;
 	class Army;
+	class WorkerArmy;
 	class Task;
 	class EnemyArmy;
 
@@ -19,8 +20,7 @@ namespace KasoBot {
 		~ArmyModule();
 		static ArmyModule* _instance;
 
-		//TODO mockup for workers in army
-		std::vector<std::shared_ptr<Worker>> _workers;
+		std::unique_ptr<WorkerArmy> _workers; //workers in army
 
 		std::vector <std::unique_ptr<Army>> _armies;
 
@@ -87,7 +87,7 @@ namespace KasoBot {
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }
-		const std::vector<std::shared_ptr<Worker>>& Workers() const { return _workers; }
+		const std::unique_ptr<WorkerArmy>& WorkerArmy() const { return _workers; }
 		const std::vector<std::unique_ptr<Task>>& Tasks() const { return _tasks; }
 		Task* DefaultTask() const { return _defaultTask.get(); }
 	};
