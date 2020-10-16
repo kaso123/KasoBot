@@ -100,7 +100,7 @@ namespace KasoBot {
 		ScoutAreaTask(const BWEM::Area* area);
 		~ScoutAreaTask() {};
 
-		bool IsArmySuitable(Army& army) override { return false; }
+		bool IsArmySuitable(Army& army) override;
 
 		bool IsFinished() override;
 

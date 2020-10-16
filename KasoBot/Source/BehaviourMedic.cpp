@@ -12,6 +12,8 @@ void BehaviourMedic::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
 		return;
 	if (unit->getOrder() == BWAPI::Orders::MedicHeal)
 		return;
+	if (unit->getOrder() == BWAPI::Orders::Medic && unit->getDistance(position) < 50)
+		return;
 
 	unit->attack(position);
 }

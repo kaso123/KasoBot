@@ -72,6 +72,14 @@ ScoutAreaTask::ScoutAreaTask(const BWEM::Area * area)
 {
 }
 
+bool ScoutAreaTask::IsArmySuitable(Army & army)
+{
+	if (army.GetSupply() < 3 || BWAPI::Broodwar->self()->supplyUsed() > 380) //TODO make configurable
+		return true;
+
+	return false;
+}
+
 bool ScoutAreaTask::IsFinished()
 {
 	_ASSERT(_area);

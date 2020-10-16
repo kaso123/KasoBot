@@ -67,7 +67,32 @@ void ScoutModule::ResetEnemyInfo()
 		}
 	}
 
-	_armies.erase(std::remove_if(_armies.begin(), _armies.end(), //remove uarmies without units
+	for (auto& type : _enemies) //remove buildings that are not there
+	{
+		if (!type.first.isBuilding())
+			continue;
+
+		type.second.erase(std::remove_if(type.second.begin(), type.second.end(),
+			[](auto& x)
+			{
+				return !Map::IsStillThere(*x);
+			}
+		), type.second.end());
+	}
+	
+	//remove empty types
+	for (auto it = std::begin(_enemies); it != std::end(_enemies);)
+	{
+		if (it->second.empty())
+		{
+			it = _enemies.erase(it); 
+		}
+		else
+			++it;
+	}
+
+
+	_armies.erase(std::remove_if(_armies.begin(), _armies.end(), //remove armies without units
 		[](auto& x)
 		{
 			return x->Units().empty();
@@ -108,6 +133,16 @@ void ScoutModule::ResetBaseInfo()
 					info->_owner = Base::Owner::UNKNOWN;
 				}
 			}
+		}
+		if (info->_owner == Base::Owner::ENEMY)
+		{
+			//if we see the base and there is no resource depot, set owner to none
+			//this is needed for cancelled buildings
+			if (Map::IsVisible(base)
+				&& BWAPI::Broodwar->getUnitsInRectangle((BWAPI::Position)base->Location(), 
+					(BWAPI::Position)base->Location()+BWAPI::Position(128,96),
+					BWAPI::Filter::IsResourceDepot).empty())
+					info->_owner = Base::Owner::NONE;				
 		}
 	}
 }

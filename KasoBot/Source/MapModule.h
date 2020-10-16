@@ -6,6 +6,7 @@ namespace KasoBot
 {
 	class Expansion;
 	struct BaseInfo;
+	struct EnemyUnit;
 
 	namespace Map 
 	{
@@ -42,6 +43,9 @@ namespace KasoBot
 
 		//@return position where the default task for armies should be located
 		BWAPI::Position DefaultTaskPosition();
+
+		//@return false if building place is visible and building is not longer there
+		bool IsStillThere(EnemyUnit& enemy);
 
 		//@return true if any of tiles belonging to base is visible
 		bool IsVisible(const BWEM::Base* base);

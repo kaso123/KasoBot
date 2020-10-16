@@ -2,6 +2,7 @@
 #include "Expansion.h"
 #include "Config.h"
 #include "WorkersModule.h"
+#include "ScoutModule.h"
 #include "BaseInfo.h"
 
 #include <math.h>
@@ -333,6 +334,24 @@ BWAPI::Position Map::DefaultTaskPosition()
 	}
 
 	return BWEB::Map::getMainPosition();
+}
+
+bool Map::IsStillThere(EnemyUnit & enemy)
+{
+	_ASSERT(enemy._type.isBuilding());
+	_ASSERT(enemy._lastPos.isValid());
+
+	for (int x = 0; x < enemy._type.tileWidth(); x++)
+	{
+		for (int y = 0; y < enemy._type.tileHeight(); y++)
+		{
+			//if we see a tile from this building and it is not there, return false
+			if (BWAPI::Broodwar->isVisible(enemy._lastPos + BWAPI::TilePosition(x, y))
+				&& BWAPI::Broodwar->getUnitsOnTile(enemy._lastPos + BWAPI::TilePosition(x, y),BWAPI::Filter::GetType == enemy._type).empty())
+				return false;
+		}
+	}
+	return true;
 }
 
 bool Map::IsVisible(const BWEM::Base * base)

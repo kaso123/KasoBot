@@ -14,7 +14,7 @@
     "clearTileLock":  150,
     "enemyPositionReset": 50,
     "enemyArmyRange": 6,
-    "armyRange": 4,
+    "armyRange": 6,
     "hiddenPositionReset": 2000,
     "hiddenBaseReset": 1000,
     "scoutBaseRadius":  500,
@@ -38,7 +38,7 @@
   "strategy": {
     "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
-    "maxArmySupply": 20,
+    "maxArmySupply": 30,
     "maxAttackTasks": 2,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,
@@ -61,6 +61,11 @@
     {"name": "default_bio",
      "opener": "test1",
      "units": {"marine":5, "medic":2, "firebat":2},
+      "tech": [ "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
+    },
+    {"name": "bio_vessel",
+     "opener": "test1",
+     "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1},
       "tech": [ "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
     {"name": "rush_bc",
@@ -114,9 +119,18 @@
        "counters": ["default_bio", "rush_bc"],
        "types": [
          {"type": "hydralisk", "include": true, "value": 100},
+         {"type": "lurker", "include": false, "value": 25},
          {"type": "spire", "include": false, "value": 100}, 
          {"type": "hydralisk_den", "include": true, "value": 100},
          {"type": "zergling","include": false, "value": 75, "count": 8}
+       ]
+      },
+      {"name": "HydraLurker",
+       "counters": ["bio_vessel"],
+       "types": [
+         {"type": "lurker", "include": true, "value": 100},
+         {"type": "hydralisk", "include": true, "value": 50},
+         {"type": "hydralisk_den", "include": true, "value": 50}
        ]
       }
     ]

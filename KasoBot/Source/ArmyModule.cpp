@@ -56,28 +56,38 @@ void ArmyModule::CreateAttackTasks()
 	if (count >= Config::Strategy::MaxAttackTasks()) 
 		return;
 
-	//find next area where enemies are
-	for (auto& area : BWEM::Map::Instance().Areas())
+	count = 1;
+	while (true)
 	{
-		bool enemy = false;
-		for (auto& base : area.Bases())
+		//find next area where enemies are
+		for (auto& area : BWEM::Map::Instance().Areas())
 		{
-			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
+			bool enemy = false;
+			for (auto& base : area.Bases())
 			{
-				enemy = true;
-				break;
+				if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
+				{
+					enemy = true;
+					break;
+				}
 			}
-		}
-		if (!enemy)
-			continue;
+			if (!enemy)
+				continue;
 
-		if (AddAttackTask(&area))
+			if (AddAttackTask(&area,count))
+				return;
+		}
+		count++;
+		if (count > 3) //TODO make configurable max att tasks per area
 			return;
 	}
 }
 
 void ArmyModule::CreateScoutTasks()
 {
+	if (BWAPI::Broodwar->getFrameCount() < 3 * 24 * 60) //TODO 3 minutes, make configurable
+		return;
+
 	//count current scout tasks
 	int count = 0;
 	for (auto& task : _tasks)
@@ -301,15 +311,19 @@ bool ArmyModule::NeedScout()
 	return false;
 }
 
-bool ArmyModule::AddAttackTask(const BWEM::Area * area)
+bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 {
 	_ASSERT(area);
 
+	int found = 0;
 	for (auto& task : _tasks)
 	{
 		if (task->Type() == Tasks::Type::ATTACK && task->Area() == area)
-			return false;
+			found++;
 	}
+	if (found >= limit)
+		return false;
+
 	_tasks.emplace_back(std::make_unique<AttackAreaTask>(area));
 	return true;
 }

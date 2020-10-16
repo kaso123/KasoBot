@@ -66,7 +66,8 @@ namespace KasoBot {
 		bool NeedScout();
 
 		//create new attackArea task if it doesn't exist already
-		bool AddAttackTask(const BWEM::Area* area);
+		//@param limit = how many attack tasks for the same area we want, default 1
+		bool AddAttackTask(const BWEM::Area* area, int limit = 1);
 
 		//create new defendArmy task if it doesn't exist already
 		bool AddDefendTask(EnemyArmy* enemy);
