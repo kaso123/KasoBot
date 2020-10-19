@@ -7,6 +7,7 @@
 #include "Army.h"
 #include "EnemyArmy.h"
 #include "Task.h"
+#include "ArmyModule.h"
 
 using namespace KasoBot;
 
@@ -80,7 +81,16 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 	_ASSERT(army);
 	auto enemyArmy = army->Task()->EnemyArmy();
 	_ASSERT(enemyArmy);
-
+	
+	if (ArmyModule::Instance()->Bunker()) //stick to bunker if enemy is not inside our base
+	{
+		if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(BWEB::Map::getMainPosition())
+			< army->Task()->EnemyArmy()->BoundingBox()._center.getDistance(BWEB::Map::getMainPosition()))
+		{
+			AttackMove(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer()->getPosition());
+			return;
+		}
+	}
 	AttackMove(unit.GetPointer(), enemyArmy->BoundingBox()._center);
 }
 

@@ -28,6 +28,8 @@ namespace KasoBot {
 
 		std::unique_ptr<Task> _defaultTask; //task that army does when it can't do other tasks
 
+		KasoBot::Unit* _bunker;
+
 		//cycle through tasks and try to assign each to an army
 		void AssignTasks();
 
@@ -83,13 +85,20 @@ namespace KasoBot {
 
 		//check if default task should be changed
 		void ResetDefaultTask();
+
+		//assign this task to workers and get workers from WorkersModule
+		//@param count = how many workers should be defending
+		void StartWorkerDefence(Task* task, size_t count);
 		
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }
 		const std::unique_ptr<WorkerArmy>& WorkerArmy() const { return _workers; }
 		const std::vector<std::unique_ptr<Task>>& Tasks() const { return _tasks; }
 		Task* DefaultTask() const { return _defaultTask.get(); }
+		KasoBot::Unit* Bunker() const { return _bunker; }
+		void SetBunker(KasoBot::Unit* bunker) { _bunker = bunker; }
 	};
 }
 

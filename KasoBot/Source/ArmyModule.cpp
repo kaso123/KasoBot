@@ -14,6 +14,7 @@ using namespace KasoBot;
 ArmyModule* ArmyModule::_instance = 0;
 
 ArmyModule::ArmyModule()
+	:_bunker(nullptr)
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 	_workers = std::make_unique<KasoBot::WorkerArmy>();
@@ -38,21 +39,16 @@ void ArmyModule::AssignTasks()
 
 			if (!task->IsArmySuitable(*army))
 				continue;
-
 			army->AssignTask(task.get());
-			if (task->Type() == Tasks::Type::DEFEND && army->GetSupply() < 10
-				&& task->EnemyArmy()->Units().size() * 2 > (size_t)army->GetSupply())
-			{
-				WorkersModule::Instance()->WorkerDefence(task->EnemyArmy()->Units().size());
-				_workers->AssignTask(task.get());
-			}
 			break;
 		}
+		if (task->InProgress()) //task was assigned  to army, worker defence is called from there
+			continue;
+
 		if (task->Type() == Tasks::Type::DEFEND) //we didnt find army to defend
 		{
 			//start worker defence
-			WorkersModule::Instance()->WorkerDefence(task->EnemyArmy()->Units().size());
-			_workers->AssignTask(task.get());
+			StartWorkerDefence(task.get(),task->EnemyArmy()->Supply() + 1);
 		}
 	}
 }
@@ -99,7 +95,7 @@ void ArmyModule::CreateAttackTasks()
 
 void ArmyModule::CreateScoutTasks()
 {
-	if (BWAPI::Broodwar->getFrameCount() < 3 * 24 * 60) //TODO 3 minutes, make configurable
+	if (BWAPI::Broodwar->getFrameCount() < 8 * 24 * 60) //TODO 8 minutes, make configurable
 		return;
 
 	//count current scout tasks
@@ -367,4 +363,17 @@ void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
 void ArmyModule::ResetDefaultTask()
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
+}
+
+void ArmyModule::StartWorkerDefence(Task * task, size_t count)
+{
+	_ASSERT(task->Type() == Tasks::Type::DEFEND);
+
+	if (_bunker)
+		count = 4; //TODO configurable
+
+	//start worker defence
+	if(count > _workers->Workers().size())
+		WorkersModule::Instance()->WorkerDefence(count - _workers->Workers().size());
+	_workers->AssignTask(task);
 }

@@ -322,3 +322,15 @@ BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UpgradeType type)
 		return Config::Utils::NextPrerequisite(type.whatUpgrades()); //recursively check building which upgrades this
 	return BWAPI::UnitTypes::None;
 }
+
+bool Config::Utils::CanBuild(BWAPI::UnitType type)
+{
+	for (auto& req : type.requiredUnits())
+	{
+		if (!BWAPI::Broodwar->self()->hasUnitTypeRequirement(req.first, req.second))
+		{
+			return false;
+		}
+	}
+	return true;
+}

@@ -12,13 +12,13 @@
   "units": {
     "orderDelay": 7,
     "clearTileLock":  150,
-    "enemyPositionReset": 50,
+    "enemyPositionReset": 30,
     "enemyArmyRange": 6,
     "armyRange": 6,
     "hiddenPositionReset": 2000,
     "hiddenBaseReset": 1000,
     "scoutBaseRadius":  500,
-    "enemyThreatRadius": 800
+    "enemyThreatRadius": 500
   },
   "production": {
     "freeSupplyMultiplier": 1.3
@@ -38,7 +38,7 @@
   "strategy": {
     "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
-    "maxArmySupply": 30,
+    "maxArmySupply": 25,
     "maxAttackTasks": 2,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,
@@ -50,7 +50,8 @@
   },
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
-    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"]
+    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"],
+    "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine" ]
   },
   "strategies": [
     {"name": "default_mech",
@@ -58,10 +59,15 @@
      "units": {"tank":5, "vulture":2, "goliath":5, "marine":1},
      "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_plating","starport","science_facility"]
     },
-    {"name": "default_bio",
-     "opener": "test1",
+    {"name": "default_bio_vs_Z",
+     "opener": "anti_rush",
      "units": {"marine":5, "medic":2, "firebat":2},
-      "tech": [ "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
+      "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
+    },
+    {"name": "default_bio_vs_P",
+     "opener": "anti_rush",
+     "units": {"marine":6, "medic":2, "tank":1},
+      "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
     {"name": "bio_vessel",
      "opener": "test1",
@@ -88,7 +94,7 @@
     ],
     "protoss": [
       {"name": "ZealotRush",
-       "counters":  ["default_bio"],
+       "counters":  ["default_bio_vs_P"],
        "types": [
          {"type": "zealot","include": true, "value": 100, "count": 3},
          {"type": "gateway", "include": true, "value": 100, "count": 2},
@@ -96,7 +102,7 @@
        ]
       },
       {"name": "FastDT",
-       "counters": ["rush_bc"],
+       "counters": ["bio_vessel"],
        "types": [
          {"type": "dragoon", "include": false, "value": 50},
          {"type": "citadel", "include": true, "value": 75}, 
@@ -107,7 +113,7 @@
     ],
     "zerg": [
       {"name": "ZerglingRush",
-       "counters": ["default_bio"],
+       "counters": ["default_bio_vs_Z"],
        "types": [
          {"type": "zergling","include": true, "value": 100, "count": 6},
          {"type": "pool", "include": true, "value": 100},
@@ -116,7 +122,7 @@
        ]
       },
       {"name": "HydraPush",
-       "counters": ["default_bio", "rush_bc"],
+       "counters": ["default_bio_vs_Z", "rush_bc"],
        "types": [
          {"type": "hydralisk", "include": true, "value": 100},
          {"type": "lurker", "include": false, "value": 25},

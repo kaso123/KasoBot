@@ -25,7 +25,7 @@ namespace KasoBot {
 		void CalculateCenter();
 
 		//check if task is not finished and remove it if needed
-		void CheckTask();
+		virtual void CheckTask();
 
 	public:
 		Army();
@@ -64,6 +64,8 @@ namespace KasoBot {
 	class WorkerArmy : public Army {
 	private:
 		std::vector<std::shared_ptr<Worker>> _workers;
+
+		void CheckTask() override;
 	public:
 		WorkerArmy();
 		~WorkerArmy();

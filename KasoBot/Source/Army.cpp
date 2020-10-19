@@ -3,6 +3,7 @@
 #include "Task.h"
 #include "ArmyModule.h"
 #include "WorkersModule.h"
+#include "EnemyArmy.h"
 #include "Worker.h"
 
 using namespace KasoBot;
@@ -39,6 +40,13 @@ void Army::CheckTask()
 	{
 		_task->Stop();
 		_task = nullptr;
+		return;
+	}
+
+	//check if worker defence is needed
+	if (_task->Type() == Tasks::Type::DEFEND && (_task->EnemyArmy()->Supply() + 4) > GetSupply())
+	{
+		ArmyModule::Instance()->StartWorkerDefence(_task, _task->EnemyArmy()->Supply() + 4 - GetSupply());
 	}
 }
 
@@ -144,6 +152,20 @@ Task * Army::Task()
 	return _task ? _task : ArmyModule::Instance()->DefaultTask();
 }
 
+void WorkerArmy::CheckTask()
+{
+	if (!_task)
+		return;
+
+	if (_task->IsFinished())
+	{
+		_task->Stop();
+		_task = nullptr;
+		WorkersModule::Instance()->AskForWorkers();
+		return;
+	}
+}
+
 WorkerArmy::WorkerArmy()
 {
 }
@@ -187,6 +209,16 @@ std::vector<std::shared_ptr<Worker>> WorkerArmy::GetFreeWorkers(size_t max)
 void WorkerArmy::AddWorker(std::shared_ptr<Worker> worker)
 {
 	_workers.emplace_back(worker);
+	worker->SetRole(Units::Role::IDLE);
+
+	//keep 2 SCVs on repair job
+	if (ArmyModule::Instance()->Bunker())
+	{
+		if (_workers.size() <= 5) //TODO config
+			worker->SetRole(Units::Role::BUNKER);
+		else
+			worker->SetRole(Units::Role::IDLE);
+	}
 }
 
 bool WorkerArmy::WorkerKilled(BWAPI::Unit unit)
@@ -206,13 +238,15 @@ bool WorkerArmy::WorkerKilled(BWAPI::Unit unit)
 
 void WorkerArmy::OnFrame()
 {	
+	CheckTask();
+
 	for (auto& worker : _workers)
 	{
 		if (worker->GetRole() == Units::Role::SCOUT)
 		{
 			worker->Scout();
 		}
-		if (worker->GetRole() == Units::Role::IDLE)
+		else
 		{
 			worker->Fight(this);
 		}

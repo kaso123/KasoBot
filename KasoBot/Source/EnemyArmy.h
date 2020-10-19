@@ -37,6 +37,9 @@ namespace KasoBot {
 		//@return true if army is close to our buildings
 		bool IsThreat();
 
+		//@return total supply of this army
+		int Supply();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }

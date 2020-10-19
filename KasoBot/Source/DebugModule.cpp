@@ -276,6 +276,12 @@ void DebugModule::DrawBases()
 			"Min: %i/%i\nGas: %i/%i",
 			exp->WorkerCountMinerals(),exp->GetStation()->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral(),
 			exp->WorkerCountGas(),exp->GetRefinery() ? Config::Workers::SaturationPerGas() : 0);
+
+		//draw mineral worker count for patches
+		for (auto& mineral : exp->GetStation()->getBWEMBase()->Minerals())
+		{
+			BWAPI::Broodwar->drawTextMap(mineral->Pos(), "%i", mineral->Data());
+		}
 	}
 
 	for (const auto& area : BWEM::Map::Instance().Areas())
@@ -425,7 +431,8 @@ const char* DebugModule::UnitRoleString(Units::Role role)
 {
 	if (role == Units::Role::SCOUT)
 		return "\x01 Scout"; //TODO color?
-
+	if (role == Units::Role::BUNKER)
+		return "\x03 Bunker"; //TODO color?
 	return "Idle";
 }
 

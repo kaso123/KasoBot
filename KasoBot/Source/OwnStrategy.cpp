@@ -166,7 +166,7 @@ std::vector<BWAPI::UnitType> OwnStrategy::GetMacroArmyTypes()
 	int totalArmy = 0;
 	for (auto& item : _units)
 	{
-		if (Config::Utils::NextPrerequisite(item._type) == item._type)
+		if (Config::Utils::CanBuild(item._type))
 		{
 			totalExpected += item._value;
 			totalArmy += ProductionModule::Instance()->GetCountOf(item._type);

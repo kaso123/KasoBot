@@ -98,6 +98,14 @@ void BehaviourWorker::Construct(Worker& worker)
 	worker.GetProductionItem()->Restart();
 }
 
+void BehaviourWorker::Repair(BWAPI::Unit unit, BWAPI::Unit building)
+{
+	if (unit->getOrder() == BWAPI::Orders::Repair && unit->getOrderTarget() == building)
+		return;
+
+	unit->repair(building);
+}
+
 void BehaviourWorker::GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target)
 {
 	//worker is mining his mineral - do nothing
@@ -197,4 +205,16 @@ void BehaviourWorker::Work(Worker& worker)
 		return;
 	}
 		
+}
+
+void BehaviourWorker::DefendArmy(KasoBot::Unit & unit, Army * army)
+{
+	auto bunker = ArmyModule::Instance()->Bunker();
+	if (unit.GetRole() == Units::Role::BUNKER && bunker
+		&& bunker->GetPointer()->getHitPoints() < bunker->GetPointer()->getType().maxHitPoints())
+	{
+		Repair(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
+		return;
+	}
+	Behaviour::DefendArmy(unit,army);
 }

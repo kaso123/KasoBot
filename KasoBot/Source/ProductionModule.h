@@ -28,6 +28,9 @@ namespace KasoBot {
 		//order new supply depot when getting close to supply block
 		void PreventSupplyBlock();
 
+		//@return false if enemy army is close to target position
+		bool IsSafeToBuild(BWAPI::TilePosition pos);
+
 	public:
 		static ProductionModule* Instance();
 

@@ -243,7 +243,14 @@ size_t Expansion::IdealWorkerCount()
 	if (!_station)
 		return 0;
 
-	return _station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() + (_refinery ? Config::Workers::SaturationPerGas() : 0);
+	//check if we have more than enough workers to avoid size_t being negative
+	if(_station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() <= (size_t)_workersMinerals
+		&& (!_refinery || Config::Workers::SaturationPerGas() <= _workersGas))
+		return 0;
+
+	return _station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() 
+		+ (_refinery ? Config::Workers::SaturationPerGas() : 0)
+		- _workersGas - _workersMinerals;
 }
 
 std::vector<std::shared_ptr<Worker>> Expansion::GetUnneededWorkers(size_t max)

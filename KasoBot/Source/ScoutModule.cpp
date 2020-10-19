@@ -421,10 +421,17 @@ BWAPI::Race ScoutModule::GetEnemyRace()
 
 void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 {
-	if (!enemy || enemy->_type.isBuilding() || enemy->_type.isWorker())
+	if (!enemy)
 		return;
 
 	_ASSERT(enemy->_lastPos != BWAPI::TilePositions::Unknown);
+
+	if (enemy->_type.isWorker() || enemy->_type.isBuilding()) //buildings that are in our main or natural are assigned to enemy army to trigger worker defence
+	{
+		auto area = BWEM::Map::Instance().GetNearestArea(enemy->_lastPos);
+		if (!area || (area != BWEB::Map::getMainArea() && area != BWEB::Map::getNaturalArea()))
+			return;
+	}
 
 	for (auto& army : _armies)
 	{

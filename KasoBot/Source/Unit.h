@@ -7,7 +7,8 @@ namespace KasoBot {
 	namespace Units {
 		enum Role {
 			IDLE,
-			SCOUT
+			SCOUT,
+			BUNKER
 		};
 	}
 	class Behaviour;

@@ -2,6 +2,7 @@
 #include "BehaviourWorker.h"
 #include "BehaviourMedic.h"
 #include "BehaviourVessel.h"
+#include "BehaviourMarine.h"
 #include "ArmyModule.h"
 #include "MapModule.h"
 #include "Army.h"
@@ -17,7 +18,11 @@ namespace {
 			outBehaviour = std::make_unique<BehaviourWorker>();
 			return;
 		}
-		
+		if (type == BWAPI::UnitTypes::Terran_Marine)
+		{
+			outBehaviour = std::make_unique<BehaviourMarine>();
+			return;
+		}
 		if (type == BWAPI::UnitTypes::Terran_Medic)
 		{
 			outBehaviour = std::make_unique<BehaviourMedic>();

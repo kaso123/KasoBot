@@ -4,10 +4,13 @@
 #include "MapModule.h"
 #include "Config.h"
 #include "StrategyModule.h"
+#include "ScoutModule.h"
 
 #include "ProductionItem.h"
 #include "Unit.h"
 #include "Expansion.h"
+#include "Army.h"
+#include "EnemyArmy.h"
 
 using namespace KasoBot;
 
@@ -44,6 +47,19 @@ void ProductionModule::PreventSupplyBlock()
 	}
 }
 
+bool ProductionModule::IsSafeToBuild(BWAPI::TilePosition pos)
+{
+	if (!pos.isValid())
+		return true;
+
+	for (auto& army : ScoutModule::Instance()->GetArmies())
+	{
+		if (army->BoundingBox()._center.getDistance(BWAPI::Position(pos)) < 500)
+			return false;
+	}
+	return true;
+}
+
 ProductionModule* ProductionModule::Instance()
 {
 	if (!_instance)
@@ -53,7 +69,7 @@ ProductionModule* ProductionModule::Instance()
 
 void ProductionModule::OnFrame()
 {
-	if(!StrategyModule::Instance()->IsOpenerActive() || BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 2)
+	if(!StrategyModule::Instance()->IsOpenerActive() || BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed())
 		PreventSupplyBlock();
 
 	//sort items by status
@@ -75,12 +91,13 @@ void ProductionModule::OnFrame()
 	{
 		if (item->GetState() == Production::State::UNFINISHED)
 		{
-			WorkersModule::Instance()->Build(item.get());
+			if(IsSafeToBuild(item->GetLocation()))
+				WorkersModule::Instance()->Build(item.get());
 			return;
 		}
 		if (item->GetState() == Production::State::WAITING)
 		{
-			if (CanSendWorker(item->GetType()))
+			if (CanSendWorker(item->GetType()) && IsSafeToBuild(item->GetLocation()))
 			{
 				WorkersModule::Instance()->Build(item.get());
 			}
@@ -108,14 +125,25 @@ void ProductionModule::AddBuilding(BWAPI::Unit unit)
 {
 	auto it = _buildingList.find(unit->getType());
 
+	KasoBot::Unit* created = nullptr;
 	if (it != _buildingList.end())
 	{
-		it->second.emplace_back(std::make_unique<KasoBot::Unit>(unit));
+		created = it->second.emplace_back(std::make_unique<KasoBot::Unit>(unit)).get();
 	}
 	else
 	{
 		auto new_it = _buildingList.insert({ unit->getType(), UnitList{} });
-		new_it.first->second.emplace_back(std::make_unique<KasoBot::Unit>(unit));
+		created = new_it.first->second.emplace_back(std::make_unique<KasoBot::Unit>(unit)).get();
+	}
+
+	_ASSERT(created);
+
+	if (unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+	{
+		if (!ArmyModule::Instance()->Bunker())
+		{
+			ArmyModule::Instance()->SetBunker(created);
+		}
 	}
 }
 
@@ -158,6 +186,17 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 			}
 		}
 		_ASSERT(false); //there can't be uncomplete building without a production item
+	}
+
+	//remove bunker if destroyed
+	if (unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+	{
+		if (ArmyModule::Instance()->Bunker() 
+			&& ArmyModule::Instance()->Bunker()->GetPointer() == unit)
+		{
+			ArmyModule::Instance()->SetBunker(nullptr);
+			BuildBuilding(BWAPI::UnitTypes::Terran_Bunker);
+		}
 	}
 
 	auto it = _buildingList.find(unit->getType());
@@ -384,12 +423,30 @@ bool ProductionModule::CheckResources(BWAPI::TechType type)
 
 bool ProductionModule::CanSendWorker(BWAPI::UnitType type)
 {
-	if (BWAPI::Broodwar->self()->minerals() + WorkersModule::Instance()->WorkerCountMinerals() * Config::Workers::WorkerResourceValue()
+	int minQueued = 0;
+	int gasQueued = 0;
+
+	for (auto& item : _items)
+	{
+		if (item->GetState() == Production::State::ASSIGNED)
+		{
+			minQueued += item->GetType().mineralPrice();
+			gasQueued += item->GetType().gasPrice();
+		}
+	}
+
+	if (BWAPI::Broodwar->self()->minerals() - minQueued + WorkersModule::Instance()->WorkerCountMinerals() * Config::Workers::WorkerResourceValue()
 		* (type.isResourceDepot() ? 2 : 1) < type.mineralPrice()) //double the amount for CCs, worker has to move longer
 		return false;
-	if (BWAPI::Broodwar->self()->gas() + WorkersModule::Instance()->WorkerCountGas() * Config::Workers::WorkerResourceValue() < type.gasPrice())
+	if (BWAPI::Broodwar->self()->gas() - gasQueued + WorkersModule::Instance()->WorkerCountGas() * Config::Workers::WorkerResourceValue() < type.gasPrice())
 		return false;
-	
+
+	//check if all needed buildings are finished
+	for (auto& req : type.requiredUnits())
+	{
+		if (!BWAPI::Broodwar->self()->hasUnitTypeRequirement(req.first, req.second))
+			return false;
+	}
 	return true;
 }
 

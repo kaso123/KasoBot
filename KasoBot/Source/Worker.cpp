@@ -19,6 +19,7 @@ Worker::~Worker()
 	{
 		_mineral->SetData(_mineral->Data() - 1);
 		_ASSERT(_mineral->Data() >= 0);
+ 		_mineral = nullptr;
 	}
 
 	if (_item) //set appropriate state to productionItem
@@ -108,6 +109,8 @@ void Worker::Work()
 	if (_item && _item->GetLocation() == BWAPI::TilePositions::Invalid)
 	{
 		_item->SetLocation(Map::GetBuildPosition(_item->GetType()));
+		if(_item->GetLocation().isValid())
+			BWEB::Map::KasoBot::ReserveTiles(_item->GetLocation(), _item->GetType());
 	}
 
 	_ASSERT(_behaviour);

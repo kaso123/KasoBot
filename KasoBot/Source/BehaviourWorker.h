@@ -23,6 +23,9 @@ namespace KasoBot {
 		//construct building
 		void Construct(Worker& worker);
 
+		//assign repair order to worker
+		void Repair(BWAPI::Unit unit, BWAPI::Unit building);
+
 		//assign gather order to worker
 		//@target = mineral patch
 		void GatherMinerals(BWAPI::Unit unit, BWAPI::Unit target);
@@ -47,6 +50,8 @@ namespace KasoBot {
 
 		//logic for mining minerals, building and repairing buildings
 		void Work(Worker& worker) override;
+
+		void DefendArmy(KasoBot::Unit& unit, Army* army) override;
 	};
 }
 

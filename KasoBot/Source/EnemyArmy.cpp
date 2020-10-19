@@ -135,3 +135,13 @@ bool EnemyArmy::IsThreat()
 	}
 	return false;
 }
+
+int EnemyArmy::Supply()
+{
+	int total = 0;
+	for (auto& unit : _units)
+	{
+		total += unit->_type.supplyRequired();
+	}
+	return total;
+}

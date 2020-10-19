@@ -226,6 +226,9 @@ namespace KasoBot {
 
 			//@return next type that needs to be built to unlock inputed type, UnitType::None if already unlocked
 			BWAPI::UnitType NextPrerequisite(BWAPI::UpgradeType type);
+
+			//@return whether this type has all requirements satisfied at this moment
+			bool CanBuild(BWAPI::UnitType type);
 		}
 	}
 }

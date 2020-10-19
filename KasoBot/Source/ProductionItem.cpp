@@ -111,6 +111,7 @@ void ProductionItem::BuildingDestroyed()
 		_unfinished = false;
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
+		ProductionModule::Instance()->ReserveResources(_type);
 		WorkersModule::Instance()->BuildFailed(this);
 		return;
 	}

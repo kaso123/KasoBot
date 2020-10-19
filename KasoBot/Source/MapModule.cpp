@@ -2,8 +2,10 @@
 #include "Expansion.h"
 #include "Config.h"
 #include "WorkersModule.h"
+#include "ArmyModule.h"
 #include "ScoutModule.h"
 #include "BaseInfo.h"
+#include "Task.h"
 
 #include <math.h>
 
@@ -140,7 +142,7 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 			return mineral;
 	}
 	
-	_ASSERT(false);
+	//_ASSERT(false);
 	return base->Minerals().front();
 }
 
@@ -183,6 +185,13 @@ BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 	{
 		//TODO find expansion that needs turrets
 		return BWEB::Map::getDefBuildPosition(type);
+	}
+	else if (type == BWAPI::UnitTypes::Terran_Bunker)
+	{
+		if (!ArmyModule::Instance()->Bunker())
+		{
+			return (BWAPI::TilePosition)ArmyModule::Instance()->DefaultTask()->Position();
+		}
 	}
 
 	//get build positions from BWEB
