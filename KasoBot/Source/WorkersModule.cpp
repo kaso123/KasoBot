@@ -130,7 +130,8 @@ void WorkersModule::OnFrame()
 void WorkersModule::NewWorker(BWAPI::Unit unit)
 {
 	//check if this worker should be send to scout, if so send him to the army
-	if (ScoutModule::Instance()->ShouldWorkerScout() && ArmyModule::Instance()->NeedScout())
+	if (ScoutModule::Instance()->ShouldWorkerScout() && ArmyModule::Instance()->NeedScout()
+		|| ScoutModule::Instance()->ShouldWorkerScoutRush() && ArmyModule::Instance()->NeedScoutRush())
 	{
 		ArmyModule::Instance()->AddWorker(std::make_shared<Worker>(unit));
 		return;
@@ -430,10 +431,17 @@ void WorkersModule::WorkerDefence(size_t size)
 {
 	std::vector<std::shared_ptr<KasoBot::Worker>> toMove;
 
+	int keep = 3; //TODO configure how many workers to always keep mining
+
 	for (auto& exp : _expansionList) //select workers
 	{
 		for (auto& worker : exp->Workers())
 		{
+			if (keep > 0) //keep few workers mining always
+			{
+				keep--;
+				continue;
+			}
 			toMove.emplace_back(worker);
 			if (toMove.size() >= size)
 				break;

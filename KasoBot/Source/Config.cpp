@@ -197,6 +197,7 @@ namespace {
 		{"core", "cybernetics_core"},
 		{"archives", "templar_archives"},
 		{"citadel", "citadel_of_adun"},
+		{"cannon","photon_cannon"},
 		{"pool", "spawning_pool"},
 		{"siege", "tank_siege_mode"},
 		{"mines", "spider_mines"},

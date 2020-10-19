@@ -39,6 +39,17 @@ void BehaviourMarine::DefendArmy(KasoBot::Unit & unit, Army * army)
 		return;
 	}
 
+	if (army->Task()->EnemyArmy()->IsCannonRush())
+	{
+		if (unit.GetPointer()->isLoaded() && ArmyModule::Instance()->Bunker())
+		{
+			LeaveBunker(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
+			return;
+		}
+		Behaviour::DefendArmy(unit, army);
+		return;
+	}
+
 	//using bunker
 	_ASSERT(army->Task());
 	_ASSERT(army->Task()->EnemyArmy());

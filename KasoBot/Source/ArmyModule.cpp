@@ -155,19 +155,43 @@ ArmyModule* ArmyModule::Instance()
 void ArmyModule::OnFrame()
 {
 	//scouting with worker
-	if (ScoutModule::Instance()->ShouldWorkerScout())
+	if (ScoutModule::Instance()->ShouldWorkerScout() || ScoutModule::Instance()->ShouldWorkerScoutRush())
 	{
 		bool isScout = false;
+		bool isScoutRush = false;
 		for (auto& worker : _workers->Workers())
 		{
 			if (worker->GetRole() == Units::Role::SCOUT)
 			{
 				isScout = true;
-				break;
+			}
+			if (worker->GetRole() == Units::Role::SCOUT_RUSH)
+			{
+				isScoutRush = true;
 			}
 		}
-		if (!isScout && !_workers->Workers().empty())
-			(_workers->Workers().front()->SetRole(Units::Role::SCOUT));
+		if (!isScout && ScoutModule::Instance()->ShouldWorkerScout())
+		{
+			for (auto& worker : _workers->Workers())
+			{
+				if (worker->GetRole() == Units::Role::IDLE)
+				{
+					worker->SetRole(Units::Role::SCOUT);
+					break;
+				}
+			}
+		}
+		if (!isScoutRush && ScoutModule::Instance()->ShouldWorkerScoutRush())
+		{
+			for (auto& worker : _workers->Workers())
+			{
+				if (worker->GetRole() == Units::Role::IDLE)
+				{
+					worker->SetRole(Units::Role::SCOUT_RUSH);
+					break;
+				}
+			}
+		}
 	}
 
 	CreateAttackTasks();
@@ -275,9 +299,24 @@ void ArmyModule::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 
 bool ArmyModule::NeedScout()
 {
-	if (_workers->Workers().size() <= 0)
-		return true;
-	return false;
+	for (auto& worker : _workers->Workers())
+	{
+		if (worker->GetRole() == Units::Role::IDLE
+			|| worker->GetRole() == Units::Role::SCOUT)
+			return false;
+	}
+	return true;
+}
+
+bool ArmyModule::NeedScoutRush()
+{
+	for (auto& worker : _workers->Workers())
+	{
+		if (worker->GetRole() == Units::Role::IDLE
+			|| worker->GetRole() == Units::Role::SCOUT_RUSH)
+			return false;
+	}
+	return true;
 }
 
 bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)

@@ -54,7 +54,7 @@ bool ProductionModule::IsSafeToBuild(BWAPI::TilePosition pos)
 
 	for (auto& army : ScoutModule::Instance()->GetArmies())
 	{
-		if (army->BoundingBox()._center.getDistance(BWAPI::Position(pos)) < 500)
+		if (army->BoundingBox()._center.getDistance(BWAPI::Position(pos)) < 300) //TODO configurable
 			return false;
 	}
 	return true;
@@ -100,8 +100,8 @@ void ProductionModule::OnFrame()
 			if (CanSendWorker(item->GetType()) && IsSafeToBuild(item->GetLocation()))
 			{
 				WorkersModule::Instance()->Build(item.get());
+				return;
 			}
-			return;
 		}
 	}
 }
@@ -235,8 +235,14 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 
 	for (auto& building : (*it).second)
 	{
-		if (building->IsLocked()) //only one locked building of one type at each type
+		if (building->IsLocked()) //only one locked building of one type at each time
 		{ 
+			if (building->GetPointer()->getAddon())
+			{
+				_ASSERT(false); //shouldn't happen
+				building->Unlock();
+				return false;
+			}
 			if (building->GetPointer()->isIdle())
 			{
 				if (building->GetPointer()->buildAddon(type)) //build started

@@ -4,7 +4,9 @@
 #include "ArmyModule.h"
 #include "Config.h"
 #include "ProductionModule.h"
+#include "WorkersModule.h"
 #include "Unit.h"
+#include "Expansion.h"
 
 using namespace KasoBot;
 
@@ -133,7 +135,31 @@ bool EnemyArmy::IsThreat()
 				return true;
 		}
 	}
+	//also check expansions (they are not in building list)
+	for (auto& exp : WorkersModule::Instance()->ExpansionList())
+	{
+		if (exp->GetPointer()->getDistance(_box->_center) < Config::Units::EnemyThreatRadius())
+			return true;
+	}
+
+	for (auto& enemy : _units)
+	{
+		if (enemy->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon
+			|| enemy->_type == BWAPI::UnitTypes::Protoss_Pylon)
+			return true;
+	}
 	return false;
+}
+
+bool EnemyArmy::IsCannonRush()
+{
+	for (auto& unit : _units)
+	{
+		if (unit->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon
+			|| unit->_type == BWAPI::UnitTypes::Protoss_Pylon)
+			return true;
+	}
+	return  false;
 }
 
 int EnemyArmy::Supply()
@@ -141,6 +167,11 @@ int EnemyArmy::Supply()
 	int total = 0;
 	for (auto& unit : _units)
 	{
+		if (unit->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon)
+			total += 4;
+		if (unit->_type == BWAPI::UnitTypes::Protoss_Pylon)
+			total += 2;
+
 		total += unit->_type.supplyRequired();
 	}
 	return total;

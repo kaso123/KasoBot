@@ -67,6 +67,9 @@ namespace KasoBot {
 		//@return true if no worker is available to scout
 		bool NeedScout();
 
+		//@return true if no worker is available to scout in our base
+		bool NeedScoutRush();
+
 		//create new attackArea task if it doesn't exist already
 		//@param limit = how many attack tasks for the same area we want, default 1
 		bool AddAttackTask(const BWEM::Area* area, int limit = 1);

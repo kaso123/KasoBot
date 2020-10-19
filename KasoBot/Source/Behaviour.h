@@ -35,6 +35,8 @@ namespace KasoBot {
 		virtual void Work(KasoBot::Worker& unit) { return; }
 
 		virtual void Scout(KasoBot::Unit& unit);
+
+		virtual void ScoutRush(KasoBot::Unit& unit);
 	};
 }
 

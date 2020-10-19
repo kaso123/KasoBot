@@ -431,6 +431,8 @@ const char* DebugModule::UnitRoleString(Units::Role role)
 {
 	if (role == Units::Role::SCOUT)
 		return "\x01 Scout"; //TODO color?
+	if (role == Units::Role::SCOUT_RUSH)
+		return "\x01 Scout"; //TODO color?
 	if (role == Units::Role::BUNKER)
 		return "\x03 Bunker"; //TODO color?
 	return "Idle";

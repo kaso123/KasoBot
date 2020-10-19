@@ -8,6 +8,7 @@ namespace KasoBot {
 		enum Role {
 			IDLE,
 			SCOUT,
+			SCOUT_RUSH,
 			BUNKER
 		};
 	}
@@ -38,6 +39,9 @@ namespace KasoBot {
 
 		//equivalent to onFrame for any scouting unit
 		virtual void Scout();
+
+		//equivalent to onFrame for any scouting unit (our main and natural)
+		virtual void ScoutRush();
 
 		//switch between AI controlled and player controlled behaviour
 		void ChangeDebugControl();

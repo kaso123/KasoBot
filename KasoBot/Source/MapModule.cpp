@@ -190,7 +190,9 @@ BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 	{
 		if (!ArmyModule::Instance()->Bunker())
 		{
-			return (BWAPI::TilePosition)ArmyModule::Instance()->DefaultTask()->Position();
+			auto pos = (BWAPI::TilePosition)ArmyModule::Instance()->DefaultTask()->Position();
+			if (BWAPI::Broodwar->canBuildHere(pos, BWAPI::UnitTypes::Terran_Bunker))
+				return pos;
 		}
 	}
 
@@ -320,8 +322,11 @@ BWAPI::Position Map::DefaultTaskPosition()
 				{
 					for (auto& choke : nat->ChokePoints())
 					{
-						if(choke->GetAreas().first != BWEB::Map::getMainArea() && choke->GetAreas().second != BWEB::Map::getMainArea())
+						if (choke->GetAreas().first != BWEB::Map::getMainArea() && choke->GetAreas().second != BWEB::Map::getMainArea())
+						{
 							return BWAPI::Position(choke->Center()) + (base.Center() - BWAPI::Position(choke->Center())) / 4;
+						}
+							
 					}
 					
 				}

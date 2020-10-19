@@ -51,7 +51,7 @@
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"],
-    "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine" ]
+    "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine", "refinery" ]
   },
   "strategies": [
     {"name": "default_mech",
@@ -75,7 +75,7 @@
       "tech": [ "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
     {"name": "rush_bc",
-     "opener": "test1",
+     "opener": "anti_rush",
      "units": {"marine":3, "battlecruiser":2, "tank":1, "vulture": 3 },
       "tech": [ "starport", "armory", "control_tower", "ship_weapons", "science_facility", "physics_lab", "yamato" ]
     }
@@ -94,7 +94,7 @@
     ],
     "protoss": [
       {"name": "ZealotRush",
-       "counters":  ["default_bio_vs_P"],
+       "counters":  ["rush_bc"],
        "types": [
          {"type": "zealot","include": true, "value": 100, "count": 3},
          {"type": "gateway", "include": true, "value": 100, "count": 2},
@@ -108,6 +108,15 @@
          {"type": "citadel", "include": true, "value": 75}, 
          {"type": "archives", "include": true, "value": 100},
          {"type": "dark_templar", "include": true, "value": 100} 
+       ]
+      },
+      {"name": "Cannon_rush",
+       "counters": ["default_mech"],
+       "types": [
+         {"type": "forge", "include": true, "value": 100},
+         {"type": "cannon", "include": true, "value": 100}, 
+         {"type": "citadel", "include": false, "value": 50},
+         {"type": "core", "include": false, "value": 50}
        ]
       }
     ],

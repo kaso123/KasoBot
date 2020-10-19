@@ -37,6 +37,9 @@ namespace KasoBot {
 		//@return true if army is close to our buildings
 		bool IsThreat();
 
+		//@return true if there are cannons and pylons in army
+		bool IsCannonRush();
+
 		//@return total supply of this army
 		int Supply();
 

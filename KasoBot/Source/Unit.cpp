@@ -5,6 +5,7 @@
 #include "BehaviourMarine.h"
 #include "ArmyModule.h"
 #include "MapModule.h"
+#include "ScoutModule.h"
 #include "Army.h"
 #include "Task.h"
 
@@ -106,6 +107,21 @@ void Unit::Scout()
 
 	_ASSERT(_behaviour);
 	_behaviour->Scout(*this);
+}
+
+void Unit::ScoutRush()
+{
+	if (_playerControl)
+		return;
+
+	if (!ScoutModule::Instance()->ShouldWorkerScoutRush())
+	{
+		_role = Units::Role::IDLE;
+		return;
+	}
+
+	_ASSERT(_behaviour);
+	_behaviour->ScoutRush(*this);
 }
 
 void Unit::ChangeDebugControl()

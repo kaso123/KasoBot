@@ -79,6 +79,9 @@ namespace KasoBot {
 		//@return true if first worker scout should be in progress 
 		bool ShouldWorkerScout();
 
+		//@return true if worker should be scouting our base for cannon rush 
+		bool ShouldWorkerScoutRush();
+
 		//@return number of enemy units/buildings of this type
 		int GetCountOf(BWAPI::UnitType type);
 

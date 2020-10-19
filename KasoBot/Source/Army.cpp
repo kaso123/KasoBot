@@ -181,7 +181,8 @@ std::vector<std::shared_ptr<Worker>> WorkerArmy::GetFreeWorkers(size_t max)
 	//select workers to transfer
 	for (auto worker : _workers)
 	{
-		if (worker->GetRole() == Units::Role::SCOUT)
+		if (worker->GetRole() == Units::Role::SCOUT
+			|| worker->GetRole() == Units::Role::SCOUT_RUSH)
 			continue;
 
 		workers.emplace_back(worker);
@@ -245,6 +246,10 @@ void WorkerArmy::OnFrame()
 		if (worker->GetRole() == Units::Role::SCOUT)
 		{
 			worker->Scout();
+		}
+		else if (worker->GetRole() == Units::Role::SCOUT_RUSH)
+		{
+			worker->ScoutRush();
 		}
 		else
 		{

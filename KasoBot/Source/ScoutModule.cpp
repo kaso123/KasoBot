@@ -271,16 +271,19 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 	//set enemy start if not found before
 	if (!_enemyStart && unit->getType().isBuilding())
 	{
-		_enemyStart = Map::ClosestStart(unit->getTilePosition());
-		_ASSERT(!_enemyStart->Bases().empty());
-		auto station = BWEB::Stations::getClosestNaturalStation(_enemyStart->Bases().front().Location());
-		_ASSERT(station && station->getBWEMBase());
-		_enemyNatural = station->getBWEMBase()->GetArea();
-
-		//set base as belonging to enemy
-		if (_enemyStart && !_enemyStart->Bases().empty())
+		if (unit->getDistance(BWEB::Map::getNaturalPosition()) > 1000 || unit->getType().isResourceDepot()) //this is a check for cannon rushing
 		{
-			((BaseInfo*)_enemyStart->Bases().front().Ptr())->_owner = Base::Owner::ENEMY;
+			_enemyStart = Map::ClosestStart(unit->getTilePosition());
+			_ASSERT(!_enemyStart->Bases().empty());
+			auto station = BWEB::Stations::getClosestNaturalStation(_enemyStart->Bases().front().Location());
+			_ASSERT(station && station->getBWEMBase());
+			_enemyNatural = station->getBWEMBase()->GetArea();
+
+			//set base as belonging to enemy
+			if (_enemyStart && !_enemyStart->Bases().empty())
+			{
+				((BaseInfo*)_enemyStart->Bases().front().Ptr())->_owner = Base::Owner::ENEMY;
+			}
 		}
 	}
 
@@ -383,6 +386,20 @@ bool ScoutModule::ShouldWorkerScout()
 	return true;
 }
 
+bool ScoutModule::ShouldWorkerScoutRush()
+{
+	if (_enemyRace == BWAPI::Races::Terran || _enemyRace == BWAPI::Races::Zerg)
+		return false;
+
+	if (BWAPI::Broodwar->getFrameCount() < 1200) //TODO configurable
+		return false;
+
+	if(WorkersModule::Instance()->ExpansionCount() > 1)
+		return false;
+
+	return true;
+}
+
 int ScoutModule::GetCountOf(BWAPI::UnitType type)
 {
 	auto it = _enemies.find(type);
@@ -426,10 +443,12 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 
 	_ASSERT(enemy->_lastPos != BWAPI::TilePositions::Unknown);
 
-	if (enemy->_type.isWorker() || enemy->_type.isBuilding()) //buildings that are in our main or natural are assigned to enemy army to trigger worker defence
+	if (enemy->_type.isWorker() || enemy->_type.isBuilding()) //buildings that are in our main or natural or close to nat choke are assigned to enemy army to trigger worker defence
 	{
 		auto area = BWEM::Map::Instance().GetNearestArea(enemy->_lastPos);
-		if (!area || (area != BWEB::Map::getMainArea() && area != BWEB::Map::getNaturalArea()))
+		if (!area || (area != BWEB::Map::getMainArea() 
+			&& area != BWEB::Map::getNaturalArea() 
+			&& (BWAPI::Position(enemy->_lastPos)).getDistance((BWAPI::Position)BWEB::Map::getNaturalChoke()->Center()) > 300)) //TODO configurable
 			return;
 	}
 

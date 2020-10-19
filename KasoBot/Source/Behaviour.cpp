@@ -82,7 +82,7 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 	auto enemyArmy = army->Task()->EnemyArmy();
 	_ASSERT(enemyArmy);
 	
-	if (ArmyModule::Instance()->Bunker()) //stick to bunker if enemy is not inside our base
+	if (ArmyModule::Instance()->Bunker() && !army->Task()->EnemyArmy()->IsCannonRush()) //stick to bunker if enemy is not inside our base
 	{
 		if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(BWEB::Map::getMainPosition())
 			< army->Task()->EnemyArmy()->BoundingBox()._center.getDistance(BWEB::Map::getMainPosition()))
@@ -156,4 +156,35 @@ void Behaviour::Scout(KasoBot::Unit & unit)
 		//move to base
 		Move(unit.GetPointer(), base->Center());
 	}
+}
+
+void Behaviour::ScoutRush(KasoBot::Unit & unit)
+{
+	BWAPI::Position pos = BWAPI::Positions::Invalid;
+	
+	int mod = BWAPI::Broodwar->getFrameCount() % 2500;
+	if (mod < 1000) //every 1500 frames switch main<->natural
+	{
+		//main
+		pos = Map::NextScoutPosition(BWEB::Map::getMainArea(), unit.GetPointer()->getPosition());
+	}
+	else if (mod < 2000)
+	{
+		//natural
+		pos = Map::NextScoutPosition(BWEB::Map::getNaturalArea(), unit.GetPointer()->getPosition());
+	}
+	else
+	{
+		pos = (BWAPI::Position)BWEB::Map::getNaturalChoke()->Center();
+	}
+
+	if (!pos.isValid())
+		return;
+
+	//TODO this is debug drawing
+	BWAPI::Broodwar->registerEvent([pos](BWAPI::Game*) { BWAPI::Broodwar->drawCircleMap(pos, 5, BWAPI::Colors::Blue, true); },   // action
+		nullptr,    // condition
+		BWAPI::Broodwar->getLatencyFrames());  // frames to run
+
+	Move(unit.GetPointer(), pos);
 }
