@@ -14,7 +14,7 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 		if (unit._proportion < 0.0f)
 		{
 			BWAPI::UnitType req = Config::Utils::NextPrerequisite(unit._type);
-			if (req != BWAPI::UnitTypes::None)
+			if (req != unit._type)
 				return Production::TechMacro(req);
 		}
 	}
