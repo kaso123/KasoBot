@@ -89,6 +89,13 @@ void ProductionModule::OnFrame()
 
 	for (auto& item : _items)
 	{
+		if (!item->GetLocation().isValid())
+		{
+			item->SetLocation(Map::GetBuildPosition(item->GetType()));
+			if (!item->GetLocation().isValid())
+				continue;
+		}
+
 		if (item->GetState() == Production::State::UNFINISHED)
 		{
 			if(IsSafeToBuild(item->GetLocation()))
@@ -488,10 +495,25 @@ int ProductionModule::GetCountOf(BWAPI::UnitType type)
 	{
 		int inProgress = 0;
 
-		for (auto& item : _items)
+		if (type.isAddon()) //addons don't have productionItems, check buildings instead
 		{
-			if (item->GetState() != Production::State::DONE && item->GetType() == type)
-				inProgress++;
+			auto it = _buildingList.find(type.whatBuilds().first);
+			if (it != _buildingList.end())
+			{
+				for (auto it_b = it->second.begin(); it_b != it->second.end(); it_b++)
+				{
+					if ((*it_b)->GetPointer()->getBuildType() == type)
+						inProgress++;
+				}
+			}
+		}
+		else
+		{
+			for (auto& item : _items)
+			{
+				if (item->GetState() != Production::State::DONE && item->GetType() == type)
+					inProgress++;
+			}
 		}
 
 		if (type == BWAPI::UnitTypes::Terran_Refinery)

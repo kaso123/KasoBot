@@ -20,6 +20,9 @@ namespace KasoBot
 		//@return pointer to next mineral in expansion that should be assigned to worker
 		BWEM::Mineral* NextMineral(const BWEM::Base* base);
 
+		//@return next tile where we want to expand
+		BWAPI::TilePosition GetNextBase();
+
 		BWAPI::TilePosition GetBuildPosition(BWAPI::UnitType type);
 
 		//@return center pixel for specified building, used for debug drawing and calculating distance to build location
@@ -49,6 +52,8 @@ namespace KasoBot
 
 		//@return true if any of tiles belonging to base is visible
 		bool IsVisible(const BWEM::Base* base);
+
+		//@return true if area is accessible by land from our main
+		bool CanAccess(const BWEM::Area* area);
 	}
-	
 }

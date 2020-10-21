@@ -3,7 +3,9 @@
 #include "WorkersModule.h"
 #include "ScoutModule.h"
 #include "Config.h"
+#include "ArmyModule.h"
 
+#include "Army.h"
 #include "EnemyStrategy.h"
 #include "OwnStrategy.h"
 #include "Opener.h"
@@ -36,7 +38,8 @@ bool StrategyModule::MacroSaturation()
 			return ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Command_Center);
 	}
 
-	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() >= Config::Workers::MaxGlobal())
+	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() 
+		+ ArmyModule::Instance()->WorkerArmy()->Workers().size() >= Config::Workers::MaxGlobal())
 		return false;
 
 	if (WorkersModule::Instance()->BasesFull())

@@ -72,6 +72,9 @@ void ArmyModule::CreateAttackTasks()
 		//find next area where enemies are
 		for (auto& area : BWEM::Map::Instance().Areas())
 		{
+			if (!Map::CanAccess(&area))
+				continue;
+
 			bool enemy = false;
 			for (auto& base : area.Bases())
 			{
@@ -115,6 +118,9 @@ void ArmyModule::CreateScoutTasks()
 	//find next area to scout
 	for (auto& area : BWEM::Map::Instance().Areas())
 	{
+		if (!Map::CanAccess(&area))
+			continue;
+
 		for (auto& base : area.Bases())
 		{
 			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)

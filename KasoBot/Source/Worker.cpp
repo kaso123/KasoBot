@@ -111,6 +111,7 @@ void Worker::Work()
 		_item->SetLocation(Map::GetBuildPosition(_item->GetType()));
 		if(_item->GetLocation().isValid())
 			BWEB::Map::KasoBot::ReserveTiles(_item->GetLocation(), _item->GetType());
+		else return;
 	}
 
 	_ASSERT(_behaviour);

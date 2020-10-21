@@ -146,27 +146,47 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 	return base->Minerals().front();
 }
 
+BWAPI::TilePosition Map::GetNextBase()
+{
+	_ASSERT(BWEB::Map::getNaturalArea());
+
+	for (auto& base : BWEB::Map::getNaturalArea()->Bases())
+	{
+		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::NONE
+			|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+			return base.Location();
+	}
+	
+	auto closestDist = DBL_MAX;
+	BWAPI::TilePosition closest = BWAPI::TilePositions::Invalid;
+	for (auto station : BWEB::Stations::getStations())
+	{
+		auto base = station.getBWEMBase();
+
+		_ASSERT(base);
+
+		if (!Map::CanAccess(base->GetArea())) //skip islands
+			continue;
+		if (((BaseInfo*)base->Ptr())->_owner == Base::Owner::PLAYER
+			|| ((BaseInfo*)base->Ptr())->_owner == Base::Owner::ENEMY)
+			continue;
+
+		double dist = station.getBWEMBase()->Location().getApproxDistance(BWAPI::Broodwar->self()->getStartLocation());
+		dist -= ScoutModule::Instance()->EnemyStart() ? station.getBWEMBase()->Location().getApproxDistance(ScoutModule::Instance()->EnemyStart()->Bases().front().Location()) : 0.0f;
+		if (dist < closestDist)
+		{
+			closestDist = dist;
+			closest = station.getBWEMBase()->Location();
+		}
+	}
+	return  closest;
+}
+
 BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 {
 	if (type.isResourceDepot()) //command center
 	{
-		//TODO get next base to expand to
-		//now only getting closest base without CC
-		int closestDist = INT_MAX;
-		BWAPI::TilePosition closest = BWAPI::TilePositions::Invalid;
-		for (auto station : BWEB::Stations::getStations())
-		{
-			if (BWEB::Map::isUsed(station.getBWEMBase()->Location()) != BWAPI::UnitTypes::None)
-				continue;
-
-			int dist = (int)station.getBWEMBase()->Location().getDistance(BWAPI::Broodwar->self()->getStartLocation());
-			if (dist < closestDist)
-			{
-				closestDist = dist;
-				closest = station.getBWEMBase()->Location();
-			}
-		}
-		return  closest;
+		return Map::GetNextBase();
 	}
 	else if (type.isRefinery())
 	{
@@ -381,6 +401,18 @@ bool Map::IsVisible(const BWEM::Base * base)
 				return true;
 		}
 	}
+	return false;
+}
+
+bool Map::CanAccess(const BWEM::Area * area)
+{
+	if (!area)
+		return false;
+
+	_ASSERT(BWEB::Map::getMainArea());
+
+	if (area->AccessibleFrom(BWEB::Map::getMainArea()))
+		return true;
 	return false;
 }
 

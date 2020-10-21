@@ -97,7 +97,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 	if (!_refinery && !StrategyModule::Instance()->IsOpenerActive() && !_station->getBWEMBase()->Geysers().empty())
 	{
 		if(_workersMinerals >= Config::Workers::StartGasAfter() && !ProductionModule::Instance()->IsInQueue(BWAPI::UnitTypes::Terran_Refinery))
-			ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Refinery);
+			ProductionModule::Instance()->BuildRefineryAtExpansion(*this);
 	}
 }
 
