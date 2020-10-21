@@ -59,6 +59,7 @@ void ConfigModule::Init()
 	if (j.contains("production"))
 	{
 		_freeSupplyMultiplier = j["production"].contains("freeSupplyMultiplier") ? j["production"]["freeSupplyMultiplier"] : _freeSupplyMultiplier;
+		_buildTimeout = j["production"].contains("buildTimeout") ? j["production"]["buildTimeout"] : _buildTimeout;
 	}
 	if (j.contains("debug"))
 	{
@@ -171,6 +172,7 @@ int Config::Units::ScoutBaseRadius() { return ConfigModule::Instance()->ScoutBas
 int Config::Units::EnemyThreatRadius() { return ConfigModule::Instance()->EnemyThreatRadius(); }
 
 float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }
+int Config::Production::BuildTimeout() { return ConfigModule::Instance()->BuildTimeout(); }
 
 bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
 bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }

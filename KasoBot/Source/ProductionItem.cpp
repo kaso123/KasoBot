@@ -2,17 +2,20 @@
 #include "MapModule.h"
 #include "ProductionModule.h"
 #include "WorkersModule.h"
+#include "Config.h"
 
 using namespace KasoBot;
 
 ProductionItem::ProductionItem(BWAPI::UnitType type)
 	:_state(Production::State::WAITING), _type(type), _buildLocation(BWAPI::TilePositions::Invalid), _unfinished(false)
+	, _timeout(0)
 {
 	ProductionModule::Instance()->ReserveResources(_type);
 }
 
 ProductionItem::ProductionItem(BWAPI::UnitType type, BWAPI::TilePosition pos)
 	: _state(Production::State::WAITING), _type(type), _buildLocation(pos), _unfinished(false)
+	, _timeout(0)
 {
 	ProductionModule::Instance()->ReserveResources(_type);
 	BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
@@ -61,6 +64,8 @@ void ProductionItem::Finish()
 
 void ProductionItem::WorkerDied()
 {
+	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
+
 	_ASSERT(_state == Production::State::ASSIGNED || _state == Production::State::BUILDING);
 
 	if (_state == Production::State::ASSIGNED)
@@ -83,6 +88,8 @@ void ProductionItem::WorkerDied()
 
 void ProductionItem::BuildingDestroyed()
 {
+	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
+	
 	if (_state == Production::State::BUILDING)
 	{
 		_state = Production::State::WAITING;

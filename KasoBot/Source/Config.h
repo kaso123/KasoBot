@@ -34,6 +34,7 @@ namespace KasoBot {
 		int _enemyThreatRadius = 500;
 
 		float _freeSupplyMultiplier = 1.5f;
+		int _buildTimeout = 1000;
 
 		bool _debugMap = false;
 		bool _debugWorkers = false;
@@ -77,6 +78,7 @@ namespace KasoBot {
 		int EnemyThreatRadius() { return _enemyThreatRadius; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
+		int BuildTimeout() { return _buildTimeout; }
 
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
@@ -156,8 +158,11 @@ namespace KasoBot {
 
 		namespace Production {
 
-			//hom much more available supply we want to have in comparison to used supply 
+			//how much more available supply we want to have in comparison to used supply 
 			float FreeSupplyMultiplier();
+
+			//number of frames we should wait to restart building when worker or building died
+			int BuildTimeout();
 		}
 
 		namespace Debug {

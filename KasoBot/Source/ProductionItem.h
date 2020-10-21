@@ -20,6 +20,7 @@ namespace KasoBot {
 		BWAPI::TilePosition _buildLocation;
 		Production::State _state;
 		bool _unfinished;
+		int _timeout;
 
 	public:
 		ProductionItem(BWAPI::UnitType type);
@@ -50,6 +51,7 @@ namespace KasoBot {
 		void SetLocation(BWAPI::TilePosition pos) { _buildLocation = pos; }
 		Production::State GetState() const { return _state; }
 		BWAPI::UnitType GetType() const { return _type; }
+		int GetFrame() const { return _timeout; }
 	};
 }
 

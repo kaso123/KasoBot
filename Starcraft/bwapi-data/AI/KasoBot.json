@@ -21,7 +21,8 @@
     "enemyThreatRadius": 500
   },
   "production": {
-    "freeSupplyMultiplier": 1.3
+    "freeSupplyMultiplier": 1.3,
+    "buildTimeout": 1000
   },
   "debug": {
     "map": true,
@@ -38,7 +39,7 @@
   "strategy": {
     "default": "rush_bc",
     "cycle":  [ "saturation","army","tech","production"],
-    "maxArmySupply": 25,
+    "maxArmySupply": 30,
     "maxAttackTasks": 2,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,

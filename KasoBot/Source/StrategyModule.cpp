@@ -39,7 +39,7 @@ bool StrategyModule::MacroSaturation()
 	}
 
 	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() 
-		+ ArmyModule::Instance()->WorkerArmy()->Workers().size() >= Config::Workers::MaxGlobal())
+		+ (int)ArmyModule::Instance()->WorkerArmy()->Workers().size() >= Config::Workers::MaxGlobal())
 		return false;
 
 	if (WorkersModule::Instance()->BasesFull())

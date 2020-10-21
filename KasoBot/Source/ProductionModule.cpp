@@ -96,6 +96,9 @@ void ProductionModule::OnFrame()
 				continue;
 		}
 
+		if (item->GetFrame() > BWAPI::Broodwar->getFrameCount())
+			continue;
+
 		if (item->GetState() == Production::State::UNFINISHED)
 		{
 			if(IsSafeToBuild(item->GetLocation()))
