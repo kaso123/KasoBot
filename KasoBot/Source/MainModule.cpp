@@ -7,6 +7,7 @@
 #include "DebugModule.h"
 #include "StrategyModule.h"
 #include "ScoutModule.h"
+#include "Log.h"
 #include <iostream>
 
 using namespace BWAPI;
@@ -20,6 +21,7 @@ void MainModule::onStart()
 	Broodwar->enableFlag(Flag::UserInput);
 
 	Map::Global::Initialize();
+	Log::CreateFileName();
 
 	ConfigModule::Instance()->Init();
 	WorkersModule::Instance()->OnStart();

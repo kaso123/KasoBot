@@ -1,6 +1,7 @@
 #include "BehaviourMedic.h"
 #include "Army.h"
 #include "MapModule.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -28,12 +29,12 @@ BehaviourMedic::~BehaviourMedic()
 
 void BehaviourMedic::AttackArea(KasoBot::Unit & unit, Army * army)
 {
-	_ASSERT(army);
+	Log::Assert(army, "No army in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }
 
 void BehaviourMedic::DefendArmy(KasoBot::Unit & unit, Army * army)
 {
-	_ASSERT(army);
+	Log::Assert(army,"No army in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }

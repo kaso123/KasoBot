@@ -8,6 +8,7 @@
 #include "Task.h"
 #include "EnemyArmy.h"
 #include "BaseInfo.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -277,7 +278,7 @@ void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
 		}
 	}
 
-	_ASSERT(false);
+	Log::Assert(false,"Soldier was not from this army when killed!");
 }
 
 int ArmyModule::GetArmySupply()
@@ -327,7 +328,7 @@ bool ArmyModule::NeedScoutRush()
 
 bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 {
-	_ASSERT(area);
+	Log::Assert(area,"Attack task area doesn't exist!");
 
 	int found = 0;
 	for (auto& task : _tasks)
@@ -344,7 +345,7 @@ bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 
 bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 {
-	_ASSERT(enemy);
+	Log::Assert(enemy, "Enemy army missing in Defend task!");
 
 	for (auto& task : _tasks)
 	{
@@ -358,7 +359,7 @@ bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 
 bool ArmyModule::AddHoldTask(BWAPI::Position pos)
 {
-	_ASSERT(pos.isValid());
+	Log::Assert(pos.isValid(),"Invalid position for Hold task!");
 
 	for (auto& task : _tasks)
 	{
@@ -372,7 +373,7 @@ bool ArmyModule::AddHoldTask(BWAPI::Position pos)
 
 bool ArmyModule::AddScoutTask(const BWEM::Area * area)
 {
-	_ASSERT(area);
+	Log::Assert(area, "Scout task area doesn't exist!");
 
 	for (auto& task : _tasks)
 	{
@@ -412,7 +413,7 @@ void ArmyModule::ResetDefaultTask()
 
 void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 {
-	_ASSERT(task->Type() == Tasks::Type::DEFEND);
+	Log::Assert(task->Type() == Tasks::Type::DEFEND,"Worker defence started for non-defence task!");
 
 	if (_bunker)
 		count = 4; //TODO configurable

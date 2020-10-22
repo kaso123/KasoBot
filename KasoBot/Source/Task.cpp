@@ -4,6 +4,7 @@
 #include "Army.h"
 #include "BaseInfo.h"
 #include "Config.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -34,7 +35,7 @@ bool AttackAreaTask::IsFinished()
 	if (_finished)
 		return true;
 
-	_ASSERT(_area);
+	Log::Assert(_area,"No area in attack task!");
 
 	if (_area->Bases().empty())
 	{
@@ -82,7 +83,7 @@ bool ScoutAreaTask::IsArmySuitable(Army & army)
 
 bool ScoutAreaTask::IsFinished()
 {
-	_ASSERT(_area);
+	Log::Assert(_area,"No area in scout task!");
 
 	if (_area->Bases().empty())
 		return true;

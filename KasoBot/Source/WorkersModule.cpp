@@ -3,6 +3,7 @@
 #include "MapModule.h"
 #include "ScoutModule.h"
 #include "Config.h"
+#include "Log.h"
 
 #include "Worker.h"
 #include "Expansion.h"
@@ -173,7 +174,7 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 
 	//if worker was not removed, it is part of army
 	auto temp = ArmyModule::Instance()->WorkerKilled(unit);
-	_ASSERT(temp); //every worker has to be in WorkerModule or army
+	Log::Assert(temp,"Dead worker was not found anywhere!"); //every worker has to be in WorkerModule or army
 }
 
 bool WorkersModule::BuildWorker()
@@ -214,7 +215,7 @@ void WorkersModule::RefineryCreated(BWAPI::Unit unit, bool unassign /*= false*/)
 	{
 		//find which BWEB::Station this belongs to
 		BWEB::Station* refineryStation = Map::GetStation(unit->getTilePosition());
-		_ASSERT(refineryStation);
+		Log::Assert(refineryStation,"No station found for refinery!");
 
 		for (auto& exp : _expansionList)
 		{
@@ -252,7 +253,7 @@ void WorkersModule::RefineryDestroyed(BWAPI::Unit unit)
 		}
 	}
 
-	_ASSERT(false); //we should never get here
+	Log::Assert(false,"Destroyed refinery was not found!"); //we should never get here
 }
 
 void WorkersModule::MineralDestroyed(BWAPI::Unit unit)
@@ -273,7 +274,7 @@ void WorkersModule::MineralDestroyed(BWAPI::Unit unit)
 
 bool WorkersModule::Build(ProductionItem* item)
 {
-	_ASSERT(item->GetLocation() != BWAPI::TilePositions::Invalid);
+	Log::Assert(item->GetLocation().isValid(),"Build location is invalid!");
 
 	std::shared_ptr<Worker> closestWorker = nullptr;
 	Expansion* expForWorker = nullptr; //saving expansion that have the closest worker, to easily remove him after
@@ -314,7 +315,7 @@ bool WorkersModule::Build(ProductionItem* item)
 
 bool WorkersModule::BuildAddon(BWAPI::UnitType type)
 {
-	_ASSERT(type.whatBuilds().first.isResourceDepot());
+	Log::Assert(type.whatBuilds().first.isResourceDepot(),"Wrong addon send to workersModule!");
 
 	for (auto& exp : _expansionList)
 	{
@@ -333,11 +334,11 @@ void WorkersModule::FinishBuild(BWAPI::Unit unit)
 {
 	for (auto it = _builders.begin(); it != _builders.end(); it++)
 	{
-		_ASSERT((*it)->GetProductionItem());
+		Log::Assert((*it)->GetProductionItem(),"Builder has no prod item assinged!");
 
 		if (unit->getTilePosition() == (*it)->GetProductionItem()->GetLocation())
 		{
-			_ASSERT(unit->getType() == (*it)->GetProductionItem()->GetType());
+			Log::Assert(unit->getType() == (*it)->GetProductionItem()->GetType(),"Builder was building sth else on tile!");
 
 			(*it)->GetProductionItem()->Finish(); //finish task
 			(*it)->BuildFinished();
@@ -350,7 +351,7 @@ void WorkersModule::FinishBuild(BWAPI::Unit unit)
 	}
 
 	//there should never be building built without a builder in list
-	_ASSERT(false);
+	Log::Assert(false,"No builder for finished building!");
 }
 
 void WorkersModule::BuildFailed(ProductionItem * item)
@@ -360,7 +361,7 @@ void WorkersModule::BuildFailed(ProductionItem * item)
 	{
 		if ((*it)->GetProductionItem() == item)
 		{
-			_ASSERT((*it)->GetWorkerRole() == Workers::Role::BUILD || (*it)->GetWorkerRole() == Workers::Role::ASSIGNED);
+			Log::Assert((*it)->GetWorkerRole() == Workers::Role::BUILD || (*it)->GetWorkerRole() == Workers::Role::ASSIGNED, "Build failed with wrong worker role!");
 
 			//remove item from worker
 			(*it)->BuildFinished();
@@ -371,8 +372,7 @@ void WorkersModule::BuildFailed(ProductionItem * item)
 			return;
 		}
 	}
-
-	_ASSERT(false); //item was in building state but no worker was building it
+	Log::Assert(false,"Item in building state without worker!"); //item was in building state but no worker was building it
 }
 
 int WorkersModule::WorkerCountMinerals()

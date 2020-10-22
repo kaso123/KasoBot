@@ -4,6 +4,7 @@
 #include "WorkersModule.h"
 #include "ProductionModule.h"
 #include "ArmyModule.h"
+#include "Log.h"
 
 #include "EnemyArmy.h"
 #include "Army.h"
@@ -106,7 +107,7 @@ void ScoutModule::ResetBaseInfo()
 	{
 		auto base = station.getBWEMBase();
 		BaseInfo* info = (BaseInfo*)base->Ptr();
-		_ASSERT(info);
+		Log::Assert(info,"No info in base!");
 
 		if (info->_owner == Base::Owner::UNKNOWN)
 		{
@@ -274,9 +275,9 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		if (unit->getDistance(BWEB::Map::getNaturalPosition()) > 1000 || unit->getType().isResourceDepot()) //this is a check for cannon rushing
 		{
 			_enemyStart = Map::ClosestStart(unit->getTilePosition());
-			_ASSERT(!_enemyStart->Bases().empty());
+			Log::Assert(!_enemyStart->Bases().empty(),"Enemy Start has no bases!");
 			auto station = BWEB::Stations::getClosestNaturalStation(_enemyStart->Bases().front().Location());
-			_ASSERT(station && station->getBWEMBase());
+			Log::Assert(station && station->getBWEMBase(),"Enemy natural has no base!");
 			_enemyNatural = station->getBWEMBase()->GetArea();
 
 			//set base as belonging to enemy
@@ -441,7 +442,7 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 	if (!enemy)
 		return;
 
-	_ASSERT(enemy->_lastPos != BWAPI::TilePositions::Unknown);
+	Log::Assert(enemy->_lastPos.isValid() && enemy->_lastPos != BWAPI::TilePositions::Unknown,"Invalid position when assigning enemy to army!");
 
 	if (enemy->_type.isWorker() || enemy->_type.isBuilding()) //buildings that are in our main or natural or close to nat choke are assigned to enemy army to trigger worker defence
 	{
@@ -461,6 +462,6 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 		}
 	}
 	EnemyArmy* newArmy = _armies.emplace_back(std::make_unique<EnemyArmy>()).get();
-	_ASSERT(newArmy);
+	Log::Assert(newArmy,"New EnemyArmy not created!");
 	newArmy->AddEnemy(enemy);
 }

@@ -8,6 +8,7 @@
 #include "EnemyArmy.h"
 #include "Task.h"
 #include "ArmyModule.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -47,9 +48,9 @@ Behaviour::~Behaviour()
 
 void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 {
-	_ASSERT(army);
+	Log::Assert(army,"No army in behaviour task!");
 	auto area = army->Task()->Area();
-	_ASSERT(!area->Bases().empty());
+	Log::Assert(!area->Bases().empty(),"No bases in area in attack task!");
 	
 	for (auto & base : area->Bases())
 	{
@@ -63,9 +64,9 @@ void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 
 void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 {
-	_ASSERT(army);
+	Log::Assert(army, "No army in behaviour task!");
 	auto area = army->Task()->Area();
-	_ASSERT(!area->Bases().empty());
+	Log::Assert(!area->Bases().empty(), "No bases in area in scout task!");
 
 	for (auto & base : area->Bases())
 	{
@@ -78,9 +79,9 @@ void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 
 void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 {
-	_ASSERT(army);
+	Log::Assert(army, "No army in behaviour task!");
 	auto enemyArmy = army->Task()->EnemyArmy();
-	_ASSERT(enemyArmy);
+	Log::Assert(enemyArmy,"No enemy army in defend task!");
 	
 	if (ArmyModule::Instance()->Bunker() && !army->Task()->EnemyArmy()->IsCannonRush()) //stick to bunker if enemy is not inside our base
 	{
@@ -96,9 +97,9 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 
 void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 {
-	_ASSERT(army);
+	Log::Assert(army, "No army in behaviour task!");
 	auto pos = army->Task()->Position();
-	_ASSERT(pos.isValid());
+	Log::Assert(pos.isValid(),"Invalid position in hold task!");
 
 	if (unit.GetPointer()->getDistance(pos) > 40) //TODO make configurable
 		AttackMove(unit.GetPointer(), pos);
@@ -108,7 +109,7 @@ void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
 {
-	_ASSERT(position.isValid());
+	Log::Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");
 
 	AttackMove(unit.GetPointer(), position);
 }

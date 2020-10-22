@@ -6,6 +6,7 @@
 #include "ScoutModule.h"
 #include "BaseInfo.h"
 #include "Task.h"
+#include "Log.h"
 
 #include <math.h>
 
@@ -21,7 +22,7 @@ namespace {
 	BWAPI::Position GetSafeScoutPoint(BWAPI::Position oldPoint, BWAPI::Position base)
 	{
 		auto area = BWEM::Map::Instance().GetArea(BWAPI::TilePosition(base));
-		_ASSERT(area);
+		Log::Assert(area,"No area found for base position!");
 
 		auto tile = BWAPI::TilePosition(oldPoint);
 		//check area
@@ -101,8 +102,8 @@ BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
 
 BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 {
-	_ASSERT(base);
-	_ASSERT(!base->Minerals().empty());		
+	Log::Assert(base,"No base when finding mineral!");
+	Log::Assert(!base->Minerals().empty(),"Base has no minerals!");
 
 	BWEM::Mineral* mineral = nullptr;
 	int dist = INT_MAX;
@@ -142,13 +143,13 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 			return mineral;
 	}
 	
-	//_ASSERT(false);
+	Log::Assert(false,"No mineral ready for worker!");
 	return base->Minerals().front();
 }
 
 BWAPI::TilePosition Map::GetNextBase()
 {
-	_ASSERT(BWEB::Map::getNaturalArea());
+	Log::Assert(BWEB::Map::getNaturalArea(),"No natural area in BWEB!");
 
 	for (auto& base : BWEB::Map::getNaturalArea()->Bases())
 	{
@@ -163,7 +164,7 @@ BWAPI::TilePosition Map::GetNextBase()
 	{
 		auto base = station.getBWEMBase();
 
-		_ASSERT(base);
+		Log::Assert(base,"No base in station!");
 
 		if (!Map::CanAccess(base->GetArea())) //skip islands
 			continue;
@@ -234,7 +235,7 @@ BWAPI::Unit Map::GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type)
 			return unit;
 	}
 
-	_ASSERT(false);
+	Log::Assert(false,"Didn't find unfinished building on tile!");
 	return nullptr;
 }
 
@@ -328,8 +329,8 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 
 BWAPI::Position Map::DefaultTaskPosition()
 {
-	_ASSERT(BWEB::Map::getNaturalArea());
-	_ASSERT(BWEB::Map::getMainArea());
+	Log::Assert(BWEB::Map::getNaturalArea(), "No nat area in BWEB!");
+	Log::Assert(BWEB::Map::getMainArea(), "No main area in BWEB!");
 
 	auto nat = BWEB::Map::getNaturalArea();
 	if (!nat->Bases().empty()) //if we have natural, defend there
@@ -354,7 +355,7 @@ BWAPI::Position Map::DefaultTaskPosition()
 		}
 	}
 	auto main = BWEB::Map::getMainArea(); //if no natural, defend main choke
-	_ASSERT(!main->Bases().empty());
+	Log::Assert(!main->Bases().empty(), "Main area has no bases!");
 
 	for (auto& base : main->Bases())
 	{
@@ -372,8 +373,8 @@ BWAPI::Position Map::DefaultTaskPosition()
 
 bool Map::IsStillThere(EnemyUnit & enemy)
 {
-	_ASSERT(enemy._type.isBuilding());
-	_ASSERT(enemy._lastPos.isValid());
+	Log::Assert(enemy._type.isBuilding(), "Wrong enemy type in IsStillThere!");
+	Log::Assert(enemy._lastPos.isValid(), "invalid position in IsStillThere!");
 
 	for (int x = 0; x < enemy._type.tileWidth(); x++)
 	{
@@ -390,8 +391,8 @@ bool Map::IsStillThere(EnemyUnit & enemy)
 
 bool Map::IsVisible(const BWEM::Base * base)
 {
-	_ASSERT(base);
-	_ASSERT(base->Location().isValid());
+	Log::Assert(base,"No base in IsVisible!");
+	Log::Assert(base->Location().isValid(),"Base location is invalid!");
 
 	for (int x = 0; x < BWAPI::UnitTypes::Terran_Command_Center.tileWidth(); x++)
 	{
@@ -409,7 +410,7 @@ bool Map::CanAccess(const BWEM::Area * area)
 	if (!area)
 		return false;
 
-	_ASSERT(BWEB::Map::getMainArea());
+	Log::Assert(BWEB::Map::getMainArea(),"No main area in BWEB!");
 
 	if (area->AccessibleFrom(BWEB::Map::getMainArea()))
 		return true;

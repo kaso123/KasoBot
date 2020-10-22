@@ -131,6 +131,7 @@
     <ClCompile Include="Source\libs\BWEM\neutral.cpp" />
     <ClCompile Include="Source\libs\BWEM\tiles.cpp" />
     <ClCompile Include="Source\libs\BWEM\utils.cpp" />
+    <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\MainModule.cpp" />
     <ClCompile Include="Source\MapModule.cpp" />
     <ClCompile Include="Source\Opener.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Source\libs\BWEM\utils.h" />
     <ClInclude Include="Source\libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\libs\Profiler\Profiler.hpp" />
+    <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\MainModule.h" />
     <ClInclude Include="Source\MapModule.h" />
     <ClInclude Include="Source\Opener.h" />

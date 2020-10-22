@@ -3,6 +3,7 @@
 #include "ProductionModule.h"
 #include "WorkersModule.h"
 #include "Config.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -27,14 +28,14 @@ ProductionItem::~ProductionItem()
 
 void ProductionItem::Assigned()
 {
-	_ASSERT(_state == Production::State::WAITING || _state == Production::State::UNFINISHED);
+	Log::Assert(_state == Production::State::WAITING || _state == Production::State::UNFINISHED,"Assigning item in wrong state!");
 	_state = Production::State::ASSIGNED;
 }
 
 void ProductionItem::BuildStarted()
 {
-	_ASSERT(_state == Production::State::ASSIGNED);
-	_ASSERT(_buildLocation.isValid());
+	Log::Assert(_state == Production::State::ASSIGNED,"Started build in wrong state!");
+	Log::Assert(_buildLocation.isValid(),"Invalid location whe starting build!");
 
 	if (!_unfinished)
 	{
@@ -47,8 +48,8 @@ void ProductionItem::BuildStarted()
 
 void ProductionItem::Restart()
 {
-	_ASSERT(_state == Production::State::BUILDING);
-	_ASSERT(_buildLocation.isValid());
+	Log::Assert(_state == Production::State::BUILDING,"Restarted item is not in building state!");
+	Log::Assert(_buildLocation.isValid(),"Invalid location for production item!");
 
 	ProductionModule::Instance()->ReserveResources(_type);
 	BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
@@ -57,7 +58,7 @@ void ProductionItem::Restart()
 
 void ProductionItem::Finish()
 {
-	_ASSERT(_state == Production::State::BUILDING);
+	Log::Assert(_state == Production::State::BUILDING,"Wrong state in finished production item!");
 
 	_state = Production::State::DONE;
 }
@@ -66,7 +67,7 @@ void ProductionItem::WorkerDied()
 {
 	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
 
-	_ASSERT(_state == Production::State::ASSIGNED || _state == Production::State::BUILDING);
+	Log::Assert(_state == Production::State::ASSIGNED || _state == Production::State::BUILDING,"Wrong state when assigned worker died!");
 
 	if (_state == Production::State::ASSIGNED)
 	{
@@ -123,5 +124,5 @@ void ProductionItem::BuildingDestroyed()
 		return;
 	}
 
-	_ASSERT(false); //this is only called on incomplete buildings, so there can't be any other state
+	Log::Assert(false,"Wrong state on destroyed incomplete building!"); //this is only called on incomplete buildings, so there can't be any other state
 }

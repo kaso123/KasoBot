@@ -5,6 +5,7 @@
 #include "Unit.h"
 #include "Task.h"
 #include "MapModule.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -51,8 +52,8 @@ void BehaviourMarine::DefendArmy(KasoBot::Unit & unit, Army * army)
 	}
 
 	//using bunker
-	_ASSERT(army->Task());
-	_ASSERT(army->Task()->EnemyArmy());
+	Log::Assert(army->Task(),"Missing task from army in defend behaviour!");
+	Log::Assert(army->Task()->EnemyArmy(), "Missing enemy army from task in defend behaviour!");
 
 	//enemy army ran past bunker
 	if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(BWEB::Map::getMainPosition()) 

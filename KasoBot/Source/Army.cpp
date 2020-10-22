@@ -5,6 +5,7 @@
 #include "WorkersModule.h"
 #include "EnemyArmy.h"
 #include "Worker.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -15,7 +16,7 @@ void Army::CalculateCenter()
 	int maxX = INT_MIN;
 	int maxY = INT_MIN;
 
-	_ASSERT(!_soldiers.empty());
+	Log::Assert(!_soldiers.empty(),"Calculate center with no units!");
 
 	for (auto& unit : _soldiers)
 	{
@@ -131,7 +132,7 @@ void Army::ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type)
 
 void Army::AssignTask(KasoBot::Task * task)
 {
-	_ASSERT(task);
+	Log::Assert(task,"Task is nullptr when assigning!");
 
 	if (_task)
 		_task->Stop();
@@ -142,7 +143,7 @@ void Army::AssignTask(KasoBot::Task * task)
 
 void Army::RemoveTask()
 {
-	_ASSERT(_task);
+	Log::Assert(_task,"No task to remove!");
 	_task->Stop();
 	_task = nullptr;
 }

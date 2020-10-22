@@ -3,12 +3,13 @@
 #include "MapModule.h"
 #include "ArmyModule.h"
 #include "ProductionItem.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
 void BehaviourWorker::Minerals(Worker& worker)
 {
-	_ASSERT(worker.GetMineral());
+	Log::Assert(worker.GetMineral(),"No mineral for worker when mining!");
 
 	//return cargo when switched from gas
 	if (worker.GetPointer()->isCarryingGas())
@@ -22,7 +23,7 @@ void BehaviourWorker::Minerals(Worker& worker)
 
 void BehaviourWorker::Gas(Worker& worker)
 {
-	_ASSERT(worker.GetRefinery());
+	Log::Assert(worker.GetRefinery(),"No refinery for worker when mining gas!");
 
 	//return cargo if switched from minerals
 	if (worker.GetPointer()->isCarryingMinerals())
@@ -36,8 +37,8 @@ void BehaviourWorker::Gas(Worker& worker)
 
 void BehaviourWorker::MoveToBuild(Worker& worker)
 {
-	_ASSERT(worker.GetProductionItem());
-	_ASSERT(worker.GetProductionItem()->GetState() == Production::State::ASSIGNED);
+	Log::Assert(worker.GetProductionItem(),"No production item in worker!");
+	Log::Assert(worker.GetProductionItem()->GetState() == Production::State::ASSIGNED, "Item state is not ASSIGNED!");
 
 	//if not close to position -> move there
 	if(worker.GetPointer()->getDistance(Map::GetCenterOfBuilding(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType())) > Config::Workers::BuildStartDistance())
@@ -50,7 +51,7 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 		//if started switch Role and update ProductionItem
 		if (worker.GetPointer()->isConstructing() && worker.GetPointer()->getBuildUnit())
 		{
-			_ASSERT(worker.GetPointer()->getBuildType() == worker.GetProductionItem()->GetType());
+			Log::Assert(worker.GetPointer()->getBuildType() == worker.GetProductionItem()->GetType(),"Worker is building wrong type!");
 
 			worker.SetWorkerRole(Workers::Role::BUILD);
 			worker.GetProductionItem()->BuildStarted();
@@ -61,10 +62,10 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 		auto typeOnTile = BWEB::Map::isUsed(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType().tileWidth(), worker.GetProductionItem()->GetType().tileHeight());
 		if ( typeOnTile != BWAPI::UnitTypes::None && typeOnTile != BWAPI::UnitTypes::Resource_Vespene_Geyser)
 		{
-			_ASSERT(typeOnTile == worker.GetProductionItem()->GetType());
+			Log::Assert(typeOnTile == worker.GetProductionItem()->GetType(),"Wrong unfinished type on build tile!");
 
 			BWAPI::Unit unfinished = KasoBot::Map::GetUnfinished(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType());
-			_ASSERT(unfinished);
+			Log::Assert(unfinished,"Unfinished building was not found!");
 
 			Build(worker.GetPointer(), unfinished);
 			return;
@@ -77,12 +78,12 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 
 void BehaviourWorker::Construct(Worker& worker)
 {
-	_ASSERT(worker.GetProductionItem());
+	Log::Assert(worker.GetProductionItem(),"Worker doesn't have production item when constructing!");
 	
 
 	if (worker.GetPointer()->isConstructing())
 	{
-		_ASSERT(worker.GetProductionItem()->GetState() == Production::State::BUILDING);
+		Log::Assert(worker.GetProductionItem()->GetState() == Production::State::BUILDING,"Worker is building sth else!");
 		return;
 	}
 		

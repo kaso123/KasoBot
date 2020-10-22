@@ -7,6 +7,7 @@
 #include "WorkersModule.h"
 #include "Unit.h"
 #include "Expansion.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -17,7 +18,7 @@ void EnemyArmy::CalculateCenter()
 	int maxX = INT_MIN;
 	int maxY = INT_MIN;
 
-	_ASSERT(!_units.empty());
+	Log::Assert(!_units.empty(),"No units in enemy army!");
 
 	for (auto unit : _units)
 	{
@@ -76,7 +77,7 @@ EnemyArmy::EnemyArmy()
 
 EnemyArmy::~EnemyArmy()
 {
-	_ASSERT(_units.empty());
+	Log::Assert(_units.empty(),"Enemy army not empty in destructor!");
 	ArmyModule::Instance()->EnemyArmyRemoved(this);
 }
 
@@ -106,7 +107,7 @@ void EnemyArmy::RemoveEnemy(EnemyUnit * unit)
 		}
 	}
 
-	_ASSERT(false); //called from enemy destructor so the unit has to be in this army
+	Log::Assert(false,"Enemy not found in army when deleting!"); //called from enemy destructor so the unit has to be in this army
 }
 
 void EnemyArmy::Join(EnemyArmy * toJoin)
@@ -127,7 +128,7 @@ bool EnemyArmy::IsThreat()
 {
 	for (auto& type : ProductionModule::Instance()->Buildings())
 	{
-		_ASSERT(type.first.isBuilding());
+		Log::Assert(type.first.isBuilding(),"Wrong type in building list!");
 
 		for (auto& unit : type.second)
 		{

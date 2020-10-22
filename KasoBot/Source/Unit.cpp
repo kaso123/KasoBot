@@ -8,6 +8,7 @@
 #include "ScoutModule.h"
 #include "Army.h"
 #include "Task.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -68,8 +69,8 @@ void Unit::Fight(Army* army)
 		return;
 	}
 
-	_ASSERT(_behaviour);
-	_ASSERT(army && army->Task());
+	Log::Assert(_behaviour.get(),"Behaviour missing!");
+	Log::Assert(army && army->Task(),"Army or task missing in Unit::Fight!");
 	
 	//TODO do priority things (in close combat)
 
@@ -105,7 +106,7 @@ void Unit::Scout()
 	if (_playerControl)
 		return;
 
-	_ASSERT(_behaviour);
+	Log::Assert(_behaviour.get(),"Behaviour missing in Scout!");
 	_behaviour->Scout(*this);
 }
 
@@ -120,7 +121,7 @@ void Unit::ScoutRush()
 		return;
 	}
 
-	_ASSERT(_behaviour);
+	Log::Assert(_behaviour.get(), "Behaviour missing in ScoutRush!");
 	_behaviour->ScoutRush(*this);
 }
 
