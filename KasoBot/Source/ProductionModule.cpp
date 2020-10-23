@@ -535,7 +535,7 @@ int ProductionModule::GetCountOf(BWAPI::UnitType type)
 	else
 	{
 		if (type.isWorker())
-			return WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas();
+			return WorkersModule::Instance()->WorkerCountAll() + ArmyModule::Instance()->WorkerArmy()->Workers().size();
 
 		auto it = _unitList.find(type);
 

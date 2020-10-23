@@ -391,6 +391,11 @@ int WorkersModule::WorkerCountGas()
 	return result;
 }
 
+int WorkersModule::WorkerCountAll()
+{
+	return WorkerCountMinerals() + WorkerCountGas() + _builders.size();
+}
+
 bool WorkersModule::ExpansionNeeded()
 {
 	for (auto& exp : _expansionList)

@@ -39,8 +39,7 @@ bool StrategyModule::MacroSaturation()
 			return ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Command_Center);
 	}
 
-	if (WorkersModule::Instance()->WorkerCountMinerals() + WorkersModule::Instance()->WorkerCountGas() 
-		+ (int)ArmyModule::Instance()->WorkerArmy()->Workers().size() >= Config::Workers::MaxGlobal())
+	if (WorkersModule::Instance()->WorkerCountAll() + (int)ArmyModule::Instance()->WorkerArmy()->Workers().size() >= Config::Workers::MaxGlobal())
 		return false;
 
 	if (WorkersModule::Instance()->BasesFull())

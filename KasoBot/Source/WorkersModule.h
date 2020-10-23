@@ -74,6 +74,9 @@ namespace KasoBot {
 		//@return total number of workers mining gas
 		int WorkerCountGas();
 
+		//@return total number of workers mining or building
+		int WorkerCountAll();
+
 		//@return true if we have more workers that is optimal saturation
 		bool ExpansionNeeded();
 
