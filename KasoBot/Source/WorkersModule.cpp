@@ -95,6 +95,10 @@ void WorkersModule::AssignRefinery(Expansion& exp)
 
 	for (auto it = _unassignedRefineries.begin(); it != _unassignedRefineries.end(); it++)
 	{
+		Log::Instance()->Assert((*it)->getTilePosition().isValid(), "Unassigned refinery has invalid position!");
+		if (!(*it)->getTilePosition().isValid())
+			continue;
+
 		if (BWEM::Map::Instance().GetNearestArea((*it)->getTilePosition()) == exp.GetStation()->getBWEMBase()->GetArea())
 		{
 			exp.AddRefinery(*it);

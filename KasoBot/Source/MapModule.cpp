@@ -13,6 +13,9 @@
 #define PI 3.141593
 #define TILE_SIZE 32
 #define SCOUT_ANGLE_INCREASE 0.2
+#define DEF_POINT_CHOKE_DISTANCE_MAIN 150
+#define DEF_POINT_CHOKE_DISTANCE_NAT 100
+
 
 using namespace KasoBot;
 
@@ -344,9 +347,58 @@ BWAPI::Position Map::DefaultTaskPosition()
 					{
 						if (choke->GetAreas().first != BWEB::Map::getMainArea() && choke->GetAreas().second != BWEB::Map::getMainArea())
 						{
-							return BWAPI::Position(choke->Center()) + (base.Center() - BWAPI::Position(choke->Center())) / 4;
-						}
+							//Get point where bunker can be built and is close to choke
+							auto pos1 = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::end1));
+							auto pos2 = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::end2));
 							
+							if (pos1 == pos2) //single point choke, can't get vector
+							{
+								return pos1; //return point on choke
+							}
+
+							BWAPI::Position chokeVectorInt = pos1 - pos2;
+							
+							//normal vector for choke
+							std::pair<float, float> normal = { (float)chokeVectorInt.y, -(float)chokeVectorInt.x };
+
+							//normalize normal vector (sqrt(x^2+y^2))
+							float length = sqrt(normal.first * normal.first + normal.second * normal.second);
+							normal.first = normal.first / length;
+							normal.second = normal.second / length;
+
+							//position outside of choke
+							BWAPI::Position startPoint = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle)) 
+								+ BWAPI::Position(int(normal.first * DEF_POINT_CHOKE_DISTANCE_NAT),int(normal.second * DEF_POINT_CHOKE_DISTANCE_NAT));
+
+							//reverse if point is on other side of choke
+							if(BWEM::Map::Instance().GetArea(BWAPI::TilePosition(startPoint)) != BWEB::Map::getNaturalArea())
+								startPoint = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle))
+									+ BWAPI::Position(int(-normal.first * DEF_POINT_CHOKE_DISTANCE_NAT), int(-normal.second * DEF_POINT_CHOKE_DISTANCE_NAT));
+
+							//vector towards base
+							BWAPI::Position vectorBase = (BWAPI::Position)BWEB::Map::getNaturalArea()->Bases().front().Center() - startPoint;
+							length = sqrt((float)vectorBase.x * (float)vectorBase.x + (float)vectorBase.y * (float)vectorBase.y);
+							std::pair<float, float> normVectorBase;
+							normVectorBase.first = vectorBase.x / length;
+							normVectorBase.second = vectorBase.y / length;
+							
+							while (1) //move closer to base until bunker is buildable
+							{
+								//TODO this is debug drawing
+								BWAPI::Broodwar->registerEvent([startPoint](BWAPI::Game*) { BWAPI::Broodwar->drawBoxMap(startPoint,startPoint + BWAPI::Position(96,64),BWAPI::Colors::Orange,false); },   // action
+									nullptr,    // condition
+									500);  // frames to run
+
+								if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint)))
+									return startPoint;
+
+								startPoint = startPoint + BWAPI::Position(int(normVectorBase.first * 10), int(normVectorBase.second * 10));
+
+								//if too close to base, return choke position
+								if (startPoint.getDistance((BWAPI::Position)BWEB::Map::getNaturalArea()->Bases().front().Center()) < 100)
+									return BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle));
+							}
+						}	
 					}
 					
 				}
@@ -360,9 +412,64 @@ BWAPI::Position Map::DefaultTaskPosition()
 	{
 		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::PLAYER)
 		{
+			//TODO this code is doubled for main and natural
+
 			if (!main->ChokePoints().empty())
 			{
-				return BWAPI::Position(main->ChokePoints().front()->Center()) + (base.Center() - BWAPI::Position(main->ChokePoints().front()->Center())) / 3;
+				auto choke = main->ChokePoints().front();
+
+				//Get point where bunker can be built and is close to choke
+				auto pos1 = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::end1));
+				auto pos2 = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::end2));
+
+				if (pos1 == pos2) //single point choke, can't get vector
+				{
+					return pos1; //return point on choke
+				}
+
+				BWAPI::Position chokeVectorInt = pos1 - pos2;
+
+				//normal vector for choke
+				std::pair<float, float> normal = { (float)chokeVectorInt.y, -(float)chokeVectorInt.x };
+
+				//normalize normal vector (sqrt(x^2+y^2))
+				float length = sqrt(normal.first * normal.first + normal.second * normal.second);
+				normal.first = normal.first / length;
+				normal.second = normal.second / length;
+
+				//position outside of choke
+				BWAPI::Position startPoint = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle))
+					+ BWAPI::Position(int(normal.first * DEF_POINT_CHOKE_DISTANCE_MAIN), int(normal.second * DEF_POINT_CHOKE_DISTANCE_MAIN));
+
+				//reverse if point is on other side of choke
+				if (BWEM::Map::Instance().GetArea(BWAPI::TilePosition(startPoint)) != BWEB::Map::getMainArea())
+					startPoint = BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle))
+					+ BWAPI::Position(int(-normal.first * DEF_POINT_CHOKE_DISTANCE_MAIN), int(-normal.second * DEF_POINT_CHOKE_DISTANCE_MAIN));
+
+				//vector towards base
+				BWAPI::Position vectorBase = (BWAPI::Position)BWEB::Map::getMainArea()->Bases().front().Center() - startPoint;
+				length = sqrt((float)vectorBase.x * (float)vectorBase.x + (float)vectorBase.y * (float)vectorBase.y);
+				std::pair<float, float> normVectorBase;
+				normVectorBase.first = vectorBase.x / length;
+				normVectorBase.second = vectorBase.y / length;
+				
+
+				while (1) //move closer to base until bunker is buildable
+				{
+					//TODO this is debug drawing
+					BWAPI::Broodwar->registerEvent([startPoint](BWAPI::Game*) { BWAPI::Broodwar->drawBoxMap(startPoint, startPoint + BWAPI::Position(96, 64), BWAPI::Colors::Orange, false); },   // action
+						nullptr,    // condition
+						500);  // frames to run
+
+					if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint)))
+						return startPoint;
+
+					startPoint = startPoint + BWAPI::Position(int(normVectorBase.first * 10), int(normVectorBase.second * 10));
+
+					//if too close to base, return choke position
+					if (startPoint.getDistance((BWAPI::Position)BWEB::Map::getMainArea()->Bases().front().Center()) < 100)
+						return BWAPI::Position(choke->Pos(BWEM::ChokePoint::node::middle));
+				}
 			}
 		}
 	}

@@ -8,6 +8,7 @@
 #include "Task.h"
 #include "EnemyArmy.h"
 #include "BaseInfo.h"
+#include "ProductionModule.h"
 #include "Log.h"
 
 using namespace KasoBot;
@@ -409,6 +410,18 @@ void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
 void ArmyModule::ResetDefaultTask()
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
+
+	if (!_bunker)
+		return;
+
+	//move bunker to natural
+	if (_bunker->GetPointer()->getTilePosition() != (BWAPI::TilePosition)_defaultTask->Position())
+	{
+		_bunker->GetPointer()->unloadAll();
+		_bunker = nullptr;
+		ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Bunker);
+	}
+		
 }
 
 void ArmyModule::StartWorkerDefence(Task * task, size_t count)

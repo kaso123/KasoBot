@@ -28,7 +28,8 @@ Expansion::Expansion(BWAPI::Unit unit)
 	Log::Instance()->Assert(_station,"No station found for expansion!");
 
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::PLAYER;
-	ArmyModule::Instance()->ResetDefaultTask();
+	if(_station->getBWEMBase()->GetArea() == BWEB::Map::getNaturalArea())
+		ArmyModule::Instance()->ResetDefaultTask();
 }
 
 Expansion::~Expansion()
@@ -51,7 +52,8 @@ Expansion::~Expansion()
 
 	Log::Instance()->Assert(_station,"No station in expansion destructor!");
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::NONE;
-	ArmyModule::Instance()->ResetDefaultTask();
+	if (_station->getBWEMBase()->GetArea() == BWEB::Map::getNaturalArea())
+		ArmyModule::Instance()->ResetDefaultTask();
 }
 
 void Expansion::OnFrame()

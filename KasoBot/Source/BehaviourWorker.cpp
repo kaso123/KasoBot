@@ -80,6 +80,8 @@ void BehaviourWorker::Construct(Worker& worker)
 {
 	Log::Instance()->Assert(worker.GetProductionItem(),"Worker doesn't have production item when constructing!");
 	
+	if (!worker.GetProductionItem())
+		return;
 
 	if (worker.GetPointer()->isConstructing())
 	{

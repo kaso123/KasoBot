@@ -22,9 +22,9 @@ void MainModule::onStart()
 
 	Map::Global::Initialize();
 
+	ScoutModule::Instance()->OnStart();
 	ConfigModule::Instance()->Init();
 	WorkersModule::Instance()->OnStart();
-	ScoutModule::Instance()->OnStart();
 }
 
 void MainModule::onEnd(bool isWinner)
