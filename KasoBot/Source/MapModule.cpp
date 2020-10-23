@@ -214,7 +214,7 @@ BWAPI::TilePosition Map::GetBuildPosition(BWAPI::UnitType type)
 		if (!ArmyModule::Instance()->Bunker())
 		{
 			auto pos = (BWAPI::TilePosition)ArmyModule::Instance()->DefaultTask()->Position();
-			if (BWAPI::Broodwar->canBuildHere(pos, BWAPI::UnitTypes::Terran_Bunker))
+			if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, pos))
 				return pos;
 		}
 	}
