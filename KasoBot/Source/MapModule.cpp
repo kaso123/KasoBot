@@ -22,7 +22,7 @@ namespace {
 	BWAPI::Position GetSafeScoutPoint(BWAPI::Position oldPoint, BWAPI::Position base)
 	{
 		auto area = BWEM::Map::Instance().GetArea(BWAPI::TilePosition(base));
-		Log::Assert(area,"No area found for base position!");
+		Log::Instance()->Assert(area,"No area found for base position!");
 
 		auto tile = BWAPI::TilePosition(oldPoint);
 		//check area
@@ -90,8 +90,7 @@ namespace {
 		}
 		
 		//couldn't find suitable point, just move towards base
-		return base;
-		
+		return base;	
 	}
 }
 
@@ -102,8 +101,8 @@ BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
 
 BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 {
-	Log::Assert(base,"No base when finding mineral!");
-	Log::Assert(!base->Minerals().empty(),"Base has no minerals!");
+	Log::Instance()->Assert(base,"No base when finding mineral!");
+	Log::Instance()->Assert(!base->Minerals().empty(),"Base has no minerals!");
 
 	BWEM::Mineral* mineral = nullptr;
 	int dist = INT_MAX;
@@ -143,13 +142,13 @@ BWEM::Mineral* Map::NextMineral(const BWEM::Base* base)
 			return mineral;
 	}
 	
-	Log::Assert(false,"No mineral ready for worker!");
-	return base->Minerals().front();
+	Log::Instance()->Assert(false,"No mineral ready for worker!");
+	return nullptr;
 }
 
 BWAPI::TilePosition Map::GetNextBase()
 {
-	Log::Assert(BWEB::Map::getNaturalArea(),"No natural area in BWEB!");
+	Log::Instance()->Assert(BWEB::Map::getNaturalArea(),"No natural area in BWEB!");
 
 	for (auto& base : BWEB::Map::getNaturalArea()->Bases())
 	{
@@ -164,7 +163,7 @@ BWAPI::TilePosition Map::GetNextBase()
 	{
 		auto base = station.getBWEMBase();
 
-		Log::Assert(base,"No base in station!");
+		Log::Instance()->Assert(base,"No base in station!");
 
 		if (!Map::CanAccess(base->GetArea())) //skip islands
 			continue;
@@ -235,7 +234,7 @@ BWAPI::Unit Map::GetUnfinished(BWAPI::TilePosition pos, BWAPI::UnitType type)
 			return unit;
 	}
 
-	Log::Assert(false,"Didn't find unfinished building on tile!");
+	Log::Instance()->Assert(false,"Didn't find unfinished building on tile!");
 	return nullptr;
 }
 
@@ -329,8 +328,8 @@ BWAPI::Position Map::NextScoutPosition(const BWEM::Area * area, BWAPI::Position 
 
 BWAPI::Position Map::DefaultTaskPosition()
 {
-	Log::Assert(BWEB::Map::getNaturalArea(), "No nat area in BWEB!");
-	Log::Assert(BWEB::Map::getMainArea(), "No main area in BWEB!");
+	Log::Instance()->Assert(BWEB::Map::getNaturalArea(), "No nat area in BWEB!");
+	Log::Instance()->Assert(BWEB::Map::getMainArea(), "No main area in BWEB!");
 
 	auto nat = BWEB::Map::getNaturalArea();
 	if (!nat->Bases().empty()) //if we have natural, defend there
@@ -355,7 +354,7 @@ BWAPI::Position Map::DefaultTaskPosition()
 		}
 	}
 	auto main = BWEB::Map::getMainArea(); //if no natural, defend main choke
-	Log::Assert(!main->Bases().empty(), "Main area has no bases!");
+	Log::Instance()->Assert(!main->Bases().empty(), "Main area has no bases!");
 
 	for (auto& base : main->Bases())
 	{
@@ -373,8 +372,8 @@ BWAPI::Position Map::DefaultTaskPosition()
 
 bool Map::IsStillThere(EnemyUnit & enemy)
 {
-	Log::Assert(enemy._type.isBuilding(), "Wrong enemy type in IsStillThere!");
-	Log::Assert(enemy._lastPos.isValid(), "invalid position in IsStillThere!");
+	Log::Instance()->Assert(enemy._type.isBuilding(), "Wrong enemy type in IsStillThere!");
+	Log::Instance()->Assert(enemy._lastPos.isValid(), "invalid position in IsStillThere!");
 
 	for (int x = 0; x < enemy._type.tileWidth(); x++)
 	{
@@ -391,8 +390,8 @@ bool Map::IsStillThere(EnemyUnit & enemy)
 
 bool Map::IsVisible(const BWEM::Base * base)
 {
-	Log::Assert(base,"No base in IsVisible!");
-	Log::Assert(base->Location().isValid(),"Base location is invalid!");
+	Log::Instance()->Assert(base,"No base in IsVisible!");
+	Log::Instance()->Assert(base->Location().isValid(),"Base location is invalid!");
 
 	for (int x = 0; x < BWAPI::UnitTypes::Terran_Command_Center.tileWidth(); x++)
 	{
@@ -410,7 +409,7 @@ bool Map::CanAccess(const BWEM::Area * area)
 	if (!area)
 		return false;
 
-	Log::Assert(BWEB::Map::getMainArea(),"No main area in BWEB!");
+	Log::Instance()->Assert(BWEB::Map::getMainArea(),"No main area in BWEB!");
 
 	if (area->AccessibleFrom(BWEB::Map::getMainArea()))
 		return true;

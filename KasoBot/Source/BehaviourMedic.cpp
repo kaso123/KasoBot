@@ -29,12 +29,12 @@ BehaviourMedic::~BehaviourMedic()
 
 void BehaviourMedic::AttackArea(KasoBot::Unit & unit, Army * army)
 {
-	Log::Assert(army, "No army in behaviour!");
+	Log::Instance()->Assert(army, "No army in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }
 
 void BehaviourMedic::DefendArmy(KasoBot::Unit & unit, Army * army)
 {
-	Log::Assert(army,"No army in behaviour!");
+	Log::Instance()->Assert(army,"No army in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }

@@ -25,7 +25,7 @@ Expansion::Expansion(BWAPI::Unit unit)
 	//find which station this expansion belongs to
 	_station = KasoBot::Map::GetStation(unit->getTilePosition());
 
-	Log::Assert(_station,"No station found for expansion!");
+	Log::Instance()->Assert(_station,"No station found for expansion!");
 
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::PLAYER;
 	ArmyModule::Instance()->ResetDefaultTask();
@@ -49,7 +49,7 @@ Expansion::~Expansion()
 		_refinery = nullptr;
 	}
 
-	Log::Assert(_station,"No station in expansion destructor!");
+	Log::Instance()->Assert(_station,"No station in expansion destructor!");
 	((BaseInfo*)_station->getBWEMBase()->Ptr())->_owner = Base::Owner::NONE;
 	ArmyModule::Instance()->ResetDefaultTask();
 }
@@ -84,7 +84,13 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 		//choose mineral
 		BWEM::Mineral* mineral = Map::NextMineral(_station->getBWEMBase());
 
-		Log::Assert(mineral,"No mineral for worker found!");
+		Log::Instance()->Assert(mineral,"No mineral for worker found!");
+
+		if (!mineral)
+		{
+			ArmyModule::Instance()->AddWorker(worker);
+			return;
+		}
 
 		//assign to worker
 		worker->AssignRoleMinerals(mineral);
@@ -92,7 +98,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 		_workersMinerals++;
 	}
 
-	Log::Assert(VerifyWorkers(),"Wrong worker count after add!");
+	Log::Instance()->Assert(VerifyWorkers(),"Wrong worker count after add!");
 
 	//check if refinery should be built, don't interfere with opener
 	if (!_refinery && !StrategyModule::Instance()->IsOpenerActive() && !_station->getBWEMBase()->Geysers().empty())
@@ -146,14 +152,20 @@ bool Expansion::RemoveWorker(BWAPI::Unit unit)
 
 		//decrease counter according to role
 		if ((*it)->GetWorkerRole() == Workers::Role::GAS)
+		{
 			_workersGas--;
-		else _workersMinerals--;
+		}
+		else
+		{
+			_workersMinerals--;
+			(*it)->RemoveMineral();
+		}
 
 		_workerList.erase(it);
 		break;
 	}
 
-	Log::Assert(VerifyWorkers(),"Wrong worker count after removing!");
+	Log::Instance()->Assert(VerifyWorkers(),"Wrong worker count after removing!");
 
 	//check if worker was removed from list
 	return before > _workerList.size();
@@ -287,6 +299,6 @@ std::vector<std::shared_ptr<Worker>> Expansion::GetUnneededWorkers(size_t max)
 
 	_workersMinerals -= workers.size();
 
-	Log::Assert(VerifyWorkers(),"Wrong worker count after transfering unneeded!");
+	Log::Instance()->Assert(VerifyWorkers(),"Wrong worker count after transfering unneeded!");
 	return workers;
 }

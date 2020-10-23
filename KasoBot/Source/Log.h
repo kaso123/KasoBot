@@ -1,16 +1,24 @@
 #pragma once
 #include <BWAPI.h>
+#include <fstream>
 
 namespace KasoBot {
-	namespace Log {
+	class Log {
+	private:
+		Log();
+		~Log();
+		static Log* _instance;
 
-		//set log filename from enemy name and map name
-		void CreateFileName();
+		std::string _name;
+		std::ofstream _logFile;
+	public:
+
+		static Log* Instance();
 
 		//write message to log if value = false
 		void Assert(bool value, const char* message);
 
 		void Strategy(const char* strat, const char* enemyStrat);
-	}
+	};
 }
 

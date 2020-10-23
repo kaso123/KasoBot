@@ -48,9 +48,9 @@ Behaviour::~Behaviour()
 
 void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 {
-	Log::Assert(army,"No army in behaviour task!");
+	Log::Instance()->Assert(army,"No army in behaviour task!");
 	auto area = army->Task()->Area();
-	Log::Assert(!area->Bases().empty(),"No bases in area in attack task!");
+	Log::Instance()->Assert(!area->Bases().empty(),"No bases in area in attack task!");
 	
 	for (auto & base : area->Bases())
 	{
@@ -64,9 +64,9 @@ void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 
 void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 {
-	Log::Assert(army, "No army in behaviour task!");
+	Log::Instance()->Assert(army, "No army in behaviour task!");
 	auto area = army->Task()->Area();
-	Log::Assert(!area->Bases().empty(), "No bases in area in scout task!");
+	Log::Instance()->Assert(!area->Bases().empty(), "No bases in area in scout task!");
 
 	for (auto & base : area->Bases())
 	{
@@ -79,9 +79,9 @@ void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 
 void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 {
-	Log::Assert(army, "No army in behaviour task!");
+	Log::Instance()->Assert(army, "No army in behaviour task!");
 	auto enemyArmy = army->Task()->EnemyArmy();
-	Log::Assert(enemyArmy,"No enemy army in defend task!");
+	Log::Instance()->Assert(enemyArmy,"No enemy army in defend task!");
 	
 	if (ArmyModule::Instance()->Bunker() && !army->Task()->EnemyArmy()->IsCannonRush()) //stick to bunker if enemy is not inside our base
 	{
@@ -97,9 +97,9 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 
 void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 {
-	Log::Assert(army, "No army in behaviour task!");
+	Log::Instance()->Assert(army, "No army in behaviour task!");
 	auto pos = army->Task()->Position();
-	Log::Assert(pos.isValid(),"Invalid position in hold task!");
+	Log::Instance()->Assert(pos.isValid(),"Invalid position in hold task!");
 
 	if (unit.GetPointer()->getDistance(pos) > 40) //TODO make configurable
 		AttackMove(unit.GetPointer(), pos);
@@ -109,7 +109,7 @@ void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
 {
-	Log::Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");
+	Log::Instance()->Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");
 
 	AttackMove(unit.GetPointer(), position);
 }

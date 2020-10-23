@@ -67,7 +67,7 @@ bool StrategyModule::MacroTech()
 
 	if (macro._unit != BWAPI::UnitTypes::None)
 	{
-		Log::Assert(macro._unit.isBuilding(),"Macro tech type is not building!");
+		Log::Instance()->Assert(macro._unit.isBuilding(),"Macro tech type is not building!");
 		return ProductionModule::Instance()->BuildBuilding(macro._unit);
 	}
 	if (macro._upgrade != BWAPI::UpgradeTypes::None)
@@ -118,7 +118,6 @@ void StrategyModule::CheckEnemyStrat()
 	{
 		_activeEnemyStrat = best;
 		ChooseNewStrat();
-		Log::Strategy(_activeStratName.c_str(), _activeEnemyStrat->GetName().c_str());
 	}
 }
 
@@ -211,7 +210,7 @@ void StrategyModule::NewOpener(const std::string & name, nlohmann::json & array)
 
 void StrategyModule::SetOpener(const std::string & name)
 {
-	Log::Assert(!_openers.empty(),"No opener exists!");
+	Log::Instance()->Assert(!_openers.empty(),"No opener exists!");
 
 	if (name == "random" || _openers.find(name) == _openers.end())
 	{
@@ -229,7 +228,7 @@ void StrategyModule::SetOpener(const std::string & name)
 
 void StrategyModule::SetStrategy(const std::string& name)
 {
-	Log::Assert(!_strategies.empty(),"No strategy exists!");
+	Log::Instance()->Assert(!_strategies.empty(),"No strategy exists!");
 
 	if (name == "random" || _strategies.find(name) == _strategies.end())
 	{
@@ -248,13 +247,13 @@ void StrategyModule::SetStrategy(const std::string& name)
 
 void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 {
-	Log::Assert(itemsArray.is_array(),"Wrong json format in prod cycle!");
+	Log::Instance()->Assert(itemsArray.is_array(),"Wrong json format in prod cycle!");
 
 	_productionCycle.clear();
 
 	for (auto& item : itemsArray)
 	{
-		Log::Assert(item.is_string(), "Wrong json format in prod cycle item!");
+		Log::Instance()->Assert(item.is_string(), "Wrong json format in prod cycle item!");
 		if (item == "saturation")
 			_productionCycle.emplace_back(Production::Type::SATURATION);
 		else if (item == "army")
@@ -269,8 +268,8 @@ void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 
 void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, int id)
 {
-	Log::Assert(strat.contains("name"),"No name for enemy strat!");
-	Log::Assert(strat["name"].is_string(), "Wrong name format for enemy strat!");
+	Log::Instance()->Assert(strat.contains("name"),"No name for enemy strat!");
+	Log::Instance()->Assert(strat["name"].is_string(), "Wrong name format for enemy strat!");
 
 	EnemyStrategy* strategy = nullptr;
 	if (race == BWAPI::Races::Terran)
@@ -283,12 +282,12 @@ void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, 
 
 	for (auto& item : strat["types"])
 	{
-		Log::Assert(item.contains("type"),"No type in enemy strat item!");
-		Log::Assert(item["type"].is_string(), "Wrong type format for enemy strat item!");
-		Log::Assert(item.contains("value"), "No value in enemy strat item!");
-		Log::Assert(item["value"].is_number_integer(), "Wrong value format for enemy strat item!");
-		Log::Assert(item.contains("include"), "No include in enemy strat item!");
-		Log::Assert(item["include"].is_boolean(), "Wrong include format for enemy strat item!");
+		Log::Instance()->Assert(item.contains("type"),"No type in enemy strat item!");
+		Log::Instance()->Assert(item["type"].is_string(), "Wrong type format for enemy strat item!");
+		Log::Instance()->Assert(item.contains("value"), "No value in enemy strat item!");
+		Log::Instance()->Assert(item["value"].is_number_integer(), "Wrong value format for enemy strat item!");
+		Log::Instance()->Assert(item.contains("include"), "No include in enemy strat item!");
+		Log::Instance()->Assert(item["include"].is_boolean(), "Wrong include format for enemy strat item!");
 
 		strategy->AddItem(Config::Utils::TypeFromString(item["type"]), item["value"].get<int>(),
 			item.contains("count") ? item["count"].get<int>() : 1, item["include"].get<bool>());
@@ -305,17 +304,17 @@ void StrategyModule::NewEnemyStrategy(BWAPI::Race race, nlohmann::json & strat, 
 
 void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
 {
-	Log::Assert(strat.contains("name"), "No name in strat!");
-	Log::Assert(strat["name"].is_string(),"Wrong name format in strat!");
-	Log::Assert(strat.contains("opener"), "No opener in strat!");
-	Log::Assert(strat["opener"].is_string(), "Wrong opener format in strat!");
+	Log::Instance()->Assert(strat.contains("name"), "No name in strat!");
+	Log::Instance()->Assert(strat["name"].is_string(),"Wrong name format in strat!");
+	Log::Instance()->Assert(strat.contains("opener"), "No opener in strat!");
+	Log::Instance()->Assert(strat["opener"].is_string(), "Wrong opener format in strat!");
 
 	OwnStrategy* strategy = _strategies.emplace(strat["name"].get<std::string>(), 
 		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), strat["opener"].get<std::string>())).first->second.get();
 	
 	if (strat.contains("units"))
 	{
-		Log::Assert(strat["units"].is_object(),"Wrong format for strat units!");
+		Log::Instance()->Assert(strat["units"].is_object(),"Wrong format for strat units!");
 
 		for (auto it = strat["units"].begin(); it != strat["units"].end(); it++)
 		{
@@ -324,7 +323,7 @@ void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
 	}
 	if (strat.contains("tech"))
 	{
-		Log::Assert(strat["tech"].is_array(),"Wrong format for strat tech!");
+		Log::Instance()->Assert(strat["tech"].is_array(),"Wrong format for strat tech!");
 
 		for (auto& item : strat["tech"])
 		{
@@ -349,6 +348,7 @@ void StrategyModule::SwitchStrategy(OwnStrategy * newStrat, const std::string& n
 	_activeStrat = newStrat;
 	_activeStratName = name;
 	SetOpener(_activeStrat->GetOpener());
+	Log::Instance()->Strategy(_activeStratName.c_str(), _activeEnemyStrat ? _activeEnemyStrat->GetName().c_str() : "none");
 	return;
 }
 

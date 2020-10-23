@@ -18,7 +18,7 @@ void EnemyArmy::CalculateCenter()
 	int maxX = INT_MIN;
 	int maxY = INT_MIN;
 
-	Log::Assert(!_units.empty(),"No units in enemy army!");
+	Log::Instance()->Assert(!_units.empty(),"No units in enemy army!");
 
 	for (auto unit : _units)
 	{
@@ -77,7 +77,7 @@ EnemyArmy::EnemyArmy()
 
 EnemyArmy::~EnemyArmy()
 {
-	Log::Assert(_units.empty(),"Enemy army not empty in destructor!");
+	Log::Instance()->Assert(_units.empty(),"Enemy army not empty in destructor!");
 	ArmyModule::Instance()->EnemyArmyRemoved(this);
 }
 
@@ -107,7 +107,7 @@ void EnemyArmy::RemoveEnemy(EnemyUnit * unit)
 		}
 	}
 
-	Log::Assert(false,"Enemy not found in army when deleting!"); //called from enemy destructor so the unit has to be in this army
+	Log::Instance()->Assert(false,"Enemy not found in army when deleting!"); //called from enemy destructor so the unit has to be in this army
 }
 
 void EnemyArmy::Join(EnemyArmy * toJoin)
@@ -128,7 +128,7 @@ bool EnemyArmy::IsThreat()
 {
 	for (auto& type : ProductionModule::Instance()->Buildings())
 	{
-		Log::Assert(type.first.isBuilding(),"Wrong type in building list!");
+		Log::Instance()->Assert(type.first.isBuilding(),"Wrong type in building list!");
 
 		for (auto& unit : type.second)
 		{

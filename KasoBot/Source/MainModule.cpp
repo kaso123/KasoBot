@@ -21,7 +21,6 @@ void MainModule::onStart()
 	Broodwar->enableFlag(Flag::UserInput);
 
 	Map::Global::Initialize();
-	Log::CreateFileName();
 
 	ConfigModule::Instance()->Init();
 	WorkersModule::Instance()->OnStart();

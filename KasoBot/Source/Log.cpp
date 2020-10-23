@@ -1,29 +1,47 @@
 #include "Log.h"
-#include <fstream>
+
+#include <iostream>
+#include <chrono>
+#include <ctime>
 
 using namespace KasoBot;
 
-namespace {
-	std::string _fileName = "bwapi-data/write/default.txt";
-}
+Log* Log::_instance = 0;
 
-
-void Log::CreateFileName()
+Log::Log()
 {
 	for (auto p : BWAPI::Broodwar->getPlayers())
 	{
 		if (BWAPI::Broodwar->self()->isEnemy(p))
 		{
-			_fileName = "bwapi-data/write/default.txt";
-			BWAPI::Broodwar->sendText("%s",_fileName.c_str());
-			std::ofstream log(_fileName.c_str(), std::ofstream::app);
-			log << "Game started\n";
+
+			std::time_t now_c = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+			std::tm * ptm = std::localtime(&now_c);
+			char buffer[32];
+			std::strftime(buffer, 32, "%Y-%m-%d_%H-%M", ptm);
+
+			_name = "bwapi-data/write/" + p->getName() + buffer + ".txt";
+
+			BWAPI::Broodwar->sendText("%s", _name.c_str());
+			std::ofstream log(_name.c_str(), std::ofstream::app);
+			log << "Game started" << std::endl;
 			log.close();
 
-			return;
+			break;
 		}
 	}
+}
 
+Log::~Log()
+{
+	delete(_instance);
+}
+
+Log* Log::Instance()
+{
+	if (!_instance)
+		_instance = new Log;
+	return _instance;
 }
 
 void Log::Assert(bool value, const char* message)
@@ -31,30 +49,33 @@ void Log::Assert(bool value, const char* message)
 	if (value)
 		return;
 
-	std::ofstream log("bwapi-data/write/assert.txt", std::ofstream::app);
+	_logFile.open(_name.c_str(), std::ofstream::app);
+	std::ofstream assertLog("bwapi-data/write/assert.txt", std::ofstream::app);
 	
-	if (!log)
+	if (!_logFile)
 	{
 		BWAPI::Broodwar->sendText(message);
 		return;
 	}
 
-	log << message << " frame:" << BWAPI::Broodwar->getFrameCount() << "\n";
+	_logFile << message << " frame:" << BWAPI::Broodwar->getFrameCount() << std::endl;
+	assertLog << message << " frame:" << BWAPI::Broodwar->getFrameCount() << std::endl;
 		
-	log.close();
+	_logFile.close();
+	assertLog.close();
 }
 
 void Log::Strategy(const char* strat, const char* enemyStrat)
 {
-	std::ofstream log("bwapi-data/write/strat.txt", std::ofstream::app);
+	_logFile.open(_name.c_str(), std::ofstream::app);
 
-	if (!log)
+	if (!_logFile)
 	{
 		BWAPI::Broodwar->sendText("Strategy switch: %s  Because enemy is doing: %s \n", strat, enemyStrat);
 		return;
 	}
 
-	log << "Strategy switch: " << strat << "  Because enemy is doing: " << enemyStrat << "\n";
+	_logFile << "Strategy switch: " << strat << "  Because enemy is doing: " << enemyStrat << std::endl;
 
-	log.close();
+	_logFile.close();
 }

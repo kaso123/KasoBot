@@ -19,13 +19,13 @@ Worker::~Worker()
 	if (_mineral) //remove self from mineral
 	{
 		_mineral->SetData(_mineral->Data() - 1);
-		Log::Assert(_mineral->Data() >= 0,"Negative worker count on mineral - destructor!");
+		Log::Instance()->Assert(_mineral->Data() >= 0,"Negative worker count on mineral - destructor!");
  		_mineral = nullptr;
 	}
 
 	if (_item) //set appropriate state to productionItem
 	{
-		Log::Assert(_item->GetState() == Production::State::ASSIGNED || _item->GetState() == Production::State::BUILDING,"Wrong item state in worker desctructor!");
+		Log::Instance()->Assert(_item->GetState() == Production::State::ASSIGNED || _item->GetState() == Production::State::BUILDING,"Wrong item state in worker desctructor!");
 		_item->WorkerDied();
 		_item = nullptr;
 	}
@@ -37,7 +37,7 @@ void Worker::AssignRoleMinerals(BWEM::Mineral* mineral)
 	{
 		//decrease number of workers for previous mineral
 		_mineral->SetData(_mineral->Data() - 1);
-		Log::Assert(_mineral->Data() >= 0,"Negative worker count on mineral - assigning!");
+		Log::Instance()->Assert(_mineral->Data() >= 0,"Negative worker count on mineral - assigning!");
 	}
 
 	_refinery = nullptr;
@@ -54,7 +54,7 @@ void Worker::AssignRoleGas(BWAPI::Unit refinery)
 	{
 		//decrease number of workers for mineral
 		_mineral->SetData(_mineral->Data() - 1);
-		Log::Assert(_mineral->Data() >= 0,"Negative worker count on mineral - assigning!");
+		Log::Instance()->Assert(_mineral->Data() >= 0,"Negative worker count on mineral - assigning!");
 	}
 	_mineral = nullptr;
 	_refinery = refinery;
@@ -70,13 +70,13 @@ bool Worker::AssignRoleBuild(ProductionItem* item)
 	{
 		//decrease number of workers for mineral
 		_mineral->SetData(_mineral->Data() - 1);
-		Log::Assert(_mineral->Data() >= 0, "Negative worker count on mineral - assign build!");
+		Log::Instance()->Assert(_mineral->Data() >= 0, "Negative worker count on mineral - assign build!");
 	}
 	_refinery = nullptr;
 	_mineral = nullptr;
 	
 
-	Log::Assert(item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED,"Wrong item state when assigning to worker!");
+	Log::Instance()->Assert(item->GetState() == Production::State::WAITING || item->GetState() == Production::State::UNFINISHED,"Wrong item state when assigning to worker!");
 	item->Assigned();
 	_item = item;
 	_workerRole = Workers::Role::ASSIGNED;
@@ -96,8 +96,8 @@ bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 
 void Worker::BuildFinished()
 {
-	Log::Assert(_workerRole == Workers::Role::BUILD || _workerRole == Workers::Role::ASSIGNED,"Wrong item state when finishing!");
-	Log::Assert(_item, "Fininshed worker has no item!");
+	Log::Instance()->Assert(_workerRole == Workers::Role::BUILD || _workerRole == Workers::Role::ASSIGNED,"Wrong item state when finishing!");
+	Log::Instance()->Assert(_item, "Fininshed worker has no item!");
 	_item = nullptr;
 }
 
@@ -115,7 +115,7 @@ void Worker::Work()
 		else return;
 	}
 
-	Log::Assert(_behaviour.get(),"Worker has no behaviour!");
+	Log::Instance()->Assert(_behaviour.get(),"Worker has no behaviour!");
 	_behaviour->Work(*this);
 }
 
@@ -133,8 +133,9 @@ bool Worker::RemoveMineral()
 		return false;
 
 	_mineral->SetData(_mineral->Data() - 1);
-	Log::Assert(_mineral->Data() >= 0,"Negative worker count on mineral - remove mineral!");
+	Log::Instance()->Assert(_mineral->Data() >= 0,"Negative worker count on mineral - remove mineral!");
 
 	_mineral = nullptr;
+	_workerRole = Workers::Role::IDLE;
 	return true;
 }

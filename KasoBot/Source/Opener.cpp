@@ -7,11 +7,11 @@ using namespace KasoBot;
 
 Opener::Opener(nlohmann::json & j)
 {
-	Log::Assert(j.is_array(),"Wrong json input for opener!");
+	Log::Instance()->Assert(j.is_array(),"Wrong json input for opener!");
 
 	for (auto item : j)
 	{
-		Log::Assert(item.is_string(),"Wrong json format in field!");
+		Log::Instance()->Assert(item.is_string(),"Wrong json format in field!");
 		std::string type = item.get<std::string>();
 
 		if (type.find(" $") != std::string::npos) //multiplication in opener

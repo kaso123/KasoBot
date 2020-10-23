@@ -147,7 +147,7 @@ void ProductionModule::AddBuilding(BWAPI::Unit unit)
 		created = new_it.first->second.emplace_back(std::make_unique<KasoBot::Unit>(unit)).get();
 	}
 
-	Log::Assert(created,"Building was not created!");
+	Log::Instance()->Assert(created,"Building was not created!");
 
 	if (unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
 	{
@@ -165,7 +165,7 @@ void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 
 	auto it = _unitList.find(unit->getType());
 
-	Log::Assert(it != _unitList.end(),"Unit type doesn't exist when removing unit!");
+	Log::Instance()->Assert(it != _unitList.end(),"Unit type doesn't exist when removing unit!");
 	
 	//find unit in list and erase it
 	it->second.erase(std::remove_if(it->second.begin(), it->second.end(),
@@ -191,12 +191,12 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 		{
 			if (unit->getTilePosition() == item->GetLocation())
 			{
-				Log::Assert(unit->getType() == item->GetType(),"Wrong building type on build tile!");
+				Log::Instance()->Assert(unit->getType() == item->GetType(),"Wrong building type on build tile!");
 				item->BuildingDestroyed();
 				return;
 			}
 		}
-		Log::Assert(false,"Incomplete building without a production item!"); //there can't be uncomplete building without a production item
+		Log::Instance()->Assert(false,"Incomplete building without a production item!"); //there can't be uncomplete building without a production item
 	}
 
 	//remove bunker if destroyed
@@ -212,7 +212,7 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 
 	auto it = _buildingList.find(unit->getType());
 
-	Log::Assert(it != _buildingList.end(),"Unit type doesn't exists in building list!");
+	Log::Instance()->Assert(it != _buildingList.end(),"Unit type doesn't exists in building list!");
 
 	//find unit in list and erase it
 	it->second.erase(std::remove_if(it->second.begin(), it->second.end(),
@@ -231,7 +231,7 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 
 bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 {
-	Log::Assert(type.isAddon(),"Addon is not an addon type!");
+	Log::Instance()->Assert(type.isAddon(),"Addon is not an addon type!");
 
 	if (!CheckResources(type))
 		return false;
@@ -250,7 +250,7 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 		{ 
 			if (building->GetPointer()->getAddon())
 			{
-				Log::Assert(false,"Building with addon is still locked!"); //shouldn't happen
+				Log::Instance()->Assert(false,"Building with addon is still locked!"); //shouldn't happen
 				building->Unlock();
 				return false;
 			}
@@ -280,7 +280,7 @@ bool ProductionModule::BuildAddon(BWAPI::UnitType type)
 
 bool ProductionModule::BuildBuilding(BWAPI::UnitType type)
 {
-	Log::Assert(type.isBuilding(),"Desired building is a unit!");
+	Log::Instance()->Assert(type.isBuilding(),"Desired building is a unit!");
 
 	if (type.isAddon())
 		return BuildAddon(type);
@@ -307,7 +307,7 @@ bool ProductionModule::BuildRefineryAtExpansion(Expansion& exp)
 
 std::pair<bool,bool> ProductionModule::BuildUnit(BWAPI::UnitType type)
 {
-	Log::Assert(!type.isBuilding(),"Desired unit is a building!");
+	Log::Instance()->Assert(!type.isBuilding(),"Desired unit is a building!");
 
 	if (type.isWorker())
 		return { WorkersModule::Instance()->BuildWorker(), false };
@@ -403,8 +403,8 @@ void ProductionModule::FreeResources(BWAPI::UnitType type)
 	_reservedMinerals -= type.mineralPrice();
 	_reservedGas -= type.gasPrice();
 
-	Log::Assert(_reservedMinerals >= 0,"Reserved minerals are negative!");
-	Log::Assert(_reservedGas >= 0,"Reserved gas is negative!");
+	Log::Instance()->Assert(_reservedMinerals >= 0,"Reserved minerals are negative!");
+	Log::Instance()->Assert(_reservedGas >= 0,"Reserved gas is negative!");
 }
 
 bool ProductionModule::CheckResources(BWAPI::UnitType type)

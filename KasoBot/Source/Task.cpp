@@ -35,7 +35,7 @@ bool AttackAreaTask::IsFinished()
 	if (_finished)
 		return true;
 
-	Log::Assert(_area,"No area in attack task!");
+	Log::Instance()->Assert(_area,"No area in attack task!");
 
 	if (_area->Bases().empty())
 	{
@@ -83,7 +83,7 @@ bool ScoutAreaTask::IsArmySuitable(Army & army)
 
 bool ScoutAreaTask::IsFinished()
 {
-	Log::Assert(_area,"No area in scout task!");
+	Log::Instance()->Assert(_area,"No area in scout task!");
 
 	if (_area->Bases().empty())
 		return true;

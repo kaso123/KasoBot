@@ -21,12 +21,12 @@ BehaviourVessel::~BehaviourVessel()
 
 void BehaviourVessel::AttackArea(KasoBot::Unit & unit, Army* army)
 {
-	Log::Assert(army, "Army is nullptr in behaviour!");
+	Log::Instance()->Assert(army, "Army is nullptr in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }
 
 void BehaviourVessel::DefendArmy(KasoBot::Unit & unit, Army* army)
 {
-	Log::Assert(army,"Army is nullptr in behaviour!");
+	Log::Instance()->Assert(army,"Army is nullptr in behaviour!");
 	MoveToArmyCenter(unit, army->BoundingBox()._center);
 }

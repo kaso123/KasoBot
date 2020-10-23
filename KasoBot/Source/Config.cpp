@@ -30,7 +30,7 @@ void ConfigModule::Init()
 {
 	// read a JSON file
 	std::ifstream stream("bwapi-data/AI/KasoBot.json");
-	Log::Assert(stream.is_open(), "Can't open json file!");
+	Log::Instance()->Assert(stream.is_open(), "Can't open json file!");
 	nlohmann::json j;
 	stream >> j;
 
@@ -242,7 +242,7 @@ BWAPI::UnitType Config::Utils::TypeFromString(std::string input)
 		}
 	}
 
-	Log::Assert(false,"No type found for string!");
+	Log::Instance()->Assert(false,"No type found for string!");
 	return BWAPI::UnitTypes::None;
 }
 
@@ -286,7 +286,7 @@ KasoBot::Production::TechMacro Config::Utils::TechTypeFromString(std::string inp
 		}
 	}
 
-	Log::Assert(false,"No type found for tech!");
+	Log::Instance()->Assert(false,"No type found for tech!");
 	return KasoBot::Production::TechMacro(BWAPI::UnitTypes::None);
 }
 
@@ -313,10 +313,10 @@ BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::TechType type)
 
 BWAPI::UnitType Config::Utils::NextPrerequisite(BWAPI::UpgradeType type)
 {
-	Log::Assert(!BWAPI::Broodwar->self()->isUpgrading(type),"Bot is already upgrading desired upgrade!");
+	Log::Instance()->Assert(!BWAPI::Broodwar->self()->isUpgrading(type),"Bot is already upgrading desired upgrade!");
 
 	int currLevel = BWAPI::Broodwar->self()->getUpgradeLevel(type);
-	Log::Assert(currLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(type),"Upgrade is on max level!");
+	Log::Instance()->Assert(currLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(type),"Upgrade is on max level!");
 
 	BWAPI::UnitType reqType = type.whatsRequired(currLevel + 1);
 	if(reqType != BWAPI::UnitTypes::None && ProductionModule::Instance()->GetCountOf(reqType) < 1)

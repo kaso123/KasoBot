@@ -278,7 +278,7 @@ void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
 		}
 	}
 
-	Log::Assert(false,"Soldier was not from this army when killed!");
+	Log::Instance()->Assert(false,"Soldier was not from this army when killed!");
 }
 
 int ArmyModule::GetArmySupply()
@@ -328,7 +328,7 @@ bool ArmyModule::NeedScoutRush()
 
 bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 {
-	Log::Assert(area,"Attack task area doesn't exist!");
+	Log::Instance()->Assert(area,"Attack task area doesn't exist!");
 
 	int found = 0;
 	for (auto& task : _tasks)
@@ -345,7 +345,7 @@ bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 
 bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 {
-	Log::Assert(enemy, "Enemy army missing in Defend task!");
+	Log::Instance()->Assert(enemy, "Enemy army missing in Defend task!");
 
 	for (auto& task : _tasks)
 	{
@@ -359,7 +359,7 @@ bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 
 bool ArmyModule::AddHoldTask(BWAPI::Position pos)
 {
-	Log::Assert(pos.isValid(),"Invalid position for Hold task!");
+	Log::Instance()->Assert(pos.isValid(),"Invalid position for Hold task!");
 
 	for (auto& task : _tasks)
 	{
@@ -373,7 +373,7 @@ bool ArmyModule::AddHoldTask(BWAPI::Position pos)
 
 bool ArmyModule::AddScoutTask(const BWEM::Area * area)
 {
-	Log::Assert(area, "Scout task area doesn't exist!");
+	Log::Instance()->Assert(area, "Scout task area doesn't exist!");
 
 	for (auto& task : _tasks)
 	{
@@ -413,7 +413,7 @@ void ArmyModule::ResetDefaultTask()
 
 void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 {
-	Log::Assert(task->Type() == Tasks::Type::DEFEND,"Worker defence started for non-defence task!");
+	Log::Instance()->Assert(task->Type() == Tasks::Type::DEFEND,"Worker defence started for non-defence task!");
 
 	if (_bunker)
 		count = 4; //TODO configurable
