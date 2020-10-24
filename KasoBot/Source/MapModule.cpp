@@ -4,6 +4,7 @@
 #include "WorkersModule.h"
 #include "ArmyModule.h"
 #include "ScoutModule.h"
+#include "ProductionModule.h"
 #include "BaseInfo.h"
 #include "Task.h"
 #include "Log.h"
@@ -339,7 +340,7 @@ BWAPI::Position Map::DefaultTaskPosition()
 	{
 		for (auto& base : nat->Bases())
 		{
-			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::PLAYER)
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::PLAYER || ProductionModule::Instance()->IsBaseInProgress(&base))
 			{
 				if (!nat->ChokePoints().empty())
 				{
@@ -389,7 +390,8 @@ BWAPI::Position Map::DefaultTaskPosition()
 									nullptr,    // condition
 									500);  // frames to run
 
-								if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint)))
+								if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint))
+									|| BWEB::Map::isUsed(BWAPI::TilePosition(startPoint)) == BWAPI::UnitTypes::Terran_Bunker)
 									return startPoint;
 
 								startPoint = startPoint + BWAPI::Position(int(normVectorBase.first * 10), int(normVectorBase.second * 10));
@@ -461,7 +463,8 @@ BWAPI::Position Map::DefaultTaskPosition()
 						nullptr,    // condition
 						500);  // frames to run
 
-					if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint)))
+					if (BWEB::Map::isPlaceable(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(startPoint))
+						|| BWEB::Map::isUsed(BWAPI::TilePosition(startPoint)) == BWAPI::UnitTypes::Terran_Bunker)
 						return startPoint;
 
 					startPoint = startPoint + BWAPI::Position(int(normVectorBase.first * 10), int(normVectorBase.second * 10));

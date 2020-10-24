@@ -139,6 +139,6 @@ void Unit::ClearTile()
 	if (_clearTileLock > 0)
 		return;
 	
-	if (_pointer->move(BWEM::Map::Instance().RandomPosition()))
+	if (_pointer->attack(BWEM::Map::Instance().RandomPosition()))
 		_clearTileLock = BWAPI::Broodwar->getFrameCount();
 }

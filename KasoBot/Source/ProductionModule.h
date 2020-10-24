@@ -7,6 +7,10 @@ namespace KasoBot {
 	class Expansion;
 }
 
+namespace BWEM {
+	class Base;
+}
+
 typedef std::vector<std::unique_ptr<KasoBot::Unit>> UnitList;
 
 namespace KasoBot {
@@ -99,6 +103,9 @@ namespace KasoBot {
 
 		//check all build items and reset build position if it was this one
 		void TileOccupied(BWAPI::Unit unit);
+
+		//@return true if production item on this base location is assigned/building/unifinished
+		bool IsBaseInProgress(const BWEM::Base* base);
 
 		//getters and setters
 

@@ -2,6 +2,7 @@
 #include "MapModule.h"
 #include "ProductionModule.h"
 #include "WorkersModule.h"
+#include "ArmyModule.h"
 #include "Config.h"
 #include "Log.h"
 
@@ -29,7 +30,14 @@ ProductionItem::~ProductionItem()
 void ProductionItem::Assigned()
 {
 	Log::Instance()->Assert(_state == Production::State::WAITING || _state == Production::State::UNFINISHED,"Assigning item in wrong state!");
+
 	_state = Production::State::ASSIGNED;
+
+	Log::Instance()->Assert(_buildLocation.isValid(), "Invalid location when assigned prod item!");
+
+	//check if this is natural base and move default task if needed
+	if (_buildLocation.isValid() && _buildLocation == BWEB::Map::getNaturalTile())
+		ArmyModule::Instance()->ResetDefaultTask();
 }
 
 void ProductionItem::BuildStarted()
@@ -90,39 +98,37 @@ void ProductionItem::WorkerDied()
 void ProductionItem::BuildingDestroyed()
 {
 	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
-	
+
 	if (_state == Production::State::BUILDING)
 	{
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 		ProductionModule::Instance()->ReserveResources(_type);
 		WorkersModule::Instance()->BuildFailed(this);
-		return;
 	}
-
-	if (_state == Production::State::UNFINISHED)
+	else if (_state == Production::State::UNFINISHED)
 	{
 		_unfinished = false;
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 		ProductionModule::Instance()->ReserveResources(_type);
-		return;
 	}
-	if (_state == Production::State::ASSIGNED && !_unfinished)
+	else if (_state == Production::State::ASSIGNED && !_unfinished)
 	{
+		Log::Instance()->Assert(false, "Building destroyed, but was in wrong state!");
 		_state = Production::State::WAITING;
 		WorkersModule::Instance()->BuildFailed(this);
-		return;
 	}
-	if (_state == Production::State::ASSIGNED && _unfinished)
+	else if (_state == Production::State::ASSIGNED && _unfinished)
 	{
 		_unfinished = false;
 		_state = Production::State::WAITING;
 		BWEB::Map::KasoBot::ReserveTiles(_buildLocation, _type);
 		ProductionModule::Instance()->ReserveResources(_type);
-		WorkersModule::Instance()->BuildFailed(this);
-		return;
+		WorkersModule::Instance()->BuildFailed(this);	
 	}
+	else Log::Instance()->Assert(false, "Wrong state on destroyed incomplete building!"); //this is only called on incomplete buildings, so there can't be any other state
 
-	Log::Instance()->Assert(false,"Wrong state on destroyed incomplete building!"); //this is only called on incomplete buildings, so there can't be any other state
+	if (_buildLocation.isValid() && _buildLocation == BWEB::Map::getNaturalTile())
+		ArmyModule::Instance()->ResetDefaultTask();
 }

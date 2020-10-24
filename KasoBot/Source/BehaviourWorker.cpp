@@ -67,6 +67,8 @@ void BehaviourWorker::MoveToBuild(Worker& worker)
 			BWAPI::Unit unfinished = KasoBot::Map::GetUnfinished(worker.GetProductionItem()->GetLocation(), worker.GetProductionItem()->GetType());
 			Log::Instance()->Assert(unfinished,"Unfinished building was not found!");
 
+			if (!unfinished)
+				return;
 			Build(worker.GetPointer(), unfinished);
 			return;
 		}

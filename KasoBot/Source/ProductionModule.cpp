@@ -572,3 +572,16 @@ void ProductionModule::TileOccupied(BWAPI::Unit unit)
 		item->SetLocation(BWAPI::TilePositions::Invalid);
 	}
 }
+
+bool ProductionModule::IsBaseInProgress(const BWEM::Base * base)
+{
+	for (auto& item : _items)
+	{
+		if (item->GetState() == Production::State::WAITING || item->GetState() == Production::State::DONE)
+			continue;
+
+		if (item->GetLocation().isValid() && item->GetLocation() == BWEB::Map::getNaturalTile())
+			return true;
+	}
+	return false;
+}
