@@ -95,6 +95,14 @@ bool StrategyModule::MacroProduction()
 
 void StrategyModule::CheckEnemyStrat()
 {
+	if (ScoutModule::Instance()->EnemyWorkerRush())
+	{
+		if (_activeStratName != "cheese_grater")
+		{
+			SetStrategy("cheese_grater");
+		}
+		return;
+	}
 	auto race = ScoutModule::Instance()->GetEnemyRace();
 	
 	if (race == BWAPI::Races::Unknown)
@@ -154,7 +162,7 @@ StrategyModule* StrategyModule::Instance()
 void StrategyModule::OnFrame()
 {
 	CheckEnemyStrat();
-	
+
 	if (_activeOpener)
 	{
 		if (ProductionModule::Instance()->NewTask(_activeOpener->Next()))
@@ -368,5 +376,10 @@ void StrategyModule::SwitchOpener(Opener * newOpener, const std::string & name)
 		_activeOpener = nullptr;
 		_activeOpenerName = "finished";
 	}
+}
+
+void StrategyModule::AddToOpener(BWAPI::UnitType type)
+{
+	_activeOpener->Insert(type);
 }
 

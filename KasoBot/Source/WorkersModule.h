@@ -17,6 +17,7 @@ namespace KasoBot {
 		std::vector<std::unique_ptr<Expansion>> _expansionList;
 		std::vector<BWAPI::Unit> _unassignedRefineries; //keeping a list of refineries without an expansion
 		std::vector<std::shared_ptr<Worker>> _builders; //list of workers that are building stuff
+		std::vector<std::shared_ptr<Worker>> _repairers; //list of workers that are repairing stuff (exclude army workers on bunker duty)
 
 		//@return closest expansion that is not saturated or nullptr if worker should be added to military
 		Expansion* FindExpansionForWorker(BWAPI::Unit unit);
@@ -26,6 +27,9 @@ namespace KasoBot {
 
 		//check if there is built refinery for this expansion and assign it
 		void AssignRefinery(Expansion& exp);
+
+		//check if buildings need repairs, assign workers when possible
+		void HandleRepairs();
 
 	public:
 		static WorkersModule* Instance();

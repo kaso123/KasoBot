@@ -10,7 +10,7 @@ using namespace KasoBot;
 
 Worker::Worker(BWAPI::Unit unit)
 	: Unit::Unit(unit), _workerRole(Workers::Role::IDLE)
-	, _mineral(nullptr), _refinery(nullptr), _item(nullptr)
+	, _mineral(nullptr), _refinery(nullptr), _item(nullptr), _repairTarget(nullptr)
 {
 }
 
@@ -83,12 +83,38 @@ bool Worker::AssignRoleBuild(ProductionItem* item)
 	return true;
 }
 
+void Worker::AssignRoleRepair(BWAPI::Unit target)
+{
+	Log::Instance()->Assert(target, "No building assigned to repairer!");
+	Log::Instance()->Assert(target->getType().isBuilding(), "Target for repair is not building!");
+
+	if (!target || !target->getType().isBuilding())
+		return;
+
+	_repairTarget = target;
+	_workerRole = Workers::Role::REPAIR;
+}
+
 bool Worker::IsMiningMineral(BWAPI::Unit mineral)
 {
 	if (!_mineral)
 		return false;
 
 	if (mineral == _mineral->Unit())
+		return true;
+
+	return false;
+}
+
+bool Worker::IsRepairing(BWAPI::Unit building)
+{
+	if (_workerRole != Workers::Role::REPAIR)
+		return false;
+
+	if (!_repairTarget)
+		return false;
+
+	if (_repairTarget == building)
 		return true;
 
 	return false;

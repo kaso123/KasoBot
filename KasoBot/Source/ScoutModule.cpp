@@ -465,3 +465,23 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 	Log::Instance()->Assert(newArmy,"New EnemyArmy not created!");
 	newArmy->AddEnemy(enemy);
 }
+
+bool ScoutModule::EnemyWorkerRush()
+{
+	for (auto& army : _armies)
+	{
+		if (army->IsWorkerRush())
+			return true;
+	}
+	return false;
+}
+
+bool ScoutModule::EnemyCannonRush()
+{
+	for (auto& army : _armies)
+	{
+		if (army->IsWorkerRush())
+			return true;
+	}
+	return false;
+}

@@ -15,7 +15,8 @@ namespace KasoBot {
 			MINERALS,
 			GAS,
 			ASSIGNED,
-			BUILD
+			BUILD,
+			REPAIR
 		};
 	}
 	
@@ -25,6 +26,7 @@ namespace KasoBot {
 		Workers::Role _workerRole;
 		BWEM::Mineral* _mineral;
 		BWAPI::Unit _refinery;
+		BWAPI::Unit _repairTarget;
 
 		ProductionItem* _item;
 
@@ -40,9 +42,15 @@ namespace KasoBot {
 
 		//add production item to worker and make him build building
 		bool AssignRoleBuild(ProductionItem* item);
+
+		//send worker to repair this building
+		void AssignRoleRepair(BWAPI::Unit target);
 		
 		//check if worker has this mineral assigned
 		bool IsMiningMineral(BWAPI::Unit mineral);
+
+		//check if worker has this building assigned to repair
+		bool IsRepairing(BWAPI::Unit building);
 
 		//set build item to nullptr
 		void BuildFinished();
@@ -62,6 +70,7 @@ namespace KasoBot {
 		void SetWorkerRole(Workers::Role newRole) { _workerRole = newRole; };
 		const BWEM::Mineral* GetMineral() const { return _mineral; }
 		const BWAPI::Unit GetRefinery() const { return _refinery; }
+		const BWAPI::Unit GetRepairTarget() const { return _repairTarget; }
 		ProductionItem* GetProductionItem() const { return _item; }
 	};
 }

@@ -71,3 +71,8 @@ bool Opener::ResetProgress()
 
 	return _queue.empty();
 }
+
+void Opener::Insert(BWAPI::UnitType type)
+{
+	_queue.emplace_front(type);
+}

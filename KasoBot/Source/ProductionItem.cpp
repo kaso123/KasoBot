@@ -73,7 +73,8 @@ void ProductionItem::Finish()
 
 void ProductionItem::WorkerDied()
 {
-	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
+	//timeout only outside main area to better counter worker rushes
+	_timeout = BWAPI::Broodwar->getFrameCount() + (BWEM::Map::Instance().GetArea(_buildLocation) == BWEB::Map::getMainArea() ? 0 : Config::Production::BuildTimeout());
 
 	Log::Instance()->Assert(_state == Production::State::ASSIGNED || _state == Production::State::BUILDING,"Wrong state when assigned worker died!");
 
@@ -97,7 +98,8 @@ void ProductionItem::WorkerDied()
 
 void ProductionItem::BuildingDestroyed()
 {
-	_timeout = BWAPI::Broodwar->getFrameCount() + Config::Production::BuildTimeout();
+	//timeout only outside main area to better counter worker rushes
+	_timeout = BWAPI::Broodwar->getFrameCount() + (BWEM::Map::Instance().GetArea(_buildLocation) == BWEB::Map::getMainArea() ? 0 : Config::Production::BuildTimeout());
 
 	if (_state == Production::State::BUILDING)
 	{

@@ -107,6 +107,9 @@ namespace KasoBot {
 		//@return true if production item on this base location is assigned/building/unifinished
 		bool IsBaseInProgress(const BWEM::Base* base);
 
+		//@return vector with buildings that need repair
+		std::vector<BWAPI::Unit> GetDamagedBuildings();
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<ProductionItem>>& GetItems() { return _items; }

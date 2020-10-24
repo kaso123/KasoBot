@@ -40,6 +40,9 @@ namespace KasoBot {
 		//@return true if there are cannons and pylons in army
 		bool IsCannonRush();
 
+		//@return true if there are many workers in our base
+		bool IsWorkerRush();
+
 		//@return total supply of this army
 		int Supply();
 

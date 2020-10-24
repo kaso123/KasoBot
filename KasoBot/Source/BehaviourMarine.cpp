@@ -71,7 +71,7 @@ void BehaviourMarine::DefendArmy(KasoBot::Unit & unit, Army * army)
 	else //enemy army is close to bunker
 	{
 		if (!unit.GetPointer()->isLoaded() 
-			&& ArmyModule::Instance()->Bunker()->GetPointer()->getLoadedUnits().size() >= (size_t)BWAPI::UnitTypes::Terran_Bunker.spaceProvided()) 
+			&& ArmyModule::Instance()->Bunker()->GetPointer()->getLoadedUnits().size() < (size_t)BWAPI::UnitTypes::Terran_Bunker.spaceProvided()) 
 		{
 			GoInBunker(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
 		}

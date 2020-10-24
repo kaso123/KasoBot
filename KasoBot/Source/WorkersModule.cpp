@@ -2,6 +2,8 @@
 #include "ArmyModule.h"
 #include "MapModule.h"
 #include "ScoutModule.h"
+#include "ProductionModule.h"
+#include "StrategyModule.h"
 #include "Config.h"
 #include "Log.h"
 
@@ -108,6 +110,102 @@ void WorkersModule::AssignRefinery(Expansion& exp)
 	}
 }
 
+void WorkersModule::HandleRepairs()
+{
+	auto repairBuildings = ProductionModule::Instance()->GetDamagedBuildings();
+
+	//only keep one worker per building
+	while (repairBuildings.size() < _repairers.size())
+	{
+		for (auto it = _repairers.begin(); it != _repairers.end(); it++)
+		{
+			bool stays = false;
+			for (auto& building : repairBuildings) //keep those that targets buildings from list
+			{
+				if ((*it)->IsRepairing(building))
+				{
+					stays = true;
+					break;
+				}
+			}
+			if (!stays)
+			{
+				NewWorker((*it)->GetPointer());
+				_repairers.erase(it);
+				break;
+			}
+		}
+		Log::Instance()->Assert(false, "Multiple repairers on the same building!");
+		break;
+	}
+
+	//get more workers if needed
+
+	for (auto& building : repairBuildings) //check if every building is repaired, if not try to get closest worker
+	{
+		bool hasWorker = false;
+		for (auto& worker : _repairers)
+		{
+			if (worker->GetPointer()->getOrderTarget() == building)
+			{
+				hasWorker = true;
+				break;
+			}
+		}
+		if (hasWorker)
+			continue;
+
+		//try workers from list, if none is free get new worker
+		for (auto& worker : _repairers)
+		{
+			bool free = true;
+			for (auto& b : repairBuildings)
+			{
+				if (worker->GetPointer()->getOrderTarget() == b)
+				{
+					free = false;
+					break;
+				}
+			}
+
+			if (!free)
+				continue;
+
+			worker->AssignRoleRepair(building);
+			hasWorker = true;
+			break;
+		}
+
+		if (hasWorker)
+			continue;
+
+		int keep = 3; //TODO config value together with WorkerDefence
+
+		//get free worker from closest expansion
+		Expansion* closest = nullptr;
+		double closestDist = DBL_MAX;
+		for (auto& exp : _expansionList) //select closest exp with enough workers
+		{
+			if (exp->WorkerCountMinerals() <= keep)
+				continue;
+
+			if (exp->GetPointer()->getDistance(building) < closestDist)
+			{
+				closestDist = exp->GetPointer()->getDistance(building);
+				closest = exp.get();
+			}
+		}
+
+		if (closest)
+		{
+			Log::Instance()->Assert(!closest->Workers().empty(), "Empty expansion chosen for repair job!");
+			auto worker = _repairers.emplace_back(closest->Workers().front());
+			worker->AssignRoleRepair(building);
+			closest->RemoveWorker(worker->GetPointer());
+		}
+	}
+}
+
 WorkersModule* WorkersModule::Instance()
 {
 	if (!_instance)
@@ -122,7 +220,13 @@ void WorkersModule::OnStart()
 
 void WorkersModule::OnFrame()
 {
+	HandleRepairs();
+
 	for (auto& worker : _builders)
+	{
+		worker->Work();
+	}
+	for (auto& worker : _repairers)
 	{
 		worker->Work();
 	}

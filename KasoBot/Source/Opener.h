@@ -22,6 +22,9 @@ namespace KasoBot {
 		//remove all items that are done, only called when switching openers mid game
 		//@return true if there is nothing left in opener queue
 		bool ResetProgress();
+
+		//add type back to queue
+		void Insert(BWAPI::UnitType type);
 	};
 
 }

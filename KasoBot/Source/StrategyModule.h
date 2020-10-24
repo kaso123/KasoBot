@@ -113,6 +113,9 @@ namespace KasoBot {
 		//change used strategy, also check if everything in opener is done
 		void SwitchOpener(Opener* newOpener, const std::string& name);
 
+		//insert this type into opener again
+		void AddToOpener(BWAPI::UnitType type);
+
 		//getters and setters
 
 		int EnemyLostMinerals() const { return _enemyLostMinerals; }

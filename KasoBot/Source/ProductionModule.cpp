@@ -53,6 +53,9 @@ bool ProductionModule::IsSafeToBuild(BWAPI::TilePosition pos)
 	if (!pos.isValid())
 		return true;
 
+	if (BWEM::Map::Instance().GetArea(pos) == BWEB::Map::getMainArea())
+		return true;
+
 	for (auto& army : ScoutModule::Instance()->GetArmies())
 	{
 		if (army->BoundingBox()._center.getDistance(BWAPI::Position(pos)) < 300) //TODO configurable
@@ -163,6 +166,9 @@ void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 	if (!unit->isCompleted())
 		return;
 
+	if (StrategyModule::Instance()->IsOpenerActive())
+		StrategyModule::Instance()->AddToOpener(unit->getType());
+
 	auto it = _unitList.find(unit->getType());
 
 	Log::Instance()->Assert(it != _unitList.end(),"Unit type doesn't exist when removing unit!");
@@ -209,6 +215,9 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 			BuildBuilding(BWAPI::UnitTypes::Terran_Bunker);
 		}
 	}
+
+	if (StrategyModule::Instance()->IsOpenerActive() && unit->getType() != BWAPI::UnitTypes::Terran_Bunker)
+		BuildBuilding(unit->getType());
 
 	auto it = _buildingList.find(unit->getType());
 
@@ -584,4 +593,30 @@ bool ProductionModule::IsBaseInProgress(const BWEM::Base * base)
 			return true;
 	}
 	return false;
+}
+
+std::vector<BWAPI::Unit> ProductionModule::GetDamagedBuildings()
+{
+	std::vector<BWAPI::Unit> result;
+
+	for (auto& exp : WorkersModule::Instance()->ExpansionList())
+	{
+		if (exp->GetPointer()->getHitPoints() < exp->GetPointer()->getType().maxHitPoints())
+			result.emplace_back(exp->GetPointer());
+		if (exp->GetRefinery() && exp->GetRefinery()->getHitPoints() < exp->GetRefinery()->getType().maxHitPoints())
+			result.emplace_back(exp->GetRefinery());
+	}
+
+	for (auto& type : _buildingList)
+	{
+		if (type.first == BWAPI::UnitTypes::Terran_Bunker) //bunkers are handled separately
+			continue;
+
+		for (auto& building : type.second)
+		{
+			if (building->GetPointer()->getHitPoints() < type.first.maxHitPoints())
+				result.emplace_back(building->GetPointer());
+		}
+	}
+	return result;
 }

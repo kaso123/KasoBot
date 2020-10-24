@@ -91,6 +91,12 @@ namespace KasoBot {
 		//assign enemy unit to an existing army if close, or to new army
 		void AssignToArmy(EnemyUnit* enemy);
 
+		//@return true if one of enemy armies is worker rushing
+		bool EnemyWorkerRush();
+
+		//@return true if one of enemy armies looks like cannon rush
+		bool EnemyCannonRush();
+
 		//getters and setters
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }

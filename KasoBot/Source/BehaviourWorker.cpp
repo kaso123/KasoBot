@@ -83,7 +83,10 @@ void BehaviourWorker::Construct(Worker& worker)
 	Log::Instance()->Assert(worker.GetProductionItem(),"Worker doesn't have production item when constructing!");
 	
 	if (!worker.GetProductionItem())
+	{
+		worker.SetWorkerRole(Workers::Role::IDLE);
 		return;
+	}
 
 	if (worker.GetPointer()->isConstructing())
 	{
@@ -101,6 +104,16 @@ void BehaviourWorker::Construct(Worker& worker)
 	//not finished, reset to assigned
 	worker.SetWorkerRole(Workers::Role::ASSIGNED);
 	worker.GetProductionItem()->Restart();
+}
+
+void BehaviourWorker::Repair(Worker & worker)
+{
+	Log::Instance()->Assert(worker.GetRepairTarget(), "No target for worker when repairing!");
+
+	if (!worker.GetRepairTarget())
+		return;
+
+	Repair(worker.GetPointer(), worker.GetRepairTarget());
 }
 
 void BehaviourWorker::Repair(BWAPI::Unit unit, BWAPI::Unit building)
@@ -207,6 +220,12 @@ void BehaviourWorker::Work(Worker& worker)
 	if (worker.GetWorkerRole() == Workers::Role::BUILD)
 	{
 		Construct(worker);
+		return;
+	}
+
+	if (worker.GetWorkerRole() == Workers::Role::REPAIR)
+	{
+		Repair(worker);
 		return;
 	}
 		

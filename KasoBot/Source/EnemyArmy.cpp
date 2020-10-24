@@ -126,6 +126,20 @@ void EnemyArmy::ClearUnits()
 
 bool EnemyArmy::IsThreat()
 {
+	if (IsWorkerRush())
+	{
+		for (auto& unit : _units)
+		{
+			auto pointer = BWAPI::Broodwar->getUnit(unit->_id);
+			if (pointer && pointer->exists() && pointer->isVisible() && (pointer->isAttacking() || pointer->getGroundWeaponCooldown() > 0))
+				return true;
+		}
+		return false;
+	}
+
+	if (IsCannonRush())
+		return true;
+
 	for (auto& type : ProductionModule::Instance()->Buildings())
 	{
 		Log::Instance()->Assert(type.first.isBuilding(),"Wrong type in building list!");
@@ -143,12 +157,7 @@ bool EnemyArmy::IsThreat()
 			return true;
 	}
 
-	for (auto& enemy : _units)
-	{
-		if (enemy->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon
-			|| enemy->_type == BWAPI::UnitTypes::Protoss_Pylon)
-			return true;
-	}
+
 	return false;
 }
 
@@ -161,6 +170,22 @@ bool EnemyArmy::IsCannonRush()
 			return true;
 	}
 	return  false;
+}
+
+bool EnemyArmy::IsWorkerRush()
+{
+	int workersInBase = 0;
+
+	for (auto& unit : _units)
+	{
+		if (unit->_type.isWorker() && unit->_lastPos.isValid()
+			&& unit->_lastPos.getDistance(BWAPI::Broodwar->self()->getStartLocation()) < 500)
+			workersInBase++;
+
+		if (!unit->_type.isWorker())
+			workersInBase--;
+	}
+	return workersInBase > 1;
 }
 
 int EnemyArmy::Supply()

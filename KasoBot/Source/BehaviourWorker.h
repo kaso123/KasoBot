@@ -23,6 +23,9 @@ namespace KasoBot {
 		//construct building
 		void Construct(Worker& worker);
 
+		//repair building
+		void Repair(Worker& worker);
+
 		//assign repair order to worker
 		void Repair(BWAPI::Unit unit, BWAPI::Unit building);
 

@@ -24,7 +24,7 @@ void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
 {
 	if (unit->getOrder() == BWAPI::Orders::AttackMove && unit->getOrderTargetPosition().getDistance(position) < 50) //TODO set this value as configurable
 		return;
-	if (unit->getOrder() == BWAPI::Orders::AttackUnit)
+	if (unit->getOrder() == BWAPI::Orders::AttackUnit && unit->getLastCommandFrame() + 100 > BWAPI::Broodwar->getFrameCount()) //TODO set configurable
 		return;
 
 	unit->attack(position);
