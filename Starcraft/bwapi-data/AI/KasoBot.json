@@ -1,6 +1,6 @@
 {
   "workers": {
-    "max": 80,
+    "max": 78,
     "saturatedMineral": 2,
     "maxPerMineral": 3,
     "saturatedGas": 3,
@@ -11,7 +11,7 @@
   },
   "units": {
     "orderDelay": 7,
-    "clearTileLock":  150,
+    "clearTileLock":  120,
     "enemyPositionReset": 30,
     "enemyArmyRange": 6,
     "armyRange": 6,
@@ -22,7 +22,7 @@
   },
   "production": {
     "freeSupplyMultiplier": 1.3,
-    "buildTimeout": 1000
+    "buildTimeout": 800
   },
   "debug": {
     "map": true,
@@ -37,7 +37,7 @@
     "enemyInfo": true
   },
   "strategy": {
-    "default": "default_bio_vs_P",
+    "default": "default_mech",
     "cycle": [ "saturation", "army", "tech", "production" ],
     "maxArmySupply": 30,
     "maxAttackTasks": 2,
@@ -45,8 +45,8 @@
     "skipOpenerAtFrame": 4320,
     "scout": {
       "first": {
-        "2starts": 10,
-        "3starts": 8,
+        "2starts": 9,
+        "3starts": 7,
         "4starts": 6
       }
     }
@@ -60,13 +60,18 @@
   "strategies": [
     {"name": "default_mech",
      "opener": "test2",
-     "units": {"tank":5, "vulture":2, "goliath":5, "marine":1},
+     "units": {"tank":4, "vulture":2, "goliath":4, "marine":1},
      "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_plating","starport","science_facility"]
     },
     {"name": "mech_air",
      "opener": "test2",
-     "units": {"tank":1, "vulture":2, "goliath":1, "marine":1,"wraith": 2, "science_vessel": 1, "battlecruiser": 1},
+     "units": {"tank":1, "vulture":3, "goliath":1, "marine":1,"wraith": 2, "science_vessel": 1, "battlecruiser": 1},
      "tech": ["siege","armory","vehicle_weapons","armory","ship_weapons","starport","science_facility"]
+    },
+    {"name": "mech_bunker",
+     "opener": "anti_rush",
+     "units": {"tank":3, "vulture":2, "goliath":1, "marine":2},
+     "tech": ["siege","armory","vehicle_weapons","armory","vehicle_plating"]
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
@@ -116,18 +121,27 @@
     ],
     "protoss": [
       {"name": "ZealotRush",
-       "counters":  ["rush_bc"],
+       "counters":  ["mech_bunker"],
        "types": [
-         {"type": "zealot","include": true, "value": 100, "count": 3},
+         {"type": "zealot","include": true, "value": 100, "count": 5},
          {"type": "gateway", "include": true, "value": 100, "count": 2},
-         {"type": "dragoon", "include": false, "value": 30}
+         {"type": "dragoon", "include": false, "value": 100}
        ]
+      },
+      {
+        "name": "Protoss_Gateway",
+        "counters": ["default_mech"],
+        "types": [
+         {"type": "zealot","include": true, "value": 75, "count": 5},
+         {"type": "gateway", "include": true, "value": 75, "count": 3},
+         {"type": "dragoon", "include": true, "value": 150}
+        ]
       },
       {"name": "FastDT",
        "counters": ["bio_vessel"],
        "types": [
          {"type": "dragoon", "include": false, "value": 50},
-         {"type": "citadel", "include": true, "value": 75}, 
+         {"type": "citadel", "include": true, "value": 50}, 
          {"type": "archives", "include": true, "value": 100},
          {"type": "dark_templar", "include": true, "value": 100} 
        ]
@@ -153,13 +167,12 @@
        ]
       },
       {"name": "HydraPush",
-       "counters": ["default_bio_vs_Z", "rush_bc"],
+       "counters": ["default_bio_vs_Z"],
        "types": [
          {"type": "hydralisk", "include": true, "value": 100},
-         {"type": "lurker", "include": false, "value": 25},
+         {"type": "lurker", "include": false, "value": 100},
          {"type": "spire", "include": false, "value": 100}, 
-         {"type": "hydralisk_den", "include": true, "value": 100},
-         {"type": "zergling","include": false, "value": 75, "count": 8}
+         {"type": "hydralisk_den", "include": true, "value": 100}
        ]
       },
       {"name": "HydraLurker",

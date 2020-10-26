@@ -280,6 +280,15 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 		}
 	}
 
+	for (auto it = _repairers.begin(); it != _repairers.end(); it++)
+	{
+		if ((*it)->GetPointer() == unit)
+		{
+			_repairers.erase(it);
+			return;
+		}
+	}
+
 	//if worker was not removed, it is part of army
 	auto temp = ArmyModule::Instance()->WorkerKilled(unit);
 	Log::Instance()->Assert(temp,"Dead worker was not found anywhere!"); //every worker has to be in WorkerModule or army
