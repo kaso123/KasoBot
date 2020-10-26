@@ -68,28 +68,38 @@ void ArmyModule::CreateAttackTasks()
 	if (count >= Config::Strategy::MaxAttackTasks()) 
 		return;
 
+
+	//sort enemy areas by distance
+	std::vector<std::pair<const BWEM::Base*,int>> enemyBases;
+	//find next area where enemies are
+	for (auto& area : BWEM::Map::Instance().Areas())
+	{
+		if (!Map::CanAccess(&area))
+			continue;
+
+		for (auto& base : area.Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
+			{
+				enemyBases.emplace_back(std::make_pair(&base,base.Center().getApproxDistance(BWEB::Map::getMainPosition())));
+				break;
+			}
+		}
+	}
+
+	std::sort(std::begin(enemyBases), std::end(enemyBases),
+		[](const std::pair<const BWEM::Base*, int>& a, const std::pair<const BWEM::Base*, int>&  b)
+		{
+			return a.second < b.second;
+		});
+
 	count = 1;
 	while (true)
 	{
 		//find next area where enemies are
-		for (auto& area : BWEM::Map::Instance().Areas())
+		for (auto& base : enemyBases)
 		{
-			if (!Map::CanAccess(&area))
-				continue;
-
-			bool enemy = false;
-			for (auto& base : area.Bases())
-			{
-				if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
-				{
-					enemy = true;
-					break;
-				}
-			}
-			if (!enemy)
-				continue;
-
-			if (AddAttackTask(&area,count))
+			if (AddAttackTask(base.first->GetArea(),count))
 				return;
 		}
 		count++;
@@ -100,7 +110,7 @@ void ArmyModule::CreateAttackTasks()
 
 void ArmyModule::CreateScoutTasks()
 {
-	if (BWAPI::Broodwar->getFrameCount() < 8 * 24 * 60) //TODO 8 minutes, make configurable
+	if (BWAPI::Broodwar->getFrameCount() < 6 * 24 * 60) //TODO 6 minutes, make configurable
 		return;
 
 	//count current scout tasks

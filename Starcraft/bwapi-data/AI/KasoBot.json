@@ -65,12 +65,12 @@
     },
     {"name": "mech_air",
      "opener": "test2",
-     "units": {"tank":1, "vulture":3, "goliath":1, "marine":1,"wraith": 2, "science_vessel": 1, "battlecruiser": 1},
+     "units": {"tank":1, "vulture":3, "goliath":1, "marine":1,"wraith": 1, "science_vessel": 1, "battlecruiser": 1},
      "tech": ["siege","armory","vehicle_weapons","armory","ship_weapons","starport","science_facility"]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
-     "units": {"tank":3, "vulture":2, "goliath":1, "marine":2},
+     "units": {"tank":4, "vulture":2, "goliath":1, "marine":2},
      "tech": ["siege","armory","vehicle_weapons","armory","vehicle_plating"]
     },
     {"name": "default_bio_vs_Z",
@@ -150,9 +150,10 @@
        "counters": ["default_mech"],
        "types": [
          {"type": "forge", "include": true, "value": 100},
-         {"type": "cannon", "include": true, "value": 100}, 
-         {"type": "citadel", "include": false, "value": 50},
-         {"type": "core", "include": false, "value": 50}
+         {"type": "cannon", "include": true, "value": 200}, 
+         {"type": "gateway", "include": false, "value": 100},
+         {"type": "zealot","include": false,"value": 100},
+         {"type": "core", "include": false, "value": 100}
        ]
       }
     ],

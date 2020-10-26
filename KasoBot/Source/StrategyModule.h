@@ -123,6 +123,7 @@ namespace KasoBot {
 		const std::string& GetOpenerName() const { return _activeOpenerName; }
 		const std::string& GetStratName() const { return _activeStratName; }
 		const OwnStrategy* GetActiveStrat() const { return _activeStrat; }
+		const EnemyStrategy* GetEnemyStrat() const { return _activeEnemyStrat; }
 		bool IsOpenerActive() { return _activeOpener; }
 	};
 }

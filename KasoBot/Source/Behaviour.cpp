@@ -72,7 +72,12 @@ void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 	{
 		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
 		{
-			Move(unit.GetPointer(), base.Center());
+			//if we are scouting with bigger army use a-move
+			if (army->GetSupply() > 5) //TODO make configurable 
+			{
+				AttackMove(unit.GetPointer(), base.Center());
+			}
+			else Move(unit.GetPointer(), base.Center());
 		}
 	}
 }
@@ -163,13 +168,13 @@ void Behaviour::ScoutRush(KasoBot::Unit & unit)
 {
 	BWAPI::Position pos = BWAPI::Positions::Invalid;
 	
-	int mod = BWAPI::Broodwar->getFrameCount() % 2500;
-	if (mod < 1000) //every 1500 frames switch main<->natural
+	int mod = BWAPI::Broodwar->getFrameCount() % 1500;
+	if (mod < 500) //every 1500 frames switch main<->natural
 	{
 		//main
 		pos = Map::NextScoutPosition(BWEB::Map::getMainArea(), unit.GetPointer()->getPosition());
 	}
-	else if (mod < 2000)
+	else if (mod < 1200)
 	{
 		//natural
 		pos = Map::NextScoutPosition(BWEB::Map::getNaturalArea(), unit.GetPointer()->getPosition());

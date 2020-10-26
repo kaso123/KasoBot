@@ -3,12 +3,14 @@
 #include "MapModule.h"
 #include "WorkersModule.h"
 #include "ProductionModule.h"
+#include "StrategyModule.h"
 #include "ArmyModule.h"
 #include "Log.h"
 
 #include "EnemyArmy.h"
 #include "Army.h"
 #include "BaseInfo.h"
+#include "EnemyStrategy.h"
 
 using namespace KasoBot;
 
@@ -392,13 +394,16 @@ bool ScoutModule::ShouldWorkerScoutRush()
 	if (_enemyRace == BWAPI::Races::Terran || _enemyRace == BWAPI::Races::Zerg)
 		return false;
 
-	if (BWAPI::Broodwar->getFrameCount() < 1200) //TODO configurable
+	if (BWAPI::Broodwar->getFrameCount() < 1400) //TODO configurable
 		return false;
 
 	if(WorkersModule::Instance()->ExpansionCount() > 1)
 		return false;
 
-	return true;
+	if (!StrategyModule::Instance()->GetEnemyStrat() || StrategyModule::Instance()->GetEnemyStrat()->GetName() == "Cannon_rush")
+		return true;
+
+	return false;
 }
 
 int ScoutModule::GetCountOf(BWAPI::UnitType type)

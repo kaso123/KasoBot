@@ -75,7 +75,7 @@ void Log::Strategy(const char* strat, const char* enemyStrat)
 		return;
 	}
 
-	_logFile << "Strategy switch: " << strat << "  Because enemy is doing: " << enemyStrat << std::endl;
+	_logFile << "Strategy switch: " << strat << "  Because enemy is doing: " << enemyStrat << "frame:" << BWAPI::Broodwar->getFrameCount() << std::endl;
 
 	_logFile.close();
 }
