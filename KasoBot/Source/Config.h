@@ -24,6 +24,7 @@ namespace KasoBot {
 		int _workerResourceValue = 5;
 
 		int _unitOrderDelay = 7;
+		int _unitOrderDistSimilarity = 50;
 		int _clearTileLock = 150;
 		int _enemyPositionResetFrames = 50;
 		int _enemyArmyRange = 6;
@@ -32,9 +33,11 @@ namespace KasoBot {
 		int _hiddenBaseResetFrames = 1000;
 		int _scoutBaseRadius = 200;
 		int _enemyThreatRadius = 500;
+		int _holdPositionDistance = 60;
 
 		float _freeSupplyMultiplier = 1.5f;
 		int _buildTimeout = 1000;
+		float _maxUnitProportion = 2.0f;
 
 		bool _debugMap = false;
 		bool _debugWorkers = false;
@@ -52,6 +55,10 @@ namespace KasoBot {
 		int _maxScoutTasks = 1;
 		int _firstScoutSupply = 8;
 		int _skipOpenerAt = 4320; //3 minutes
+		int _bunkerWorkers = 3;
+		int _maxTasksPerArea = 2;
+		int _scoutTasksStart = 4320; //3 minutes
+		int _scoutRushStart = 1400;
 
 	public:
 		static ConfigModule* Instance();
@@ -68,6 +75,7 @@ namespace KasoBot {
 		int WorkerResourceValue() { return _workerResourceValue; }
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
+		int UnitOrderDistSimilarity() { return _unitOrderDistSimilarity; }
 		int ClearTileLock() { return _clearTileLock; }
 		int EnemyPositionResetFrames() { return _enemyPositionResetFrames; }
 		int EnemyArmyRange() { return _enemyArmyRange; }
@@ -76,9 +84,11 @@ namespace KasoBot {
 		int HiddenBaseResetFrames() { return _hiddenBaseResetFrames; }
 		int ScoutBaseRadius() { return _scoutBaseRadius; }
 		int EnemyThreatRadius() { return _enemyThreatRadius; }
+		int HoldPositionDistance() { return _holdPositionDistance; }
 
 		float FreeSupplyMultiplier() { return _freeSupplyMultiplier; }
 		int BuildTimeout() { return _buildTimeout; }
+		float MaxUnitProportion() { return _maxUnitProportion; }
 
 		bool DebugMap() { return _debugMap; }
 		bool DebugWorkers() { return _debugWorkers; }
@@ -96,6 +106,10 @@ namespace KasoBot {
 		int MaxScoutTasks() { return _maxScoutTasks; }
 		int FirstScoutSupply() { return _firstScoutSupply; }
 		int SkipOpenerAt() { return _skipOpenerAt; }
+		int BunkerWorkers() { return _bunkerWorkers; }
+		int MaxTasksPerArea() { return _maxTasksPerArea; }
+		int ScoutTasksStart() { return _scoutTasksStart; }
+		int ScoutRushStart() { return _scoutRushStart; }
 	};
 
 	namespace Config {
@@ -131,6 +145,9 @@ namespace KasoBot {
 			//number of frames between allowing to issue new orders
 			int OrderDelay();
 
+			//distance from new order to current order when it is ignored and not sent to BWAPI
+			int OrderDistSimilarity();
+
 			//number of frames units ingore commands when they are making space for buildings
 			int ClearTileLock();
 
@@ -154,6 +171,11 @@ namespace KasoBot {
 
 			//distance from any building when enemy army is considered to be threat
 			int EnemyThreatRadius();
+
+			//how close should unit be to target to order HoldPosition instead of AttackMove
+			int HoldPositionDistance();
+
+
 		}
 
 		namespace Production {
@@ -163,6 +185,9 @@ namespace KasoBot {
 
 			//number of frames we should wait to restart building when worker or building died
 			int BuildTimeout();
+
+			//proportion that single unit type can go over its limit in strategy
+			float MaxUnitProportion();
 		}
 
 		namespace Debug {
@@ -214,6 +239,18 @@ namespace KasoBot {
 
 			//@return number of frames when we no longer do openers of strategies after switch
 			int SkipOpenerAt();
+
+			//@return max number of workers that should be assigned to repair bunker when attacked
+			int BunkerWorkers();
+
+			//@return max number of attack tasks that can be created for single area
+			int MaxTasksPerArea();
+
+			//@return frame when scout tasks are starting to be created
+			int ScoutTasksStart();
+
+			//@return frame when scouting for cannon rush should start
+			int ScoutRushStart();
 		}
 
 		namespace Utils {

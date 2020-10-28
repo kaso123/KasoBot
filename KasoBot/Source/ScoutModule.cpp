@@ -394,7 +394,7 @@ bool ScoutModule::ShouldWorkerScoutRush()
 	if (_enemyRace == BWAPI::Races::Terran || _enemyRace == BWAPI::Races::Zerg)
 		return false;
 
-	if (BWAPI::Broodwar->getFrameCount() < 1400) //TODO configurable
+	if (BWAPI::Broodwar->getFrameCount() < Config::Strategy::ScoutRushStart())
 		return false;
 
 	if(WorkersModule::Instance()->ExpansionCount() > 1)

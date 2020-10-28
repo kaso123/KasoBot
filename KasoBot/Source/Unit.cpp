@@ -82,7 +82,7 @@ void Unit::Fight(Army* army)
 		return;
 	}
 
-	//TODO do task things
+	//do task things
 	if (army->Task()->Type() == Tasks::Type::ATTACK)
 	{
 		_behaviour->AttackArea(*this, army);

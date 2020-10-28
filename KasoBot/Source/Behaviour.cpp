@@ -22,9 +22,11 @@ void Behaviour::Move(BWAPI::Unit unit, BWAPI::Position position)
 
 void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
 {
-	if (unit->getOrder() == BWAPI::Orders::AttackMove && unit->getOrderTargetPosition().getDistance(position) < 50) //TODO set this value as configurable
+	if (unit->getOrder() == BWAPI::Orders::AttackMove && unit->getOrderTargetPosition().getDistance(position) < Config::Units::OrderDistSimilarity())
 		return;
-	if (unit->getOrder() == BWAPI::Orders::AttackUnit && unit->getLastCommandFrame() + 100 > BWAPI::Broodwar->getFrameCount()) //TODO set configurable
+
+	//reset attack move when attacking target to stop chasing after enemies
+	if (unit->getOrder() == BWAPI::Orders::AttackUnit && unit->getLastCommandFrame() + 2 * Config::Units::OrderDelay() > BWAPI::Broodwar->getFrameCount()) 
 		return;
 
 	unit->attack(position);
@@ -73,7 +75,7 @@ void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
 		{
 			//if we are scouting with bigger army use a-move
-			if (army->GetSupply() > 5) //TODO make configurable 
+			if (army->GetSupply() > 2) 
 			{
 				AttackMove(unit.GetPointer(), base.Center());
 			}
@@ -106,7 +108,7 @@ void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 	auto pos = army->Task()->Position();
 	Log::Instance()->Assert(pos.isValid(),"Invalid position in hold task!");
 
-	if (unit.GetPointer()->getDistance(pos) > 40) //TODO make configurable
+	if (unit.GetPointer()->getDistance(pos) > Config::Units::HoldPositionDistance())
 		AttackMove(unit.GetPointer(), pos);
 	else
 		HoldPosition(unit.GetPointer());

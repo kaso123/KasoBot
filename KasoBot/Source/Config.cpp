@@ -48,6 +48,7 @@ void ConfigModule::Init()
 	if (j.contains("units"))
 	{
 		_unitOrderDelay = j["units"].contains("orderDelay") ? j["units"]["orderDelay"] : _unitOrderDelay;
+		_unitOrderDistSimilarity = j["units"].contains("orderDistSimilarity") ? j["units"]["orderDistSimilarity"] : _unitOrderDistSimilarity;
 		_clearTileLock = j["units"].contains("clearTileLock") ? j["units"]["clearTileLock"] : _clearTileLock;
 		_enemyPositionResetFrames = j["units"].contains("enemyPositionReset") ? j["units"]["enemyPositionReset"] : _enemyPositionResetFrames;
 		_enemyArmyRange = j["units"].contains("enemyArmyRange") ? j["units"]["enemyArmyRange"] : _enemyArmyRange;
@@ -56,11 +57,13 @@ void ConfigModule::Init()
 		_hiddenBaseResetFrames = j["units"].contains("hiddenBaseReset") ? j["units"]["hiddenBaseReset"] : _hiddenBaseResetFrames;
 		_scoutBaseRadius = j["units"].contains("scoutBaseRadius") ? j["units"]["scoutBaseRadius"] : _scoutBaseRadius;
 		_enemyThreatRadius = j["units"].contains("enemyThreatRadius") ? j["units"]["enemyThreatRadius"] : _enemyThreatRadius;
+		_holdPositionDistance = j["units"].contains("holdPositionDistance") ? j["units"]["holdPositionDistance"] : _holdPositionDistance;
 	}
 	if (j.contains("production"))
 	{
 		_freeSupplyMultiplier = j["production"].contains("freeSupplyMultiplier") ? j["production"]["freeSupplyMultiplier"] : _freeSupplyMultiplier;
 		_buildTimeout = j["production"].contains("buildTimeout") ? j["production"]["buildTimeout"] : _buildTimeout;
+		_maxUnitProportion = j["production"].contains("maxUnitProportion") ? j["production"]["maxUnitProportion"] : _maxUnitProportion;
 	}
 	if (j.contains("debug"))
 	{
@@ -96,6 +99,8 @@ void ConfigModule::Init()
 		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
 		_maxScoutTasks = j["strategy"].contains("maxScoutTasks") ? j["strategy"]["maxScoutTasks"] : _maxScoutTasks;
 		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
+		_bunkerWorkers = j["strategy"].contains("bunkerWorkers") ? j["strategy"]["bunkerWorkers"] : _bunkerWorkers;
+		_maxTasksPerArea = j["strategy"].contains("maxTasksPerArea") ? j["strategy"]["maxTasksPerArea"] : _maxTasksPerArea;
 
 		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");
 
@@ -120,6 +125,8 @@ void ConfigModule::Init()
 					_firstScoutSupply = j["strategy"]["scout"]["first"].contains("2starts") ? j["strategy"]["scout"]["first"]["2starts"] : _firstScoutSupply;
 				}
 			}
+			_scoutTasksStart = j["strategy"]["scout"].contains("tasksStart") ? j["strategy"]["scout"]["tasksStart"] : _scoutTasksStart;
+			_scoutRushStart = j["strategy"]["scout"].contains("scoutRush") ? j["strategy"]["scout"]["scoutRush"] : _scoutRushStart;
 		}
 	}
 	//load known enemy strategies
@@ -163,6 +170,7 @@ int Config::Workers::BuildStartDistance() { return ConfigModule::Instance()->Bui
 int Config::Workers::WorkerResourceValue() { return ConfigModule::Instance()->WorkerResourceValue(); }
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
+int Config::Units::OrderDistSimilarity() { return ConfigModule::Instance()->UnitOrderDistSimilarity(); }
 int Config::Units::ClearTileLock() { return ConfigModule::Instance()->ClearTileLock(); }
 int Config::Units::EnemyPositionResetFrames() { return ConfigModule::Instance()->EnemyPositionResetFrames(); }
 int Config::Units::EnemyArmyRange() { return ConfigModule::Instance()->EnemyArmyRange(); }
@@ -171,9 +179,11 @@ int Config::Units::HiddenPositionResetFrames() { return ConfigModule::Instance()
 int Config::Units::HiddenBaseResetFrames() { return ConfigModule::Instance()->HiddenBaseResetFrames(); }
 int Config::Units::ScoutBaseRadius() { return ConfigModule::Instance()->ScoutBaseRadius(); }
 int Config::Units::EnemyThreatRadius() { return ConfigModule::Instance()->EnemyThreatRadius(); }
+int Config::Units::HoldPositionDistance() { return ConfigModule::Instance()->HoldPositionDistance(); }
 
 float Config::Production::FreeSupplyMultiplier() { return ConfigModule::Instance()->FreeSupplyMultiplier(); }
 int Config::Production::BuildTimeout() { return ConfigModule::Instance()->BuildTimeout(); }
+float Config::Production::MaxUnitProportion() { return ConfigModule::Instance()->MaxUnitProportion(); }
 
 bool Config::Debug::Map() { return ConfigModule::Instance()->DebugMap(); }
 bool Config::Debug::Workers() { return ConfigModule::Instance()->DebugWorkers(); }
@@ -191,6 +201,10 @@ int Config::Strategy::MaxAttackTasks() { return ConfigModule::Instance()->MaxAtt
 int Config::Strategy::MaxScoutTasks() { return ConfigModule::Instance()->MaxScoutTasks(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
 int Config::Strategy::SkipOpenerAt() { return ConfigModule::Instance()->SkipOpenerAt(); }
+int Config::Strategy::BunkerWorkers() { return ConfigModule::Instance()->BunkerWorkers(); }
+int Config::Strategy::MaxTasksPerArea() { return ConfigModule::Instance()->MaxTasksPerArea(); }
+int Config::Strategy::ScoutTasksStart() { return ConfigModule::Instance()->ScoutTasksStart(); }
+int Config::Strategy::ScoutRushStart() { return ConfigModule::Instance()->ScoutRushStart(); }
 
 namespace {
 	std::map<std::string, std::string> aliases{

@@ -182,6 +182,7 @@ std::vector<BWAPI::UnitType> OwnStrategy::GetMacroArmyTypes()
 			continue;
 
 		int typeCount = ProductionModule::Instance()->GetCountOf(item._type);
+		//TODO also add inProgress units
 		if (totalArmy <= 0 || typeCount <= 0)
 		{
 			continue; //if no unit exists, keep proportion to 0
@@ -212,7 +213,7 @@ std::vector<BWAPI::UnitType> OwnStrategy::GetMacroArmyTypes()
 	{
 		if (item._proportion < 0.0f)
 			continue;
-		if (item._proportion > 2.0f) //TODO configurable value
+		if (item._proportion > Config::Production::MaxUnitProportion())
 			break;
 
 		result.emplace_back(item._type);

@@ -103,14 +103,14 @@ void ArmyModule::CreateAttackTasks()
 				return;
 		}
 		count++;
-		if (count > 3) //TODO make configurable max att tasks per area
+		if (count > Config::Strategy::MaxTasksPerArea())
 			return;
 	}
 }
 
 void ArmyModule::CreateScoutTasks()
 {
-	if (BWAPI::Broodwar->getFrameCount() < 6 * 24 * 60) //TODO 6 minutes, make configurable
+	if (BWAPI::Broodwar->getFrameCount() < Config::Strategy::ScoutTasksStart())
 		return;
 
 	//count current scout tasks
@@ -439,7 +439,7 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 	Log::Instance()->Assert(task->Type() == Tasks::Type::DEFEND,"Worker defence started for non-defence task!");
 
 	if (_bunker)
-		count = 4; //TODO configurable
+		count = Config::Strategy::BunkerWorkers();
 
 	//start worker defence
 	if(count > _workers->Workers().size())

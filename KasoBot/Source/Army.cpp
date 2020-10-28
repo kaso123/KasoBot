@@ -211,16 +211,23 @@ std::vector<std::shared_ptr<Worker>> WorkerArmy::GetFreeWorkers(size_t max)
 void WorkerArmy::AddWorker(std::shared_ptr<Worker> worker)
 {
 	_workers.emplace_back(worker);
-	worker->SetRole(Units::Role::IDLE);
 
-	//keep 2 SCVs on repair job
+	//set few SCVs as bunker repairers
 	if (ArmyModule::Instance()->Bunker())
 	{
-		if (_workers.size() <= 5) //TODO config
+		int bunker = 0;
+		for (auto& wrkr : _workers)
+		{
+			if (wrkr != worker && wrkr->GetRole() == Units::Role::BUNKER)
+				bunker++;
+		}
+		if (bunker < Config::Strategy::BunkerWorkers())
 			worker->SetRole(Units::Role::BUNKER);
 		else
 			worker->SetRole(Units::Role::IDLE);
+		return;
 	}
+	worker->SetRole(Units::Role::IDLE);
 }
 
 bool WorkerArmy::WorkerKilled(BWAPI::Unit unit)

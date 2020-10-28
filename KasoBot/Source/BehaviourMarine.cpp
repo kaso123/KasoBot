@@ -98,7 +98,7 @@ void BehaviourMarine::HoldPosition(KasoBot::Unit & unit, Army * army)
 		Behaviour::HoldPosition(unit, army);
 		return;
 	}
-	if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(army->Task()->Position()) > 200) //TODO configurable, use bunker distance
+	if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(army->Task()->Position()) > BWAPI::UnitTypes::Terran_Bunker.width())
 	{
 		if (unit.GetPointer()->isLoaded())
 		{

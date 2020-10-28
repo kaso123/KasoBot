@@ -16,6 +16,9 @@
 #define SCOUT_ANGLE_INCREASE 0.2
 #define DEF_POINT_CHOKE_DISTANCE_MAIN 150
 #define DEF_POINT_CHOKE_DISTANCE_NAT 100
+#define MAX_RETRY 100
+#define VECTOR_STEP 10
+#define BASE_DIST_FAIL 30
 
 
 using namespace KasoBot;
@@ -33,7 +36,7 @@ namespace {
 		
 		int counter = 0; //safe check
 		bool outOfArea = false; //set to true, when generated point was already outside of area (then we always move the point closer to base)
-		while (counter < 200) //TODO make configurable
+		while (counter < MAX_RETRY)
 		{
 			counter++;
 			if (tile.isValid() && BWEM::Map::Instance().GetArea(tile) != area)
@@ -47,7 +50,7 @@ namespace {
 				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
 				
 				//move closer on vector
-				oldPoint = BWAPI::Position((int)(oldPoint.x + 10 * normalized[0]), (int)(oldPoint.y + 10 * normalized[1])); //TODO make configurable
+				oldPoint = BWAPI::Position((int)(oldPoint.x + VECTOR_STEP * normalized[0]), (int)(oldPoint.y + VECTOR_STEP * normalized[1]));
 				tile = BWAPI::TilePosition(oldPoint);
 				continue;
 			}
@@ -69,7 +72,7 @@ namespace {
 				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
 
 				//move further on vector
-				oldPoint = BWAPI::Position((int)(oldPoint.x - 10 * normalized[0]), (int)(oldPoint.y - 10 * normalized[1])); //TODO make configurable
+				oldPoint = BWAPI::Position((int)(oldPoint.x - VECTOR_STEP * normalized[0]), (int)(oldPoint.y - VECTOR_STEP * normalized[1]));
 				tile = BWAPI::TilePosition(oldPoint);
 				continue;
 			}
@@ -83,10 +86,10 @@ namespace {
 				float normalized[2] = { vector.x / normalLength, vector.y / normalLength };
 
 				//move closer on vector
-				oldPoint = BWAPI::Position((int)(oldPoint.x + 10 * normalized[0]), (int)(oldPoint.y + 10 * normalized[1])); //TODO make configurable
+				oldPoint = BWAPI::Position((int)(oldPoint.x + VECTOR_STEP * normalized[0]), (int)(oldPoint.y + VECTOR_STEP * normalized[1]));
 				tile = BWAPI::TilePosition(oldPoint);
 
-				if (oldPoint.getDistance(base) < 30) //TODO make configurable
+				if (oldPoint.getDistance(base) < BASE_DIST_FAIL) //return base position if too close
 					return base;
 
 				continue;
