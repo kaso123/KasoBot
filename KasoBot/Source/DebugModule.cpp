@@ -204,6 +204,10 @@ void DebugModule::DrawSingleTask(const Task & task)
 	{
 		BWAPI::Broodwar->drawCircleMap(task.Position(), 100, BWAPI::Colors::Green, false);
 	}	
+	else if (task.Type() == Tasks::Type::DEFEND)
+	{
+		BWAPI::Broodwar->drawCircleMap(task.EnemyArmy()->BoundingBox()._center, 100, BWAPI::Colors::Purple, false);
+	}
 }
 
 void DebugModule::DrawProduction()

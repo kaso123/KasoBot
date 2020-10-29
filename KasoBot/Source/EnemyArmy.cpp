@@ -37,8 +37,11 @@ void EnemyArmy::CalculateCenter()
 void EnemyArmy::CheckUnits()
 {
 	std::vector<EnemyUnit*> toRemove;
-	for (auto unit : _units)
+	for (auto& unit : _units)
 	{
+		if (unit->_type.isBuilding() && IsCannonRush())
+			continue;
+
 		if (unit->_lastPos == BWAPI::TilePositions::Unknown)
 		{
 			toRemove.emplace_back(unit);
@@ -110,13 +113,18 @@ void EnemyArmy::RemoveEnemy(EnemyUnit * unit)
 	Log::Instance()->Assert(false,"Enemy not found in army when deleting!"); //called from enemy destructor so the unit has to be in this army
 }
 
-void EnemyArmy::Join(EnemyArmy * toJoin)
+bool EnemyArmy::Join(EnemyArmy * toJoin)
 {
+	if (IsCannonRush() || toJoin->IsCannonRush())
+		return false;
+
 	for (auto& unit : toJoin->Units())
 	{
 		AddEnemy(unit);
 	}
 	toJoin->ClearUnits();
+
+	return true;
 }
 
 void EnemyArmy::ClearUnits()

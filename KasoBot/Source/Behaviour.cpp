@@ -26,7 +26,11 @@ void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
 		return;
 
 	//reset attack move when attacking target to stop chasing after enemies
-	if (unit->getOrder() == BWAPI::Orders::AttackUnit && unit->getLastCommandFrame() + 2 * Config::Units::OrderDelay() > BWAPI::Broodwar->getFrameCount()) 
+	//keep attacking when the unit is close to amove position or when it is cannon rush
+	if (unit->getOrder() == BWAPI::Orders::AttackUnit && 
+		(unit->getOrderTarget() && (unit->getOrderTarget()->getType() == BWAPI::UnitTypes::Protoss_Pylon || unit->getOrderTarget()->getType() == BWAPI::UnitTypes::Protoss_Photon_Cannon)
+			|| unit->getOrderTarget() && unit->getOrderTarget()->exists() && unit->getOrderTarget()->getDistance(position) < (Config::Units::EnemyArmyRange() * 32) 
+			|| (unit->getLastCommandFrame() + 2 * Config::Units::OrderDelay()) > BWAPI::Broodwar->getFrameCount())) 
 		return;
 
 	unit->attack(position);
@@ -92,8 +96,10 @@ void Behaviour::DefendArmy(KasoBot::Unit& unit, Army* army)
 	
 	if (ArmyModule::Instance()->Bunker() && !army->Task()->EnemyArmy()->IsCannonRush()) //stick to bunker if enemy is not inside our base
 	{
-		if (ArmyModule::Instance()->Bunker()->GetPointer()->getDistance(BWEB::Map::getMainPosition())
-			< army->Task()->EnemyArmy()->BoundingBox()._center.getDistance(BWEB::Map::getMainPosition()))
+		auto enemyPos = army->Task()->EnemyArmy()->BoundingBox()._center;
+		auto bunker = ArmyModule::Instance()->Bunker()->GetPointer();
+		if (bunker->getDistance(BWEB::Map::getMainPosition()) < enemyPos.getDistance(BWEB::Map::getMainPosition())
+			&& bunker->getDistance(enemyPos) < 500) //TODO configurable
 		{
 			AttackMove(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer()->getPosition());
 			return;

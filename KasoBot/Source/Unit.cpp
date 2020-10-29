@@ -75,7 +75,7 @@ void Unit::Fight(Army* army)
 	//TODO do priority things (in close combat)
 
 	//move to center of army
-	if (army->Task()->Type() != Tasks::Type::HOLD && BWAPI::Broodwar->isWalkable((BWAPI::WalkPosition)army->BoundingBox()._center)
+	if (army->Task()->Type() == Tasks::Type::ATTACK && BWAPI::Broodwar->isWalkable((BWAPI::WalkPosition)army->BoundingBox()._center)
 		&& _pointer->getPosition().getDistance(army->BoundingBox()._center) > Config::Units::ArmyRange() * TILE_SIZE) //different value for our armies
 	{
 		_behaviour->MoveToArmyCenter(*this, army->BoundingBox()._center);

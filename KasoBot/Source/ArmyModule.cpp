@@ -16,7 +16,7 @@ using namespace KasoBot;
 ArmyModule* ArmyModule::_instance = 0;
 
 ArmyModule::ArmyModule()
-	:_bunker(nullptr)
+	:_bunker(nullptr), _scoutTimeout(0)
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 	_workers = std::make_unique<KasoBot::WorkerArmy>();
@@ -29,9 +29,21 @@ ArmyModule::~ArmyModule()
 
 void ArmyModule::AssignTasks()
 {
+	//sort tasks, defend > attack > scout
+	std::sort(std::begin(_tasks), std::end(_tasks),
+		[](const std::unique_ptr<Task>& a, const std::unique_ptr<Task>&  b)
+		{
+			return a->Type() < b->Type();
+		});
+
+	int armySupply = GetArmySupply(false);
+
 	for (auto& task : _tasks)
 	{
 		if (task->InProgress())
+			continue;
+		if (task->Type() == Tasks::Type::SCOUT
+			&& (armySupply < 16 || _scoutTimeout > BWAPI::Broodwar->getFrameCount())) //TODO configurable
 			continue;
 
 		for (auto& army : _armies)
@@ -47,6 +59,12 @@ void ArmyModule::AssignTasks()
 		if (task->InProgress()) //task was assigned  to army, worker defence is called from there
 			continue;
 
+		//no army found for scout task
+		if (task->Type() == Tasks::Type::SCOUT)
+		{
+			//try to split an idle army
+			SplitArmyForScout(task.get());
+		}
 		if (task->Type() == Tasks::Type::DEFEND) //we didnt find army to defend
 		{
 			//start worker defence
@@ -59,6 +77,7 @@ void ArmyModule::CreateAttackTasks()
 {
 	//count current attack tasks
 	int count = 0;
+
 	for (auto& task : _tasks)
 	{
 		if (task->Type() == Tasks::Type::ATTACK)
@@ -163,6 +182,29 @@ void ArmyModule::CreateScoutTasks()
 		AddScoutTask(latest);
 }
 
+void ArmyModule::SplitArmyForScout(Task * task)
+{
+	Log::Instance()->Assert(task->Type() == Tasks::Type::SCOUT, "Army splitting for non-scout task!");
+
+	for (auto& army : _armies)
+	{
+		if (army->Task() && army->Task()->Type() == Tasks::Type::HOLD)
+		{
+			//get one unit that can scout
+			auto soldier = army->GetScoutSoldier();
+			if (!soldier)
+				continue;
+
+			army->SoldierKilled(soldier);
+			auto newArmy = _armies.emplace_back(std::make_unique<Army>()).get();
+			Log::Instance()->Assert(newArmy != nullptr, "No army created for scout soldier!");
+			newArmy->AddSoldier(soldier);
+			newArmy->AssignTask(task);
+			return;
+		}
+	}
+}
+
 ArmyModule* ArmyModule::Instance()
 {
 	if (!_instance)
@@ -244,6 +286,19 @@ void ArmyModule::OnFrame()
 			return false;
 		}
 	), _tasks.end());
+
+	//if there are idle workers in army try to move them to work
+	if (_workers->Task() == _defaultTask.get())
+	{
+		for (auto& worker : _workers->Workers())
+		{
+			if (worker->GetRole() == Units::Role::IDLE)
+			{
+				WorkersModule::Instance()->AskForWorkers();
+				break;
+			}
+		}
+	}
 }
 
 std::vector<std::shared_ptr<Worker>> ArmyModule::GetFreeWorkers(size_t max)
@@ -289,10 +344,10 @@ void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
 		}
 	}
 
-	Log::Instance()->Assert(false,"Soldier was not from this army when killed!");
+	Log::Instance()->Assert(false,"Soldier was not from any army when killed!");
 }
 
-int ArmyModule::GetArmySupply()
+int ArmyModule::GetArmySupply(bool countWorkers/*=true*/)
 {
 	int supply = 0;
 
@@ -302,7 +357,8 @@ int ArmyModule::GetArmySupply()
 		supply += army->GetSupply();
 	}
 
-	supply += _workers->Workers().size();
+	if(countWorkers)
+		supply += _workers->Workers().size();
 
 	return supply;
 }
@@ -441,8 +497,27 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 	if (_bunker)
 		count = Config::Strategy::BunkerWorkers();
 
+	if (_workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
+	{
+		count += _workers->Task()->EnemyArmy()->Supply();
+	}
+
+	count = std::max(count, (size_t)8); //TODO config
+	count += 2; //add scouting scvs that are not defending
 	//start worker defence
-	if(count > _workers->Workers().size())
-		WorkersModule::Instance()->WorkerDefence(count - _workers->Workers().size());
-	_workers->AssignTask(task);
+	if(count + 2 > _workers->Workers().size())
+		WorkersModule::Instance()->WorkerDefence(count - _workers->Workers().size() + 2);
+	if(_workers->Task() == ArmyModule::Instance()->DefaultTask())
+		_workers->AssignTask(task);
+}
+
+void ArmyModule::ResetAttackTasks()
+{
+	//remove unassigned attack tasks
+	_tasks.erase(std::remove_if(std::begin(_tasks), std::end(_tasks),
+		[](auto& x)
+		{
+			return x->Type() == Tasks::Type::ATTACK && !x->InProgress();
+		}
+	), std::end(_tasks));
 }

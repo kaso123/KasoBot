@@ -603,7 +603,7 @@ std::vector<BWAPI::Unit> ProductionModule::GetDamagedBuildings()
 	{
 		if (exp->GetPointer()->getHitPoints() < exp->GetPointer()->getType().maxHitPoints())
 			result.emplace_back(exp->GetPointer());
-		if (exp->GetRefinery() && exp->GetRefinery()->getHitPoints() < exp->GetRefinery()->getType().maxHitPoints())
+		if (exp->GetRefinery() && exp->GetRefinery()->getHitPoints() < exp->GetRefinery()->getType().maxHitPoints() && !exp->GetRefinery()->isUnderAttack())
 			result.emplace_back(exp->GetRefinery());
 	}
 
@@ -614,7 +614,7 @@ std::vector<BWAPI::Unit> ProductionModule::GetDamagedBuildings()
 
 		for (auto& building : type.second)
 		{
-			if (building->GetPointer()->getHitPoints() < type.first.maxHitPoints())
+			if (building->GetPointer()->getHitPoints() < type.first.maxHitPoints() && !building->GetPointer()->isUnderAttack())
 				result.emplace_back(building->GetPointer());
 		}
 	}

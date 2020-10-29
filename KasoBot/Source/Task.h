@@ -11,11 +11,11 @@ namespace KasoBot {
 	class Army;
 
 	namespace Tasks {
-		enum Type {
-			ATTACK,
-			HOLD,
+		enum Type { //the order is important for sorting tasks
 			DEFEND,
-			SCOUT
+			ATTACK,
+			SCOUT,
+			HOLD
 		};
 	}
 

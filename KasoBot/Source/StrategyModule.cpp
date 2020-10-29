@@ -95,7 +95,7 @@ bool StrategyModule::MacroProduction()
 
 void StrategyModule::CheckEnemyStrat()
 {
-	if (ScoutModule::Instance()->EnemyWorkerRush())
+	if (ScoutModule::Instance()->EnemyWorkerRush() && !ScoutModule::Instance()->EnemyCannonRush())
 	{
 		if (_activeStratName != "cheese_grater")
 		{
@@ -121,7 +121,9 @@ void StrategyModule::CheckEnemyStrat()
 		}
 	}
 
-	if (best && best != _activeEnemyStrat)
+	if (scoreBest == 0)
+		return;
+	if (best && (best != _activeEnemyStrat || _activeStratName == "Cheese_grater"))
 	{
 		_activeEnemyStrat = best;
 		ChooseNewStrat();

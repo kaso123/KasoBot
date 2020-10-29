@@ -29,7 +29,8 @@ namespace KasoBot {
 		void RemoveEnemy(EnemyUnit* unit);
 
 		//move all units from one army to this one
-		void Join(EnemyArmy* toJoin);
+		//@return true if joining successful
+		bool Join(EnemyArmy* toJoin);
 
 		//remove all units from this army, only should be used when joining two armies
 		void ClearUnits();

@@ -45,7 +45,7 @@ void Army::CheckTask()
 	}
 
 	//check if worker defence is needed
-	if (_task->Type() == Tasks::Type::DEFEND && (_task->EnemyArmy()->Supply() + 4) > GetSupply())
+	if (_task->Type() == Tasks::Type::DEFEND && (_task->EnemyArmy()->Supply() + 4) > GetSupply()) //TODO some random numbers here
 	{
 		ArmyModule::Instance()->StartWorkerDefence(_task, _task->EnemyArmy()->Supply() + 4 - GetSupply());
 	}
@@ -63,7 +63,11 @@ Army::Army()
 Army::~Army()
 {
 	if (_task)
+	{
+		if (_task->Type() == Tasks::Type::SCOUT)
+			ArmyModule::Instance()->SetScoutTimeout(BWAPI::Broodwar->getFrameCount() + 1000); //TODO make configurable
 		_task->Stop();
+	}
 }
 
 void Army::OnFrame()
@@ -153,6 +157,19 @@ Task * Army::Task()
 	return _task ? _task : ArmyModule::Instance()->DefaultTask();
 }
 
+KasoBot::Unit* Army::GetScoutSoldier()
+{
+	for (auto& soldier : _soldiers)
+	{
+		if (soldier->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Marine
+			|| soldier->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Vulture
+			|| soldier->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Wraith)
+			return soldier;
+	}
+
+	return nullptr;
+}
+
 void WorkerArmy::CheckTask()
 {
 	if (!_task)
@@ -162,7 +179,6 @@ void WorkerArmy::CheckTask()
 	{
 		_task->Stop();
 		_task = nullptr;
-		WorkersModule::Instance()->AskForWorkers();
 		return;
 	}
 }
@@ -269,6 +285,4 @@ void WorkerArmy::OnFrame()
 void WorkerArmy::RemoveTask()
 {
 	Army::RemoveTask();
-
-	WorkersModule::Instance()->AskForWorkers();
 }

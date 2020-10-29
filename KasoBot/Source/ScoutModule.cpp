@@ -214,10 +214,12 @@ void ScoutModule::MergeArmies()
 
 				if (x->BoundingBox()._center.getDistance((*it)->BoundingBox()._center) < Config::Units::EnemyArmyRange() * TILE_SIZE)
 				{
-					x->Join((*it).get());
-					_armies.erase(it);
-					allGood = false;
-					break;
+					if (x->Join((*it).get()))
+					{
+						_armies.erase(it);
+						allGood = false;
+						break;
+					}
 				}
 			}
 		}
@@ -287,6 +289,9 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 			{
 				((BaseInfo*)_enemyStart->Bases().front().Ptr())->_owner = Base::Owner::ENEMY;
 			}
+
+			//reset attack tasks
+			ArmyModule::Instance()->ResetAttackTasks();
 		}
 	}
 
@@ -454,7 +459,7 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 		auto area = BWEM::Map::Instance().GetNearestArea(enemy->_lastPos);
 		if (!area || (area != BWEB::Map::getMainArea() 
 			&& area != BWEB::Map::getNaturalArea() 
-			&& (BWAPI::Position(enemy->_lastPos)).getDistance((BWAPI::Position)BWEB::Map::getNaturalChoke()->Center()) > 300)) //TODO configurable
+			&& (BWAPI::Position(enemy->_lastPos)).getDistance((BWAPI::Position)BWEB::Map::getNaturalChoke()->Center()) > 120)) //TODO configurable
 			return;
 	}
 
@@ -485,7 +490,7 @@ bool ScoutModule::EnemyCannonRush()
 {
 	for (auto& army : _armies)
 	{
-		if (army->IsWorkerRush())
+		if (army->IsCannonRush())
 			return true;
 	}
 	return false;

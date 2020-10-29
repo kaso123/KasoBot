@@ -30,6 +30,8 @@ namespace KasoBot {
 
 		KasoBot::Unit* _bunker;
 
+		int _scoutTimeout; //frame until which scouting is stopped
+
 		//cycle through tasks and try to assign each to an army
 		void AssignTasks();
 
@@ -38,6 +40,9 @@ namespace KasoBot {
 		
 		//check if we have enough scout tasks and create more if not
 		void CreateScoutTasks();
+
+		//find idle army and move one marine/vulture/wraith to another army and assign scout task to it
+		void SplitArmyForScout(Task* task);
 
 	public:
 		static ArmyModule* Instance();
@@ -59,7 +64,8 @@ namespace KasoBot {
 		void SoldierKilled(KasoBot::Unit* unit);
 
 		//@return total army supply, excluding mining workers
-		int GetArmySupply();
+		//@param countWorkers = true if we want to include workers in army
+		int GetArmySupply(bool countWorkers = true);
 
 		//move all units that are standing on this tile to unblock construction
 		void ClearTiles(BWAPI::TilePosition pos, BWAPI::UnitType type);
@@ -93,6 +99,8 @@ namespace KasoBot {
 		//@param count = how many workers should be defending
 		void StartWorkerDefence(Task* task, size_t count);
 		
+		//remove unassigned attack tasks to make place for new when enemy bases are found
+		void ResetAttackTasks();
 
 		//getters and setters
 
@@ -102,6 +110,7 @@ namespace KasoBot {
 		Task* DefaultTask() const { return _defaultTask.get(); }
 		KasoBot::Unit* Bunker() const { return _bunker; }
 		void SetBunker(KasoBot::Unit* bunker) { _bunker = bunker; }
+		void SetScoutTimeout(int frame) {}
 	};
 }
 

@@ -812,7 +812,7 @@ namespace BWEB::Map
 				{
 					if (TilePosition(x, y).isValid())
 					{
-						_ASSERT(KasoBot::reservedGrid[x][y] == 0);
+						//_ASSERT(KasoBot::reservedGrid[x][y] == 0);
 						KasoBot::reservedGrid[x][y] = 1;
 					}
 				}
@@ -826,7 +826,7 @@ namespace BWEB::Map
 				{
 					if (TilePosition(x, y).isValid())
 					{
-						_ASSERT(KasoBot::reservedGrid[x][y] == 1);
+						//_ASSERT(KasoBot::reservedGrid[x][y] == 1);
 						KasoBot::reservedGrid[x][y] = 0;
 					}
 				}

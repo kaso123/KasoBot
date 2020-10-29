@@ -55,6 +55,9 @@ namespace KasoBot {
 		//@return current task or default task if none
 		Task* Task();
 
+		//@return unit that is suitable for scouting, nullptr if none in army
+		KasoBot::Unit* GetScoutSoldier();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }

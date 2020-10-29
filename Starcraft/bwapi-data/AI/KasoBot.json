@@ -43,20 +43,20 @@
     "default": "default_mech",
     "cycle": [ "saturation", "army", "tech", "production" ],
     "maxArmySupply": 30,
-    "maxAttackTasks": 2,
+    "maxAttackTasks": 3,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,
-    "bunkerWorkers": 3,
+    "bunkerWorkers": 4,
     "maxTasksPerArea": 2,
     "scout": {
-      "first": {"2starts": 9, "3starts": 7, "4starts": 6},
+      "first": {"2starts": 8, "3starts": 7, "4starts": 6},
       "tasksStart": 4320,
       "scoutRush": 1400
     }
   },
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
-    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv", "cc"],
+    "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv"],
     "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine", "refinery" ],
     "fast_marines": ["scv $3", "barracks","scv $3", "marine","scv $2","marine","scv $2","marine","scv $2","marine"]
   },
@@ -69,12 +69,12 @@
     {"name": "mech_air",
      "opener": "test2",
      "units": {"tank":1, "vulture":3, "goliath":1, "marine":1,"wraith": 1, "science_vessel": 1, "battlecruiser": 1},
-     "tech": ["siege","armory","vehicle_weapons","armory","ship_weapons","starport","science_facility"]
+      "tech": [ "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
-     "units": {"tank":4, "vulture":2, "goliath":1, "marine":2},
-     "tech": ["siege","armory","vehicle_weapons","armory","vehicle_plating"]
+     "units": {"tank":3, "vulture":2, "goliath":1, "marine":2,"wraith": 1},
+     "tech": ["siege","armory","vehicle_weapons","starport"]
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
@@ -141,7 +141,7 @@
         ]
       },
       {"name": "FastDT",
-       "counters": ["bio_vessel"],
+       "counters": ["mech_air"],
        "types": [
          {"type": "dragoon", "include": false, "value": 50},
          {"type": "citadel", "include": true, "value": 50}, 
