@@ -192,6 +192,9 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 {
 	if (!unit->isCompleted())
 	{
+		if (unit->getType().isAddon()) //incomplete addons are not saved in list
+			return;
+
 		//find building in ProductionItems and change its status
 		for (auto& item : _items)
 		{
@@ -222,6 +225,7 @@ void ProductionModule::RemoveBuilding(BWAPI::Unit unit)
 	auto it = _buildingList.find(unit->getType());
 
 	Log::Instance()->Assert(it != _buildingList.end(),"Unit type doesn't exists in building list!");
+	Log::Instance()->Assert(it != _buildingList.end(), unit->getType().getName().c_str());
 
 	//find unit in list and erase it
 	it->second.erase(std::remove_if(it->second.begin(), it->second.end(),
