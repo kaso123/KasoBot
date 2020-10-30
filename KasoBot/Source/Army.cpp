@@ -194,6 +194,9 @@ WorkerArmy::~WorkerArmy()
 std::vector<std::shared_ptr<Worker>> WorkerArmy::GetFreeWorkers(size_t max)
 {
 	std::vector<std::shared_ptr<Worker>> workers = {};
+	
+	if (max <= 0)
+		return workers;
 
 	//select workers to transfer
 	for (auto worker : _workers)

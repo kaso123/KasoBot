@@ -71,8 +71,6 @@ void Expansion::AddWorker(BWAPI::Unit unit)
 
 void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 {
-	_workerList.emplace_back(worker);
-
 	//refinery not saturated
 	if (_refinery && _workersGas < Config::Workers::MaxPerGas() && _workersMinerals >= Config::Workers::StartGasAfter())
 	{
@@ -99,7 +97,7 @@ void Expansion::AddWorker(std::shared_ptr<Worker> worker)
 		
 		_workersMinerals++;
 	}
-
+	_workerList.emplace_back(worker);
 	Log::Instance()->Assert(VerifyWorkers(),"Wrong worker count after add!");
 
 	//check if refinery should be built, don't interfere with opener
@@ -206,11 +204,18 @@ bool Expansion::IsSaturated()
 	if (_refinery && _workersGas < Config::Workers::SaturationPerGas())
 		return false;
 
+	size_t emptyMinerals = 0;
+	for (auto& min : _station->getBWEMBase()->Minerals())
+	{
+		if (!min->Unit() || min->Amount() <= 0)
+			emptyMinerals++;
+	}
+
 	//no minerals left so exp is full with 0 workers
-	if (_station->getBWEMBase()->Minerals().empty())
+	if (emptyMinerals >= _station->getBWEMBase()->Minerals().size())
 		return true;
 
-	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() > _workersMinerals)
+	if ((_station->getBWEMBase()->Minerals().size() - emptyMinerals) * Config::Workers::SaturationPerMineral() > (size_t)_workersMinerals)
 		return false;
 
 	return true;
@@ -221,11 +226,18 @@ bool Expansion::IsFull()
 	if (_refinery && _workersGas < Config::Workers::MaxPerGas())
 		return false;
 
+	size_t emptyMinerals = 0;
+	for (auto& min : _station->getBWEMBase()->Minerals())
+	{
+		if (!min->Unit() || min->Amount() <= 0)
+			emptyMinerals++;
+	}
+
 	//no minerals left so exp is full with 0 workers
-	if (_station->getBWEMBase()->Minerals().empty())
+	if (emptyMinerals >= _station->getBWEMBase()->Minerals().size())
 		return true;
 
-	if ((int)_station->getBWEMBase()->Minerals().size() * Config::Workers::MaxPerMineral() > _workersMinerals)
+	if ((_station->getBWEMBase()->Minerals().size() - emptyMinerals) * Config::Workers::MaxPerMineral() > (size_t)_workersMinerals)
 		return false;
 
 	return true;
@@ -258,14 +270,23 @@ size_t Expansion::IdealWorkerCount()
 	if (!_station)
 		return 0;
 
-	//check if we have more than enough workers to avoid size_t being negative
-	if(_station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() <= (size_t)_workersMinerals
-		&& (!_refinery || Config::Workers::SaturationPerGas() <= _workersGas))
+	int emptyMinerals = 0;
+	for (auto& min : _station->getBWEMBase()->Minerals())
+	{
+		if (!min->Unit() || min->Amount() <= 0)
+			emptyMinerals++;
+	}
+
+	if (_station->getBWEMBase()->Minerals().size() <= (size_t)emptyMinerals) //no minerals left
+		return 0;
+	
+	size_t totalNeeded = (_station->getBWEMBase()->Minerals().size() - emptyMinerals) * Config::Workers::SaturationPerMineral(); //total mineral workers needed
+	totalNeeded += (_refinery && _workersMinerals >= Config::Workers::StartGasAfter()) ? Config::Workers::SaturationPerGas() : 0; //total gas workers needed
+
+	if (_workersMinerals + _workersGas >= (int)totalNeeded)
 		return 0;
 
-	return _station->getBWEMBase()->Minerals().size() * Config::Workers::SaturationPerMineral() 
-		+ (_refinery ? Config::Workers::SaturationPerGas() : 0)
-		- _workersGas - _workersMinerals;
+	return totalNeeded - _workersGas - _workersMinerals;
 }
 
 std::vector<std::shared_ptr<Worker>> Expansion::GetUnneededWorkers(size_t max)

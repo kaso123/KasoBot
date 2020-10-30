@@ -61,28 +61,34 @@ void WorkersModule::AssignIdleWorkers(Expansion& exp)
 	//check if refinery is in this base and assign it
 	AssignRefinery(exp);
 
+	size_t wantWorkers = exp.IdealWorkerCount();
+	if (wantWorkers == 0)
+		return;
+	
 	//get workers from army
-	auto list = ArmyModule::Instance()->GetFreeWorkers(exp.IdealWorkerCount());
-
+	auto list = ArmyModule::Instance()->GetFreeWorkers(wantWorkers);
+	
 	for (auto worker : list)
 	{
 		exp.AddWorker(worker);
 	}
 	
 	//if not enough, get workers from oversaturated bases
-	if (list.size() < exp.IdealWorkerCount())
+	if (list.size() < wantWorkers)
 	{
 		size_t added = 0; //total count of workers from other bases
 		
 		for (auto& base : _expansionList)
 		{
-			if (list.size() + added >= exp.IdealWorkerCount())
+			if (base.get() == &exp)
+				continue;
+			if (list.size() + added >= wantWorkers)
 				break;
 
 			if (!base->IsSaturated())
 				continue;
 			
-			auto workers = base->GetUnneededWorkers(exp.IdealWorkerCount() - list.size() - added);
+			auto workers = base->GetUnneededWorkers(wantWorkers - list.size() - added);
 			for (auto& worker : workers)
 				exp.AddWorker(worker);
 			added += workers.size();
