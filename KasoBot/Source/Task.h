@@ -14,6 +14,7 @@ namespace KasoBot {
 		enum Type { //the order is important for sorting tasks
 			DEFEND,
 			ATTACK,
+			FINISH,
 			SCOUT,
 			HOLD
 		};
@@ -44,6 +45,7 @@ namespace KasoBot {
 		virtual BWAPI::Position Position() const { return BWAPI::Positions::Invalid; };
 		virtual const BWEM::Area* Area() const { return nullptr; };
 		virtual EnemyArmy* EnemyArmy() const { return nullptr; }
+		virtual BWAPI::TilePosition Next() { return BWAPI::TilePositions::Invalid; }
 		
 		bool InProgress() { return _inProgress; }
 	};
@@ -107,5 +109,18 @@ namespace KasoBot {
 		//getters and setters
 
 		const BWEM::Area* Area() const override { return _area; }
+	};
+
+	class FinishEnemyTask : public Task {
+	private:
+		BWAPI::TilePosition _nextPos;
+	public:
+		FinishEnemyTask();
+		~FinishEnemyTask() {};
+
+		bool IsArmySuitable(Army& army) override { return true; };
+		bool IsFinished() override { return false; };
+
+		BWAPI::TilePosition Next() override;
 	};
 }

@@ -1,6 +1,7 @@
 #include "Task.h"
 #include "MapModule.h"
 #include "EnemyArmy.h"
+#include "ScoutModule.h"
 #include "Army.h"
 #include "BaseInfo.h"
 #include "Config.h"
@@ -94,4 +95,29 @@ bool ScoutAreaTask::IsFinished()
 			return false;
 	}
 	return true;
+}
+
+FinishEnemyTask::FinishEnemyTask()
+	: Task(Tasks::Type::FINISH), _nextPos(BWAPI::TilePositions::Invalid)
+{
+}
+
+BWAPI::TilePosition FinishEnemyTask::Next()
+{
+	if (!_nextPos.isValid() || BWAPI::Broodwar->isVisible(_nextPos))
+	{
+		_nextPos = BWAPI::TilePositions::Invalid;
+	}
+
+	while (!_nextPos.isValid())
+	{
+		_nextPos = BWAPI::TilePosition(BWEM::Map::Instance().RandomPosition());
+
+		if (!_nextPos.isValid() || BWAPI::Broodwar->isVisible(_nextPos)
+			|| !BWEM::Map::Instance().GetNearestArea(_nextPos)->AccessibleFrom(BWEB::Map::getMainArea()))
+			_nextPos = BWAPI::TilePositions::Invalid;
+	}
+
+	Log::Instance()->Assert(false, "invalid random position for finish task!");
+	return _nextPos;
 }

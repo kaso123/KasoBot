@@ -99,6 +99,10 @@ void Unit::Fight(Army* army)
 	{
 		_behaviour->HoldPosition(*this, army);
 	}
+	else if (army->Task()->Type() == Tasks::Type::FINISH)
+	{
+		_behaviour->FinishEnemy(*this, army);
+	}
 }
 
 void Unit::Scout()

@@ -120,6 +120,26 @@ void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 		HoldPosition(unit.GetPointer());
 }
 
+void Behaviour::FinishEnemy(KasoBot::Unit & unit, Army * army)
+{
+	for (auto& type : ScoutModule::Instance()->GetEnemies())
+	{
+		for (auto& enemy : type.second)
+		{
+			if (enemy->_lastPos.isValid() && enemy->_lastPos != BWAPI::TilePositions::Unknown)
+			{
+				BWAPI::Position target = BWAPI::Position(enemy->_lastPos) + BWAPI::Position(16, 16); //center of tile
+				AttackMove(unit.GetPointer(), target);
+				return;
+			}
+		}
+	}
+	//no enemy in list
+	auto pos = army->Task()->Next();
+	Log::Instance()->Assert(pos.isValid(),"invalid position for finishig enemy!");
+	AttackMove(unit.GetPointer(), BWAPI::Position(pos) + BWAPI::Position(16,16));
+}
+
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
 {
 	Log::Instance()->Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");

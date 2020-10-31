@@ -89,6 +89,9 @@ namespace KasoBot {
 		//create new scoutArea task if it doesn't exist already
 		bool AddScoutTask(const BWEM::Area* area);
 
+		//create new FinishEnemy task if it doesn't exist already
+		bool AddFinishTask();
+
 		//find task for this army and remove it
 		void EnemyArmyRemoved(EnemyArmy* enemy);
 

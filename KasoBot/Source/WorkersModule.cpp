@@ -152,7 +152,7 @@ void WorkersModule::HandleRepairs()
 		bool hasWorker = false;
 		for (auto& worker : _repairers)
 		{
-			if (worker->GetPointer()->getOrderTarget() == building)
+			if (worker->IsRepairing(building))
 			{
 				hasWorker = true;
 				break;
@@ -167,7 +167,7 @@ void WorkersModule::HandleRepairs()
 			bool free = true;
 			for (auto& b : repairBuildings)
 			{
-				if (worker->GetPointer()->getOrderTarget() == b)
+				if (worker->IsRepairing(b))
 				{
 					free = false;
 					break;

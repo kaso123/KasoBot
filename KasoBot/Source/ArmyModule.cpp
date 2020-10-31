@@ -123,8 +123,11 @@ void ArmyModule::CreateAttackTasks()
 		}
 		count++;
 		if (count > Config::Strategy::MaxTasksPerArea())
-			return;
+			break;
 	}
+
+	//no attack task could be created, create finish task if not already
+	AddFinishTask();
 }
 
 void ArmyModule::CreateScoutTasks()
@@ -451,6 +454,20 @@ bool ArmyModule::AddScoutTask(const BWEM::Area * area)
 	return true;
 }
 
+bool ArmyModule::AddFinishTask()
+{
+	if (GetArmySupply() < 100) //TODO configurable?
+		return false;
+
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::FINISH || task->Type() == Tasks::Type::ATTACK)
+			return false;
+	}
+	_tasks.emplace_back(std::make_unique<FinishEnemyTask>());
+	return true;
+}
+
 void ArmyModule::EnemyArmyRemoved(EnemyArmy * enemy)
 {
 	for (auto& army : _armies)
@@ -497,7 +514,7 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 	if (_bunker)
 		count = Config::Strategy::BunkerWorkers();
 
-	if (_workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
+	if (_workers->Task() != task && _workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
 	{
 		count += _workers->Task()->EnemyArmy()->Supply();
 	}
