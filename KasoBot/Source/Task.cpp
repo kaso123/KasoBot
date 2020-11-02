@@ -118,6 +118,6 @@ BWAPI::TilePosition FinishEnemyTask::Next()
 			_nextPos = BWAPI::TilePositions::Invalid;
 	}
 
-	Log::Instance()->Assert(false, "invalid random position for finish task!");
+	Log::Instance()->Assert(_nextPos.isValid(), "invalid random position for finish task!");
 	return _nextPos;
 }
