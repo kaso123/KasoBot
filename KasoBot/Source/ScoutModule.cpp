@@ -11,6 +11,7 @@
 #include "Army.h"
 #include "BaseInfo.h"
 #include "EnemyStrategy.h"
+#include "Unit.h"
 
 using namespace KasoBot;
 
@@ -24,7 +25,7 @@ EnemyUnit::~EnemyUnit()
 }
 
 ScoutModule::ScoutModule()
-	: _enemyStart(nullptr), _enemyNatural(nullptr), _enemyRace(BWAPI::Races::Unknown)
+	: _enemyStart(nullptr), _enemyNatural(nullptr), _enemyRace(BWAPI::Races::Unknown), _scanTimeout(0)
 {
 }
 
@@ -236,6 +237,67 @@ void ScoutModule::CreateDefendTasks()
 	}
 }
 
+void ScoutModule::ScanEnemies()
+{
+	auto it = ProductionModule::Instance()->Buildings().find(BWAPI::UnitTypes::Terran_Comsat_Station);
+
+	if(it == ProductionModule::Instance()->Buildings().end())
+		return; //no scan
+
+	//check scan timeout
+	if (_scanTimeout > BWAPI::Broodwar->getFrameCount())
+		return;
+
+	//find scan with enough energy
+	BWAPI::Unit scan = nullptr;
+	for (auto& unit : it->second)
+	{
+		if (unit->GetPointer()->getEnergy() >= 50)
+		{
+			scan = unit->GetPointer();
+			break;
+		}
+	}
+	if (!scan)
+		return; //no scan with enough energy
+	int scanCount = it->second.size();
+
+	//cycle enemy types
+	std::vector<BWAPI::UnitType> types = {
+		BWAPI::UnitTypes::Zerg_Lurker,
+		BWAPI::UnitTypes::Protoss_Dark_Templar,
+		BWAPI::UnitTypes::Protoss_Observer,
+		BWAPI::UnitTypes::Terran_Wraith,
+		BWAPI::UnitTypes::Terran_Ghost,
+		BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+	};
+
+	for (auto& type : types)
+	{
+		auto it = _enemies.find(type);
+		if (it == _enemies.end())
+			continue;
+
+		for (auto& unit : it->second)
+		{
+			BWAPI::Unit pointer = BWAPI::Broodwar->getUnit(unit->_id);
+			if (!pointer || !pointer->exists())
+				continue;
+
+			if ((!pointer->isBurrowed() && !pointer->isVisible()) || pointer->isDetected())
+				continue;
+
+			if (ArmyModule::Instance()->IsCloseToAnyArmy(pointer))
+			{
+				Log::Instance()->Assert(pointer->getPosition().isValid(), "invalid enemy position for scan!");
+				scan->useTech(BWAPI::TechTypes::Scanner_Sweep, pointer->getPosition());
+				_scanTimeout = BWAPI::Broodwar->getFrameCount() + 300/scanCount; //+- scanner duration
+				return;
+			}
+		}
+	}
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
@@ -249,6 +311,7 @@ void ScoutModule::OnFrame()
 	ResetBaseInfo();
 	MergeArmies();
 	CreateDefendTasks();
+	ScanEnemies();
 
 	for (auto& army : _armies)
 	{

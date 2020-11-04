@@ -337,6 +337,10 @@ BWAPI::Position Map::DefaultTaskPosition()
 {
 	Log::Instance()->Assert(BWEB::Map::getNaturalArea(), "No nat area in BWEB!");
 	Log::Instance()->Assert(BWEB::Map::getMainArea(), "No main area in BWEB!");
+	
+	//if getting worker rushed defend around cc
+	if (ScoutModule::Instance()->EnemyWorkerRush() && ArmyModule::Instance()->GetArmySupply(false) < 16) //TODO configurable
+		return BWEB::Map::getMainPosition();
 
 	auto nat = BWEB::Map::getNaturalArea();
 	if (!nat->Bases().empty()) //if we have natural, defend there

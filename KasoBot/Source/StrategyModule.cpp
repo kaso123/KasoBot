@@ -62,6 +62,11 @@ bool StrategyModule::MacroArmy()
 
 bool StrategyModule::MacroTech()
 {
+	//if we already built scanner and not every CC has a scanner -> build next one
+	int scanners = ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Comsat_Station);
+	if(scanners > 0 && scanners < WorkersModule::Instance()->ExpansionCount())
+		return ProductionModule::Instance()->BuildAddon(BWAPI::UnitTypes::Terran_Comsat_Station);
+
 	auto macro = _activeStrat->GetMacroTechType();
 
 	if (macro._unit != BWAPI::UnitTypes::None)

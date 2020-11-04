@@ -105,6 +105,9 @@ namespace KasoBot {
 		//remove unassigned attack tasks to make place for new when enemy bases are found
 		void ResetAttackTasks();
 
+		//@return true if this unit is in range of any army
+		bool IsCloseToAnyArmy(BWAPI::Unit unit);
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }

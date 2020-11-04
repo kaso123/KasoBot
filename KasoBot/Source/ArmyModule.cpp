@@ -33,6 +33,9 @@ void ArmyModule::AssignTasks()
 	std::sort(std::begin(_tasks), std::end(_tasks),
 		[](const std::unique_ptr<Task>& a, const std::unique_ptr<Task>&  b)
 		{
+			if (a->Type() == Tasks::Type::ATTACK && b->Type() == Tasks::Type::ATTACK)
+				return a->Area()->Bases().front().Center().getApproxDistance(BWEB::Map::getMainPosition())
+					< b->Area()->Bases().front().Center().getApproxDistance(BWEB::Map::getMainPosition());
 			return a->Type() < b->Type();
 		});
 
@@ -416,6 +419,9 @@ bool ArmyModule::AddAttackTask(const BWEM::Area * area, int limit /*=1*/)
 bool ArmyModule::AddDefendTask(EnemyArmy* enemy)
 {
 	Log::Instance()->Assert(enemy, "Enemy army missing in Defend task!");
+	
+	if (enemy->IsWorkerRush()) //moving default task to CC when worker rushed
+		ResetDefaultTask();
 
 	for (auto& task : _tasks)
 	{
@@ -500,6 +506,8 @@ void ArmyModule::ResetDefaultTask()
 	//move bunker to natural
 	if (_bunker->GetPointer()->getTilePosition() != (BWAPI::TilePosition)_defaultTask->Position())
 	{
+		//TODO check if bunker is already there
+
 		_bunker->GetPointer()->unloadAll();
 		_bunker = nullptr;
 		ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Bunker);
@@ -513,13 +521,12 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 
 	if (_bunker)
 		count = Config::Strategy::BunkerWorkers();
-
-	if (_workers->Task() != task && _workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
+	else if (_workers->Task() != task && _workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
 	{
 		count += _workers->Task()->EnemyArmy()->Supply();
 	}
 
-	count = std::max(count, (size_t)8); //TODO config
+	count = std::min(count, (size_t)8); //TODO config
 	count += 2; //add scouting scvs that are not defending
 	//start worker defence
 	if(count + 2 > _workers->Workers().size())
@@ -537,4 +544,18 @@ void ArmyModule::ResetAttackTasks()
 			return x->Type() == Tasks::Type::ATTACK && !x->InProgress();
 		}
 	), std::end(_tasks));
+}
+
+bool ArmyModule::IsCloseToAnyArmy(BWAPI::Unit unit)
+{
+	if (!unit)
+		return false;
+
+	for (auto& army : _armies)
+	{
+		if (unit->getDistance(army->BoundingBox()._center) < (Config::Units::ArmyRange() + Config::Units::EnemyArmyRange()) * 32)
+			return true;
+	}
+
+	return false;
 }

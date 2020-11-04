@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "StrategyModule.h"
 #include "ProductionModule.h"
+#include "ScoutModule.h"
 #include "Log.h"
 
 #include "libs/nlohmann/json.hpp"
@@ -102,7 +103,19 @@ void ConfigModule::Init()
 		_bunkerWorkers = j["strategy"].contains("bunkerWorkers") ? j["strategy"]["bunkerWorkers"] : _bunkerWorkers;
 		_maxTasksPerArea = j["strategy"].contains("maxTasksPerArea") ? j["strategy"]["maxTasksPerArea"] : _maxTasksPerArea;
 
-		StrategyModule::Instance()->SetStrategy( j["strategy"].contains("default") ? j["strategy"]["default"] : "random");
+		if (j["strategy"].contains("default"))
+		{
+			if (ScoutModule::Instance()->GetEnemyRace() == BWAPI::Races::Terran)
+			{
+				StrategyModule::Instance()->SetStrategy(j["strategy"]["default"].contains("t") ? j["strategy"]["default"]["t"] : "random");
+			}
+			else if (ScoutModule::Instance()->GetEnemyRace() == BWAPI::Races::Protoss)
+			{
+				StrategyModule::Instance()->SetStrategy(j["strategy"]["default"].contains("p") ? j["strategy"]["default"]["p"] : "random");
+			}
+			else StrategyModule::Instance()->SetStrategy(j["strategy"]["default"].contains("z") ? j["strategy"]["default"]["z"] : "random");
+		}
+		
 
 		if (j["strategy"].contains("cycle"))
 		{
@@ -210,6 +223,7 @@ namespace {
 	std::map<std::string, std::string> aliases{
 		{"depot", "supply_depot"},
 		{"cc", "command_center"},
+		{"comsat","comsat_station"},
 		{"tank", "siege_tank_tank_mode"},
 		{"core", "cybernetics_core"},
 		{"archives", "templar_archives"},

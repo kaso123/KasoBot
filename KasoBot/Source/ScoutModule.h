@@ -40,6 +40,8 @@ namespace KasoBot {
 		std::vector<std::unique_ptr<EnemyArmy>> _armies; //list of enemy armies that are visible
 		BWAPI::Race _enemyRace;
 
+		int _scanTimeout; //frame when next scan can be done
+
 		const BWEM::Area* _enemyStart; //enemy starting area
 		const BWEM::Area* _enemyNatural;
 
@@ -60,6 +62,9 @@ namespace KasoBot {
 
 		//try to create defend task for every enemy army that is close to our base
 		void CreateDefendTasks();
+
+		//check all scannable enemies and scan if needed
+		void ScanEnemies();
 
 	public:
 		static ScoutModule* Instance();

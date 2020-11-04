@@ -304,7 +304,7 @@ bool WorkersModule::BuildWorker()
 {
 	for (auto& exp : _expansionList)
 	{
-		if (exp->GetPointer()->isIdle())
+		if (exp->GetPointer()->isIdle() && !exp->IsLocked())
 		{
 			if (exp->GetPointer()->train(BWAPI::UnitTypes::Terran_SCV))
 				return true;
@@ -442,12 +442,32 @@ bool WorkersModule::BuildAddon(BWAPI::UnitType type)
 
 	for (auto& exp : _expansionList)
 	{
-		if (exp->GetPointer()->isIdle())
+		if (exp->IsLocked()) //only one locked building of one type at each time
 		{
-			if (exp->GetPointer()->buildAddon(type))
+			if (exp->GetPointer()->getAddon())
 			{
-				return true;
+				Log::Instance()->Assert(false, "Building with addon is still locked!"); //shouldn't happen
+				exp->Unlock();
+				return false;
 			}
+			if (exp->GetPointer()->isIdle())
+			{
+				if (exp->GetPointer()->buildAddon(type)) //build started
+				{
+					exp->Unlock();
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	for (auto& exp : _expansionList)
+	{
+		if (!exp->GetPointer()->getAddon() && !exp->GetPointer()->isConstructing() && !exp->IsLocked())
+		{
+			exp->Lock();
+			return false;
 		}
 	}
 	return false;

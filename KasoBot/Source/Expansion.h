@@ -25,6 +25,8 @@ namespace KasoBot {
 		int _workersMinerals;
 		int _workersGas;
 
+		bool _lock; //used for buildings that needs addons to lock them from training more units before addon is started
+
 		//used in debug to check that worker numbers are solid
 		bool VerifyWorkers();
 
@@ -73,6 +75,9 @@ namespace KasoBot {
 		BWAPI::Unit GetRefinery() const { return _refinery; }
 		int WorkerCountMinerals() const { return _workersMinerals; }
 		int WorkerCountGas() const { return _workersGas; }
+		void Lock() { _lock = true; }
+		void Unlock() { _lock = false; }
+		bool IsLocked() const { return _lock; }
 	};
 }
 

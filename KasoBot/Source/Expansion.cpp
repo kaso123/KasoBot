@@ -20,7 +20,7 @@ bool Expansion::VerifyWorkers()
 }
 
 Expansion::Expansion(BWAPI::Unit unit)
-	:_pointer(unit), _station(nullptr), _refinery(nullptr),_workersMinerals(0), _workersGas(0)
+	:_pointer(unit), _station(nullptr), _refinery(nullptr),_workersMinerals(0), _workersGas(0), _lock(false)
 {
 	//find which station this expansion belongs to
 	_station = KasoBot::Map::GetStation(unit->getTilePosition());

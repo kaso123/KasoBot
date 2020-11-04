@@ -40,7 +40,7 @@
     "enemyInfo": true
   },
   "strategy": {
-    "default": "default_mech",
+    "default": {"t":"default_mech", "p": "default_mech", "z": "default_bio_vs_Z"},
     "cycle": [ "saturation", "army", "tech", "production" ],
     "maxArmySupply": 30,
     "maxAttackTasks": 3,
@@ -64,22 +64,22 @@
     {"name": "default_mech",
      "opener": "test2",
      "units": {"tank":4, "vulture":2, "goliath":4, "marine":1},
-     "tech": ["siege","mines","armory","vehicle_weapons","armory","vehicle_plating","starport","science_facility"]
+     "tech": ["siege","mines","armory","vehicle_weapons","comsat","armory","vehicle_plating","starport","science_facility"]
     },
     {"name": "mech_air",
      "opener": "test2",
      "units": {"tank":1, "vulture":3, "goliath":1, "marine":1,"wraith": 1, "science_vessel": 1, "battlecruiser": 1},
-      "tech": [ "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
+      "tech": [ "siege", "comsat", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
      "units": {"tank":3, "vulture":2, "goliath":1, "marine":2,"wraith": 1},
-     "tech": ["siege","armory","vehicle_weapons","starport"]
+     "tech": ["siege","armory","vehicle_weapons","starport","comsat"]
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
      "units": {"marine":5, "medic":2, "firebat":2},
-      "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
+      "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
     {"name": "default_bio_vs_P",
      "opener": "anti_rush",
@@ -89,7 +89,7 @@
     {"name": "bio_vessel",
      "opener": "test1",
      "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1},
-      "tech": [ "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
+      "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
     {"name": "rush_bc",
      "opener": "anti_rush",
