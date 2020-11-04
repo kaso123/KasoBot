@@ -64,6 +64,38 @@ bool ProductionModule::IsSafeToBuild(BWAPI::TilePosition pos)
 	return true;
 }
 
+int ProductionModule::InProgressUnitCount(BWAPI::UnitType type)
+{
+	if (type.isBuilding())
+		return 0;
+	
+	return 0;
+
+	int count = 0;
+
+	if (type.isWorker())
+	{
+		for (auto& exp : WorkersModule::Instance()->ExpansionList())
+		{
+			if (exp->GetPointer()->isTraining() && exp->GetPointer()->getBuildUnit() && exp->GetPointer()->getBuildUnit()->getType() == type)
+				count++;
+		}
+	}
+	else
+	{
+		auto it = _buildingList.find(type.whatBuilds().first);
+		if (it == _buildingList.end())
+			return count;
+
+		for (auto& building : it->second)
+		{
+			if (building->GetPointer()->isTraining() && building->GetPointer()->getBuildUnit() && building->GetPointer()->getBuildUnit()->getType() == type)
+				count++;
+		}
+	}
+	return count;
+}
+
 ProductionModule* ProductionModule::Instance()
 {
 	if (!_instance)
@@ -548,13 +580,13 @@ int ProductionModule::GetCountOf(BWAPI::UnitType type)
 	else
 	{
 		if (type.isWorker())
-			return WorkersModule::Instance()->WorkerCountAll() + ArmyModule::Instance()->WorkerArmy()->Workers().size();
+			return WorkersModule::Instance()->WorkerCountAll() + ArmyModule::Instance()->WorkerArmy()->Workers().size() + InProgressUnitCount(type);
 
 		auto it = _unitList.find(type);
 
 		if (it == _unitList.end())
-			return 0;
-		return it->second.size();
+			return InProgressUnitCount(type);
+		return it->second.size() + InProgressUnitCount(type);
 	}
 	return 0;
 }

@@ -44,6 +44,9 @@ namespace KasoBot {
 		//@return true if there are many workers in our base
 		bool IsWorkerRush();
 
+		//@return true if all enemies in this army are flying
+		bool IsOnlyFlying();
+
 		//@return total supply of this army
 		int Supply();
 

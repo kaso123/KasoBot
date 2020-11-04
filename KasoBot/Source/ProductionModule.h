@@ -34,7 +34,9 @@ namespace KasoBot {
 
 		//@return false if enemy army is close to target position
 		bool IsSafeToBuild(BWAPI::TilePosition pos);
-
+		
+		//@return number of units in training
+		int InProgressUnitCount(BWAPI::UnitType type);
 	public:
 		static ProductionModule* Instance();
 

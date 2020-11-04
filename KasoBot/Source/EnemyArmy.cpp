@@ -196,6 +196,16 @@ bool EnemyArmy::IsWorkerRush()
 	return workersInBase > 1;
 }
 
+bool EnemyArmy::IsOnlyFlying()
+{
+	for (auto& enemy : _units)
+	{
+		if (!enemy->_type.isFlyer())
+			return false;
+	}
+	return true;
+}
+
 int EnemyArmy::Supply()
 {
 	int total = 0;

@@ -519,6 +519,9 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 {
 	Log::Instance()->Assert(task->Type() == Tasks::Type::DEFEND,"Worker defence started for non-defence task!");
 
+	if (task->EnemyArmy()->IsOnlyFlying())
+		return;
+
 	if (_bunker)
 		count = Config::Strategy::BunkerWorkers();
 	else if (_workers->Task() != task && _workers->Task()->EnemyArmy() && _workers->Task()->EnemyArmy()->IsCannonRush())
