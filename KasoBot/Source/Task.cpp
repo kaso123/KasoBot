@@ -2,6 +2,8 @@
 #include "MapModule.h"
 #include "EnemyArmy.h"
 #include "ScoutModule.h"
+#include "StrategyModule.h"
+#include "OwnStrategy.h"
 #include "Army.h"
 #include "BaseInfo.h"
 #include "Config.h"
@@ -26,7 +28,7 @@ AttackAreaTask::AttackAreaTask(const BWEM::Area * area)
 
 bool AttackAreaTask::IsArmySuitable(Army & army)
 {
-	if (army.GetSupply() < Config::Strategy::MaxArmySupply()*2)
+	if (army.GetSupply() < StrategyModule::Instance()->GetActiveStrat()->MaxArmySupply() *2)
 		return  false;
 	return true;
 }

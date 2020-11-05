@@ -323,8 +323,12 @@ void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
 	Log::Instance()->Assert(strat.contains("opener"), "No opener in strat!");
 	Log::Instance()->Assert(strat["opener"].is_string(), "Wrong opener format in strat!");
 
+	auto data = nlohmann::json::object();
+	if (strat.contains("data") && strat["data"].is_object())
+		data = std::move(strat["data"]);
+
 	OwnStrategy* strategy = _strategies.emplace(strat["name"].get<std::string>(), 
-		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), strat["opener"].get<std::string>())).first->second.get();
+		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), strat["opener"].get<std::string>(),data)).first->second.get();
 	
 	if (strat.contains("units"))
 	{

@@ -1,5 +1,6 @@
 #pragma once
 #include <BWAPI.h>
+#include "libs/nlohmann/json.hpp"
 
 namespace KasoBot {
 
@@ -25,12 +26,13 @@ namespace KasoBot {
 		std::vector<UnitItem> _production;
 		std::vector<Production::TechMacro> _tech;
 		std::string _opener;
+		nlohmann::json _data;
 
 		//get new tech to do after everything specified in strategy tech path was done
 		Production::TechMacro GetMacroAfterTechPathDone() const;
 
 	public:
-		OwnStrategy(std::string& name, std::string& opener);
+		OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data);
 		~OwnStrategy();
 
 		void AddUnit(BWAPI::UnitType type, int count);
@@ -49,6 +51,8 @@ namespace KasoBot {
 		//@return next upgrade, tech or building that should be built
 		Production::TechMacro GetMacroTechType() const;
 
+		int MaxArmySupply() const;
+		int MaxAttackTasks() const;
 
 		//getters and setters
 

@@ -3,6 +3,8 @@
 #include "Task.h"
 #include "ArmyModule.h"
 #include "WorkersModule.h"
+#include "StrategyModule.h"
+#include "OwnStrategy.h"
 #include "EnemyArmy.h"
 #include "Worker.h"
 #include "Log.h"
@@ -89,7 +91,7 @@ bool Army::AddSoldier(KasoBot::Unit* unit)
 		&& (_task->Type() == Tasks::Type::ATTACK || _task->Type() == Tasks::Type::SCOUT))
 		return false;
 
-	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > Config::Strategy::MaxArmySupply() * 2)
+	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > StrategyModule::Instance()->GetActiveStrat()->MaxArmySupply() * 2)
 		return false;
 
 	_soldiers.emplace_back(unit);

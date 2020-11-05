@@ -68,7 +68,7 @@
     },
     {"name": "mech_air",
      "opener": "test2",
-     "units": {"tank":2, "vulture":3, "goliath":1, "marine":1,"wraith": 1, "science_vessel": 1, "battlecruiser": 1},
+     "units": {"tank":2, "vulture":5, "goliath":1, "marine":1,"wraith": 1, "battlecruiser": 1},
       "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
@@ -78,7 +78,8 @@
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
-     "units": {"marine":5, "medic":2, "firebat":2},
+     "data": {"maxArmySupply": 15, "maxAttackTasks": 5},
+     "units": {"marine":5, "medic":2, "firebat":2, "tank": 1},
       "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
     {"name": "default_bio_vs_P",
@@ -86,9 +87,16 @@
      "units": {"marine":6, "medic":2, "tank":1},
       "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
+    {
+      "name": "bio_vs_muta",
+      "opener": "test1",
+      "units": { "marine": 6, "medic": 1, "valkyrie": 2, "wraith": 1},
+      "tech": ["u238","stim","starport"]
+    },
     {"name": "bio_vessel",
      "opener": "test1",
-     "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1},
+     "data": {"maxArmySupply": 20, "maxAttackTasks": 4},
+     "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1, "tank": 1},
       "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
     {"name": "rush_bc",
@@ -185,6 +193,14 @@
          {"type": "lurker", "include": true, "value": 100},
          {"type": "hydralisk", "include": true, "value": 50},
          {"type": "hydralisk_den", "include": true, "value": 50}
+       ]
+      },
+      {"name": "MassMuta",
+       "counters": ["bio_vs_muta"],
+       "types": [
+         {"type": "lurker", "include": false, "value": 50, "count": 4},
+         {"type": "mutalisk", "include": true, "value": 100,"count": 3},
+         {"type": "spire", "include": true, "value": 50}
        ]
       }
     ]

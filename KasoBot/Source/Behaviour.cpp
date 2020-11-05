@@ -124,6 +124,9 @@ void Behaviour::FinishEnemy(KasoBot::Unit & unit, Army * army)
 {
 	for (auto& type : ScoutModule::Instance()->GetEnemies())
 	{
+		if (!type.first.isBuilding())
+			continue;
+
 		for (auto& enemy : type.second)
 		{
 			if (enemy->_lastPos.isValid() && enemy->_lastPos != BWAPI::TilePositions::Unknown)

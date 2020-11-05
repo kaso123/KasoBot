@@ -104,8 +104,8 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 	return Production::TechMacro(BWAPI::UnitTypes::None);
 }
 
-OwnStrategy::OwnStrategy(std::string& name, std::string& opener)
-	:_name(name), _opener(opener)
+OwnStrategy::OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data)
+	:_name(name), _opener(opener), _data(std::move(data))
 {
 }
 
@@ -338,4 +338,14 @@ Production::TechMacro OwnStrategy::GetMacroTechType() const
 	}
 	
 	return GetMacroAfterTechPathDone();
+}
+
+int OwnStrategy::MaxArmySupply() const
+{
+	return _data.contains("maxArmySupply") ? _data["maxArmySupply"] : Config::Strategy::MaxArmySupply();
+}
+
+int KasoBot::OwnStrategy::MaxAttackTasks() const
+{
+	return _data.contains("maxAttackTasks") ? _data["maxAttackTasks"] : Config::Strategy::MaxAttackTasks();
 }

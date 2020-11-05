@@ -3,6 +3,8 @@
 #include "Army.h"
 #include "MapModule.h"
 #include "ScoutModule.h"
+#include "StrategyModule.h"
+#include "OwnStrategy.h"
 #include "WorkersModule.h"
 #include "Config.h"
 #include "Task.h"
@@ -87,7 +89,7 @@ void ArmyModule::CreateAttackTasks()
 			count++;
 	}
 
-	if (count >= Config::Strategy::MaxAttackTasks()) 
+	if (count >= StrategyModule::Instance()->GetActiveStrat()->MaxAttackTasks()) 
 		return;
 
 
