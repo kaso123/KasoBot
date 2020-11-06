@@ -78,7 +78,7 @@
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
-     "data": {"maxArmySupply": 15, "maxAttackTasks": 5},
+     "data": {"maxArmySupply": 13, "maxAttackTasks": 5},
      "units": {"marine":5, "medic":2, "firebat":2, "tank": 1},
       "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
@@ -173,6 +173,8 @@
        "counters": ["default_bio_vs_Z"],
        "types": [
          {"type": "zergling","include": true, "value": 100, "count": 6},
+         {"type": "mutalisk", "include": false, "value": 100},
+         {"type": "hydralisk", "include": false, "value": 50 },
          {"type": "pool", "include": true, "value": 100},
          {"type": "assimilator", "include": false, "value": 100},
          {"type": "drone","include": false, "value": 100, "count": 9}
@@ -183,6 +185,7 @@
        "types": [
          {"type": "hydralisk", "include": true, "value": 100},
          {"type": "lurker", "include": false, "value": 100},
+         {"type": "mutalisk", "include": false, "value": 100,"count": 3},
          {"type": "spire", "include": false, "value": 100}, 
          {"type": "hydralisk_den", "include": true, "value": 100}
        ]
@@ -191,6 +194,7 @@
        "counters": ["bio_vessel"],
        "types": [
          {"type": "lurker", "include": true, "value": 100},
+         {"type": "mutalisk", "include": false, "value": 100,"count": 3},
          {"type": "hydralisk", "include": true, "value": 50},
          {"type": "hydralisk_den", "include": true, "value": 50}
        ]
