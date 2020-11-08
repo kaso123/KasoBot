@@ -8,7 +8,7 @@ namespace KasoBot {
 	{
 	private:
 
-		void AttackMove(BWAPI::Unit unit, BWAPI::Position position) override;
+		void AttackMove(BWAPI::Unit unit, BWAPI::Position position, bool reset = false) override;
 
 	public:
 		BehaviourMedic();

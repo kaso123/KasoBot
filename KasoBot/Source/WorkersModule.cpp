@@ -270,9 +270,7 @@ void WorkersModule::RemoveWorker(BWAPI::Unit unit)
 	{
 		return;
 	}
-
-	if (StrategyModule::Instance()->IsOpenerActive())
-		StrategyModule::Instance()->AddToOpener(unit->getType());
+		
 
 	//check if worker was from any expansion and remove him
 	for (auto& exp : _expansionList)

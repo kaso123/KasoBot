@@ -9,7 +9,8 @@ namespace KasoBot {
 			IDLE,
 			SCOUT,
 			SCOUT_RUSH,
-			BUNKER
+			BUNKER,
+			REPAIR
 		};
 	}
 	class Behaviour;

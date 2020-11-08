@@ -372,11 +372,12 @@ void StrategyModule::SwitchStrategy(OwnStrategy * newStrat, const std::string& n
 
 void StrategyModule::SwitchOpener(Opener * newOpener, const std::string & name)
 {
-	if (BWAPI::Broodwar->getFrameCount() > Config::Strategy::SkipOpenerAt())
+	if (!newOpener || BWAPI::Broodwar->getFrameCount() > Config::Strategy::SkipOpenerAt())
 	{
 		//opener was finished
 		_activeOpener = nullptr;
 		_activeOpenerName = "skipped";
+		return;
 	}
 		
 	_activeOpener = newOpener;

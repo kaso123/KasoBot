@@ -74,5 +74,8 @@ bool Opener::ResetProgress()
 
 void Opener::Insert(BWAPI::UnitType type)
 {
+	if (type.isWorker() && (_queue.front() == type || ProductionModule::Instance()->InProgressUnitCount(type) > 0))
+		return;
+	
 	_queue.emplace_front(type);
 }

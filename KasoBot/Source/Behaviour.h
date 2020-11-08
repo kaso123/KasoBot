@@ -14,7 +14,7 @@ namespace KasoBot {
 
 		virtual void Move(BWAPI::Unit unit, BWAPI::Position position);
 
-		virtual void AttackMove(BWAPI::Unit unit, BWAPI::Position position);
+		virtual void AttackMove(BWAPI::Unit unit, BWAPI::Position position, bool reset = false);
 
 		virtual void HoldPosition(BWAPI::Unit unit);
 

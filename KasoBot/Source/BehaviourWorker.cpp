@@ -3,6 +3,7 @@
 #include "MapModule.h"
 #include "ArmyModule.h"
 #include "ProductionItem.h"
+#include "Army.h"
 #include "Log.h"
 
 using namespace KasoBot;
@@ -239,6 +240,15 @@ void BehaviourWorker::DefendArmy(KasoBot::Unit & unit, Army * army)
 	{
 		Repair(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
 		return;
+	}
+	if (unit.GetRole() == Units::Role::REPAIR)
+	{
+		auto target = army->GetRepairTarget();
+		if (target && target != unit.GetPointer())
+		{
+			Repair(unit.GetPointer(), target);
+			return;
+		}
 	}
 	Behaviour::DefendArmy(unit,army);
 }

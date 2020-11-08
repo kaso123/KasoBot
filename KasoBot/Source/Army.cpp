@@ -172,6 +172,12 @@ KasoBot::Unit* Army::GetScoutSoldier()
 	return nullptr;
 }
 
+BWAPI::Unit Army::GetRepairTarget()
+{
+	//TODO scv in army is not implemented so we just return nullptr for now
+	return nullptr;
+}
+
 void WorkerArmy::CheckTask()
 {
 	if (!_task)
@@ -248,7 +254,8 @@ void WorkerArmy::AddWorker(std::shared_ptr<Worker> worker)
 			worker->SetRole(Units::Role::IDLE);
 		return;
 	}
-	worker->SetRole(Units::Role::IDLE);
+	
+	worker->SetRole(_workers.size() % 2 == 1 || _workers.size() > 3 ? Units::Role::IDLE : Units::Role::REPAIR);
 }
 
 bool WorkerArmy::WorkerKilled(BWAPI::Unit unit)
@@ -290,4 +297,23 @@ void WorkerArmy::OnFrame()
 void WorkerArmy::RemoveTask()
 {
 	Army::RemoveTask();
+}
+
+BWAPI::Unit WorkerArmy::GetRepairTarget()
+{
+	BWAPI::Unit mostDamaged = nullptr;
+	for (auto& worker : _workers)
+	{
+		//don't try to repair scouts
+		if (worker->GetRole() != Workers::Role::IDLE
+			&& worker->GetRole() != Workers::Role::REPAIR)
+			continue;
+
+		auto pointer = worker->GetPointer();
+		if (pointer->getType().maxHitPoints() > pointer->getHitPoints() && (!mostDamaged
+			|| (pointer->getType().maxHitPoints() - pointer->getHitPoints())
+			> (mostDamaged->getType().maxHitPoints() - mostDamaged->getHitPoints())))
+			mostDamaged = pointer;
+	}
+	return mostDamaged;
 }

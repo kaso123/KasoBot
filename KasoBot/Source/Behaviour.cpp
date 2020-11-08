@@ -20,17 +20,17 @@ void Behaviour::Move(BWAPI::Unit unit, BWAPI::Position position)
 	unit->move(position);
 }
 
-void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
+void Behaviour::AttackMove(BWAPI::Unit unit, BWAPI::Position position, bool reset /*=false*/)
 {
 	if (unit->getOrder() == BWAPI::Orders::AttackMove && unit->getOrderTargetPosition().getDistance(position) < Config::Units::OrderDistSimilarity())
 		return;
 
 	//reset attack move when attacking target to stop chasing after enemies
 	//keep attacking when the unit is close to amove position or when it is cannon rush
-	if (unit->getOrder() == BWAPI::Orders::AttackUnit && 
+	if (unit->getOrder() == BWAPI::Orders::AttackUnit && (!reset ||
 		(unit->getOrderTarget() && (unit->getOrderTarget()->getType() == BWAPI::UnitTypes::Protoss_Pylon || unit->getOrderTarget()->getType() == BWAPI::UnitTypes::Protoss_Photon_Cannon)
 			|| unit->getOrderTarget() && unit->getOrderTarget()->exists() && unit->getOrderTarget()->getDistance(position) < (Config::Units::EnemyArmyRange() * 32) 
-			|| (unit->getLastCommandFrame() + 2 * Config::Units::OrderDelay()) > BWAPI::Broodwar->getFrameCount())) 
+			|| (unit->getLastCommandFrame() + 2 * Config::Units::OrderDelay()) > BWAPI::Broodwar->getFrameCount()))) 
 		return;
 
 	unit->attack(position);
@@ -115,7 +115,7 @@ void Behaviour::HoldPosition(KasoBot::Unit & unit, Army * army)
 	Log::Instance()->Assert(pos.isValid(),"Invalid position in hold task!");
 
 	if (unit.GetPointer()->getDistance(pos) > Config::Units::HoldPositionDistance())
-		AttackMove(unit.GetPointer(), pos);
+		AttackMove(unit.GetPointer(), pos, true);
 	else
 		HoldPosition(unit.GetPointer());
 }
@@ -147,13 +147,20 @@ void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
 {
 	Log::Instance()->Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");
 
-	AttackMove(unit.GetPointer(), position);
+	AttackMove(unit.GetPointer(), position, true);
 }
 
 void Behaviour::Scout(KasoBot::Unit & unit)
 {
 	if (ScoutModule::Instance()->EnemyStart())
 	{
+		//attack enemy base if they are worker or cannon rushing
+		if (ScoutModule::Instance()->EnemyWorkerRush() || ScoutModule::Instance()->EnemyCannonRush())
+		{
+			AttackMove(unit.GetPointer(), ScoutModule::Instance()->EnemyStart()->Bases().front().Center(),true);
+			return;
+		}
+
 		BWAPI::Position pos = BWAPI::Positions::Invalid;
 
 		//scout enemy natural

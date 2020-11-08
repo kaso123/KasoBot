@@ -465,6 +465,9 @@ bool ScoutModule::ShouldWorkerScoutRush()
 	if (BWAPI::Broodwar->getFrameCount() < Config::Strategy::ScoutRushStart())
 		return false;
 
+	if (EnemyWorkerRush())
+		return false;
+
 	if(WorkersModule::Instance()->ExpansionCount() > 1)
 		return false;
 

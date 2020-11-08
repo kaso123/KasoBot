@@ -6,7 +6,7 @@
 
 using namespace KasoBot;
 
-void BehaviourVessel::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
+void BehaviourVessel::AttackMove(BWAPI::Unit unit, BWAPI::Position position, bool)
 {
 	Move(unit, position);
 }

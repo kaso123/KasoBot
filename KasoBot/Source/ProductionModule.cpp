@@ -64,38 +64,6 @@ bool ProductionModule::IsSafeToBuild(BWAPI::TilePosition pos)
 	return true;
 }
 
-int ProductionModule::InProgressUnitCount(BWAPI::UnitType type)
-{
-	if (type.isBuilding())
-		return 0;
-	
-	return 0;
-
-	int count = 0;
-
-	if (type.isWorker())
-	{
-		for (auto& exp : WorkersModule::Instance()->ExpansionList())
-		{
-			if (exp->GetPointer()->isTraining() && exp->GetPointer()->getBuildUnit() && exp->GetPointer()->getBuildUnit()->getType() == type)
-				count++;
-		}
-	}
-	else
-	{
-		auto it = _buildingList.find(type.whatBuilds().first);
-		if (it == _buildingList.end())
-			return count;
-
-		for (auto& building : it->second)
-		{
-			if (building->GetPointer()->isTraining() && building->GetPointer()->getBuildUnit() && building->GetPointer()->getBuildUnit()->getType() == type)
-				count++;
-		}
-	}
-	return count;
-}
-
 ProductionModule* ProductionModule::Instance()
 {
 	if (!_instance)
@@ -355,7 +323,13 @@ std::pair<bool,bool> ProductionModule::BuildUnit(BWAPI::UnitType type)
 	Log::Instance()->Assert(!type.isBuilding(),"Desired unit is a building!");
 
 	if (type.isWorker())
+	{
+		if (!CheckResources(type))
+			return { false, true };
+
 		return { WorkersModule::Instance()->BuildWorker(), false };
+	}
+		
 
 	//find building type that builds this
 	auto it = _buildingList.find(type.whatBuilds().first);
@@ -655,4 +629,36 @@ std::vector<BWAPI::Unit> ProductionModule::GetDamagedBuildings()
 		}
 	}
 	return result;
+}
+
+int ProductionModule::InProgressUnitCount(BWAPI::UnitType type)
+{
+	if (type.isBuilding())
+		return 0;
+
+	return 0;
+
+	int count = 0;
+
+	if (type.isWorker())
+	{
+		for (auto& exp : WorkersModule::Instance()->ExpansionList())
+		{
+			if (exp->GetPointer()->isTraining() && exp->GetPointer()->getBuildUnit() && exp->GetPointer()->getBuildUnit()->getType() == type)
+				count++;
+		}
+	}
+	else
+	{
+		auto it = _buildingList.find(type.whatBuilds().first);
+		if (it == _buildingList.end())
+			return count;
+
+		for (auto& building : it->second)
+		{
+			if (building->GetPointer()->isTraining() && building->GetPointer()->getBuildUnit() && building->GetPointer()->getBuildUnit()->getType() == type)
+				count++;
+		}
+	}
+	return count;
 }

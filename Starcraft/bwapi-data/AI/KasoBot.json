@@ -49,7 +49,7 @@
     "bunkerWorkers": 4,
     "maxTasksPerArea": 2,
     "scout": {
-      "first": {"2starts": 8, "3starts": 7, "4starts": 6},
+      "first": {"2starts": 7, "3starts": 7, "4starts": 6},
       "tasksStart": 4320,
       "scoutRush": 1400
     }
@@ -58,7 +58,7 @@
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv"],
     "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine", "refinery" ],
-    "fast_marines": ["scv $3", "barracks","scv $3", "marine","scv $2","marine","scv $2","marine","scv $2","marine"]
+    "fast_marines": [ "scv $5","depot", "scv", "barracks", "scv $5", "marine", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine" ]
   },
   "strategies": [
     {"name": "default_mech",
@@ -108,7 +108,7 @@
       "name": "cheese_grater",
       "opener": "fast_marines",
       "units": { "marine": 1},
-      "tech": ["barracks", "barracks", "u238"]
+      "tech": ["barracks"]
     }
   ],
   "enemyStrategies": {

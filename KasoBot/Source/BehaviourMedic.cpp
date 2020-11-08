@@ -5,7 +5,7 @@
 
 using namespace KasoBot;
 
-void BehaviourMedic::AttackMove(BWAPI::Unit unit, BWAPI::Position position)
+void BehaviourMedic::AttackMove(BWAPI::Unit unit, BWAPI::Position position, bool)
 {
 	if (unit->getOrder() == BWAPI::Orders::HealMove && unit->getOrderTargetPosition().getDistance(position) < 50)
 		return;

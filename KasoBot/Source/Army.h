@@ -58,6 +58,9 @@ namespace KasoBot {
 		//@return unit that is suitable for scouting, nullptr if none in army
 		KasoBot::Unit* GetScoutSoldier();
 
+		//@return unit that should be repaired by SCVs
+		virtual BWAPI::Unit GetRepairTarget();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }
@@ -86,6 +89,8 @@ namespace KasoBot {
 
 		//remove task and send workers back to workersModule
 		void RemoveTask() override;
+
+		BWAPI::Unit GetRepairTarget() override;
 
 		//getters and setters
 
