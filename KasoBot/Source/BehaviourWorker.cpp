@@ -241,7 +241,7 @@ void BehaviourWorker::DefendArmy(KasoBot::Unit & unit, Army * army)
 		Repair(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
 		return;
 	}
-	if (unit.GetRole() == Units::Role::REPAIR)
+	if (unit.GetRole() == Units::Role::REPAIR && BWAPI::Broodwar->self()->minerals() > 100) //block repairing units when we don't have minerals for marines
 	{
 		auto target = army->GetRepairTarget();
 		if (target && target != unit.GetPointer())

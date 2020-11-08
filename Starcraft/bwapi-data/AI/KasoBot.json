@@ -40,7 +40,7 @@
     "enemyInfo": true
   },
   "strategy": {
-    "default": {"t":"default_mech", "p": "default_mech", "z": "default_bio_vs_Z"},
+    "default": {"t":"default_mech", "p": "default_mech_P", "z": "default_bio_vs_Z"},
     "cycle": [ "saturation", "army", "tech", "production" ],
     "maxArmySupply": 30,
     "maxAttackTasks": 3,
@@ -57,13 +57,19 @@
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv"],
+    "test3": [ "scv $4", "barracks", "scv", "depot", "scv $2", "marine", "refinery", "scv" ],
     "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine", "refinery" ],
-    "fast_marines": [ "scv $5","depot", "scv", "barracks", "scv $5", "marine", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine" ]
+    "fast_marines": [ "scv $4","barracks", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine" ]
   },
   "strategies": [
     {"name": "default_mech",
      "opener": "test2",
-     "units": {"tank":4, "vulture":2, "goliath":4, "marine":1},
+     "units": {"tank":4, "vulture":4, "goliath":4, "marine":1},
+      "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
+    },
+    {"name": "default_mech_P",
+     "opener": "test3",
+     "units": {"tank":4, "vulture":4, "goliath":4, "marine":1},
       "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
     },
     {"name": "mech_air",
@@ -107,6 +113,7 @@
     {
       "name": "cheese_grater",
       "opener": "fast_marines",
+      "data":  {"maxArmySupply": 8},
       "units": { "marine": 1},
       "tech": ["barracks"]
     }

@@ -10,6 +10,7 @@
 #include "Worker.h"
 #include "Expansion.h"
 #include "ProductionItem.h"
+#include "Army.h"
 
 using namespace KasoBot;
 
@@ -538,7 +539,7 @@ int WorkersModule::WorkerCountGas()
 
 int WorkersModule::WorkerCountAll()
 {
-	return WorkerCountMinerals() + WorkerCountGas() + _builders.size();
+	return WorkerCountMinerals() + WorkerCountGas() + _builders.size() + _repairers.size();
 }
 
 bool WorkersModule::ExpansionNeeded()
@@ -581,7 +582,9 @@ void WorkersModule::WorkerDefence(size_t size)
 {
 	std::vector<std::shared_ptr<KasoBot::Worker>> toMove;
 
-	int keep = 3; //TODO configure how many workers to always keep mining
+	int keep = (WorkerCountAll() + ArmyModule::Instance()->WorkerArmy()->Workers().size()) / 2; //TODO configure how many workers to always keep mining
+
+	if (keep < 3) keep = 3;
 
 	for (auto& exp : _expansionList) //select workers
 	{

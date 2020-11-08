@@ -62,6 +62,9 @@ bool StrategyModule::MacroArmy()
 
 bool StrategyModule::MacroTech()
 {
+	if (ScoutModule::Instance()->EnemyWorkerRush() && ArmyModule::Instance()->GetArmySupply() < 10) //no tech when getting worker rushed and have small army
+		return true;
+
 	//if we already built scanner and not every CC has a scanner -> build next one
 	int scanners = ProductionModule::Instance()->GetCountOf(BWAPI::UnitTypes::Terran_Comsat_Station);
 	if(scanners > 0 && scanners < WorkersModule::Instance()->ExpansionCount())

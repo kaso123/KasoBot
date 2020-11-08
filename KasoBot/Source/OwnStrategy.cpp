@@ -34,7 +34,7 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 			return Production::TechMacro(req);
 		
 		//double up on upgrade buildings
-		if (ProductionModule::Instance()->GetCountOf(item._upgrade.whatUpgrades()) < 2)
+		if (item._upgrade.maxRepeats() > 1 && ProductionModule::Instance()->GetCountOf(item._upgrade.whatUpgrades()) < 2)
 		{
 			auto it = ProductionModule::Instance()->Buildings().find(item._upgrade.whatUpgrades());
 			if (it != ProductionModule::Instance()->Buildings().end())
@@ -68,7 +68,7 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 				return Production::TechMacro(req);
 
 			//double up on upgrade buildings
-			if (ProductionModule::Instance()->GetCountOf(upgrade.whatUpgrades()) < 2)
+			if (upgrade.maxRepeats() > 1 && ProductionModule::Instance()->GetCountOf(upgrade.whatUpgrades()) < 2)
 			{
 				auto it = ProductionModule::Instance()->Buildings().find(upgrade.whatUpgrades());
 				if (it != ProductionModule::Instance()->Buildings().end())
