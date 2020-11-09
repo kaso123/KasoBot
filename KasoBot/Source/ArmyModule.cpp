@@ -36,8 +36,20 @@ void ArmyModule::AssignTasks()
 		[](const std::unique_ptr<Task>& a, const std::unique_ptr<Task>&  b)
 		{
 			if (a->Type() == Tasks::Type::ATTACK && b->Type() == Tasks::Type::ATTACK)
+			{
+				if (a->Area() == ScoutModule::Instance()->EnemyStart()) //enemy main always last
+					return false;
+				if (a->Area() == ScoutModule::Instance()->EnemyNatural()) //enemy nat only before enemy main
+				{
+					if (b->Area() == ScoutModule::Instance()->EnemyStart())
+						return true;
+					return false;
+				}
+				
 				return a->Area()->Bases().front().Center().getApproxDistance(BWEB::Map::getMainPosition())
 					< b->Area()->Bases().front().Center().getApproxDistance(BWEB::Map::getMainPosition());
+			}
+				
 			return a->Type() < b->Type();
 		});
 
@@ -105,7 +117,13 @@ void ArmyModule::CreateAttackTasks()
 		{
 			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
 			{
-				enemyBases.emplace_back(std::make_pair(&base,base.Center().getApproxDistance(BWEB::Map::getMainPosition())));
+				int dist = base.Center().getApproxDistance(BWEB::Map::getMainPosition());
+				if (&area == ScoutModule::Instance()->EnemyStart())
+					dist += BWAPI::Broodwar->mapHeight() * 32;
+				if (&area == ScoutModule::Instance()->EnemyNatural())
+					dist += BWAPI::Broodwar->mapHeight() * 16;
+
+				enemyBases.emplace_back(std::make_pair(&base,dist));
 				break;
 			}
 		}

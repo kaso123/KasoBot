@@ -439,6 +439,8 @@ const char* DebugModule::UnitRoleString(Units::Role role)
 		return "\x01 Scout"; //TODO color?
 	if (role == Units::Role::BUNKER)
 		return "\x03 Bunker"; //TODO color?
+	if (role == Units::Role::REPAIR)
+		return "\x05 Repair"; //TODO color?
 	return "Idle";
 }
 
@@ -452,6 +454,8 @@ const char* DebugModule::GetTaskString(Task * task)
 			return "Def";
 		if (task->Type() == Tasks::Type::SCOUT)
 			return "Sct";
+		if (task->Type() == Tasks::Type::FINISH)
+			return "Fin";
 	}
 
 	return "NaN";
