@@ -114,6 +114,10 @@ void BehaviourWorker::Repair(Worker & worker)
 	if (!worker.GetRepairTarget())
 		return;
 
+	if (BWAPI::Broodwar->self()->minerals() < Config::Workers::RepairMineralBlock()
+		&& worker.GetRepairTarget()->getType() != BWAPI::UnitTypes::Terran_Bunker)
+		return;
+
 	Repair(worker.GetPointer(), worker.GetRepairTarget());
 }
 
@@ -241,7 +245,7 @@ void BehaviourWorker::DefendArmy(KasoBot::Unit & unit, Army * army)
 		Repair(unit.GetPointer(), ArmyModule::Instance()->Bunker()->GetPointer());
 		return;
 	}
-	if (unit.GetRole() == Units::Role::REPAIR && BWAPI::Broodwar->self()->minerals() > 100) //block repairing units when we don't have minerals for marines
+	if (unit.GetRole() == Units::Role::REPAIR && BWAPI::Broodwar->self()->minerals() > Config::Workers::RepairMineralBlock()) //block repairing units when we don't have enough minerals
 	{
 		auto target = army->GetRepairTarget();
 		if (target && target != unit.GetPointer())

@@ -212,9 +212,9 @@ int EnemyArmy::Supply()
 	for (auto& unit : _units)
 	{
 		if (unit->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon)
-			total += 4;
+			total += 6;
 		if (unit->_type == BWAPI::UnitTypes::Protoss_Pylon)
-			total += 2;
+			total += 4;
 
 		total += unit->_type.supplyRequired();
 	}

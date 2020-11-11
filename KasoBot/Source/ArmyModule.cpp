@@ -552,8 +552,8 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 	count = std::min(count, (size_t)8); //TODO config
 	count += 2; //add scouting scvs that are not defending
 	//start worker defence
-	if(count + 2 > _workers->Workers().size())
-		WorkersModule::Instance()->WorkerDefence(count - _workers->Workers().size() + 2);
+	if(count > _workers->Workers().size())
+		WorkersModule::Instance()->WorkerDefence(count - _workers->Workers().size());
 	if(_workers->Task() == ArmyModule::Instance()->DefaultTask())
 		_workers->AssignTask(task);
 }

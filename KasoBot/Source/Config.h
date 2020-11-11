@@ -22,6 +22,7 @@ namespace KasoBot {
 		int _startGasAfter = 10;
 		int _buildStartDistance = 50;
 		int _workerResourceValue = 5;
+		int _repairMineralBlock = 100;
 
 		int _unitOrderDelay = 7;
 		int _unitOrderDistSimilarity = 50;
@@ -73,6 +74,7 @@ namespace KasoBot {
 		int StartGasAfter() { return _startGasAfter; }
 		int BuildStartDistance() { return _buildStartDistance; }
 		int WorkerResourceValue() { return _workerResourceValue; }
+		int RepairMineralBlock() { return _repairMineralBlock; }
 
 		int UnitOrderDelay() { return _unitOrderDelay; }
 		int UnitOrderDistSimilarity() { return _unitOrderDistSimilarity; }
@@ -138,6 +140,9 @@ namespace KasoBot {
 
 			//number of minerals/gas we expect one worker to mine until worker gets to build location when constructing
 			int WorkerResourceValue();
+
+			//minimum mineral amount when repairs can be done (except bunker)
+			int RepairMineralBlock();
 		}
 
 		namespace Units {

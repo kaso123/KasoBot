@@ -45,6 +45,7 @@ void ConfigModule::Init()
 		_startGasAfter = j["workers"].contains("startGasAfter") ? j["workers"]["startGasAfter"] : _startGasAfter;	
 		_buildStartDistance = j["workers"].contains("buildStartDistance") ? j["workers"]["buildStartDistance"] : _buildStartDistance;
 		_workerResourceValue = j["workers"].contains("workerResourceValue") ? j["workers"]["workerResourceValue"] : _workerResourceValue;
+		_repairMineralBlock = j["workers"].contains("repairMineralBlock") ? j["workers"]["repairMineralBlock"] : _repairMineralBlock;
 	}
 	if (j.contains("units"))
 	{
@@ -181,6 +182,7 @@ int Config::Workers::SaturationPerGas() { return ConfigModule::Instance()->Satur
 int Config::Workers::StartGasAfter() { return ConfigModule::Instance()->StartGasAfter(); }
 int Config::Workers::BuildStartDistance() { return ConfigModule::Instance()->BuildStartDistance(); }
 int Config::Workers::WorkerResourceValue() { return ConfigModule::Instance()->WorkerResourceValue(); }
+int Config::Workers::RepairMineralBlock() { return ConfigModule::Instance()->RepairMineralBlock(); }
 
 int Config::Units::OrderDelay() { return ConfigModule::Instance()->UnitOrderDelay(); }
 int Config::Units::OrderDistSimilarity() { return ConfigModule::Instance()->UnitOrderDistSimilarity(); }
