@@ -18,7 +18,7 @@ using namespace KasoBot;
 ArmyModule* ArmyModule::_instance = 0;
 
 ArmyModule::ArmyModule()
-	:_bunker(nullptr), _scoutTimeout(0)
+	:_bunker(nullptr), _scoutTimeout(0), _armySupplyIncrease(0)
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 	_workers = std::make_unique<KasoBot::WorkerArmy>();
@@ -581,4 +581,9 @@ bool ArmyModule::IsCloseToAnyArmy(BWAPI::Unit unit)
 	}
 
 	return false;
+}
+
+void ArmyModule::AttackArmyKilled()
+{
+	_armySupplyIncrease += StrategyModule::Instance()->GetActiveStrat()->ArmySupplyIncrease();
 }

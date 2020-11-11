@@ -28,7 +28,7 @@ AttackAreaTask::AttackAreaTask(const BWEM::Area * area)
 
 bool AttackAreaTask::IsArmySuitable(Army & army)
 {
-	if (army.GetSupply() < StrategyModule::Instance()->GetActiveStrat()->MaxArmySupply() *2)
+	if (army.GetSupply() < StrategyModule::Instance()->GetActiveStrat()->MinArmySupply())
 		return  false;
 	return true;
 }

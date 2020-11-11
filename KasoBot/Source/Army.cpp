@@ -67,7 +67,10 @@ Army::~Army()
 	if (_task)
 	{
 		if (_task->Type() == Tasks::Type::SCOUT)
-			ArmyModule::Instance()->SetScoutTimeout(BWAPI::Broodwar->getFrameCount() + 1000); //TODO make configurable
+			ArmyModule::Instance()->SetScoutTimeout(BWAPI::Broodwar->getFrameCount() + Config::Strategy::ScoutTimeout());
+
+		if (_task->Type() == Tasks::Type::ATTACK)
+			ArmyModule::Instance()->AttackArmyKilled();
 		_task->Stop();
 	}
 }
@@ -91,7 +94,7 @@ bool Army::AddSoldier(KasoBot::Unit* unit)
 		&& (_task->Type() == Tasks::Type::ATTACK || _task->Type() == Tasks::Type::SCOUT))
 		return false;
 
-	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > StrategyModule::Instance()->GetActiveStrat()->MaxArmySupply() * 2)
+	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > StrategyModule::Instance()->GetActiveStrat()->MinArmySupply())
 		return false;
 
 	_soldiers.emplace_back(unit);

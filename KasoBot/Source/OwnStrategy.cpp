@@ -1,6 +1,7 @@
 #include "OwnStrategy.h"
 #include "StrategyModule.h"
 #include "ProductionModule.h"
+#include "ArmyModule.h"
 #include "Config.h"
 #include "Unit.h"
 
@@ -340,9 +341,21 @@ Production::TechMacro OwnStrategy::GetMacroTechType() const
 	return GetMacroAfterTechPathDone();
 }
 
-int OwnStrategy::MaxArmySupply() const
+int OwnStrategy::MinArmySupply() const
 {
-	return _data.contains("maxArmySupply") ? _data["maxArmySupply"] : Config::Strategy::MaxArmySupply();
+	int result = _data.contains("minArmySupply") ? _data["minArmySupply"] * 2 : Config::Strategy::MinArmySupply();
+	result += ArmyModule::Instance()->ArmySupplyIncrease();
+	return std::min(result, MaxArmySupply());
+}
+
+int KasoBot::OwnStrategy::MaxArmySupply() const
+{
+	return _data.contains("maxArmySupply") ? _data["maxArmySupply"] * 2 : Config::Strategy::MaxArmySupply();
+}
+
+int KasoBot::OwnStrategy::ArmySupplyIncrease() const
+{
+	return _data.contains("armySupplyIncrease") ? _data["armySupplyIncrease"] * 2 : Config::Strategy::ArmySupplyIncrease();
 }
 
 int KasoBot::OwnStrategy::MaxAttackTasks() const

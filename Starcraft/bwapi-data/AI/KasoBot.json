@@ -43,7 +43,9 @@
   "strategy": {
     "default": {"t":"default_mech", "p": "default_mech_P", "z": "default_bio_vs_Z"},
     "cycle": [ "saturation", "army", "tech", "production" ],
-    "maxArmySupply": 30,
+    "minArmySupply": 30,
+    "maxArmySupply": 50,
+    "armySupplyIncrease": 4,
     "maxAttackTasks": 3,
     "maxScoutTasks": 1,
     "skipOpenerAtFrame": 4320,
@@ -52,7 +54,8 @@
     "scout": {
       "first": {"2starts": 7, "3starts": 7, "4starts": 6},
       "tasksStart": 4320,
-      "scoutRush": 1400
+      "scoutRush": 1400,
+      "timeout": 700
     }
   },
   "openers": {
@@ -85,7 +88,7 @@
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
-     "data": {"maxArmySupply": 13, "maxAttackTasks": 5},
+     "data": {"minArmySupply": 13, "maxAttackTasks": 5},
      "units": {"marine":5, "medic":2, "firebat":2, "tank": 1},
       "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
@@ -102,7 +105,7 @@
     },
     {"name": "bio_vessel",
      "opener": "test1",
-     "data": {"maxArmySupply": 20, "maxAttackTasks": 4},
+     "data": {"minArmySupply": 20, "maxAttackTasks": 4},
      "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1, "tank": 1},
       "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
@@ -114,7 +117,7 @@
     {
       "name": "cheese_grater",
       "opener": "fast_marines",
-      "data":  {"maxArmySupply": 8},
+      "data":  {"minArmySupply": 8},
       "units": { "marine": 1},
       "tech": ["barracks"]
     }

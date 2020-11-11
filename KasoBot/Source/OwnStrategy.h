@@ -51,7 +51,9 @@ namespace KasoBot {
 		//@return next upgrade, tech or building that should be built
 		Production::TechMacro GetMacroTechType() const;
 
+		int MinArmySupply() const;
 		int MaxArmySupply() const;
+		int ArmySupplyIncrease() const;
 		int MaxAttackTasks() const;
 
 		//getters and setters

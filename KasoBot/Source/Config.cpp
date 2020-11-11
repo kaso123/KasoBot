@@ -97,7 +97,9 @@ void ConfigModule::Init()
 	}
 	if (j.contains("strategy"))
 	{
-		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] : _maxArmySupply;
+		_minArmySupply = j["strategy"].contains("minArmySupply") ? j["strategy"]["minArmySupply"] * 2 : _minArmySupply;
+		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] * 2 : _maxArmySupply;
+		_armySupplyIncrease = j["strategy"].contains("armySupplyIncrease") ? j["strategy"]["armySupplyIncrease"] * 2 : _armySupplyIncrease;
 		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
 		_maxScoutTasks = j["strategy"].contains("maxScoutTasks") ? j["strategy"]["maxScoutTasks"] : _maxScoutTasks;
 		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
@@ -141,6 +143,7 @@ void ConfigModule::Init()
 			}
 			_scoutTasksStart = j["strategy"]["scout"].contains("tasksStart") ? j["strategy"]["scout"]["tasksStart"] : _scoutTasksStart;
 			_scoutRushStart = j["strategy"]["scout"].contains("scoutRush") ? j["strategy"]["scout"]["scoutRush"] : _scoutRushStart;
+			_scoutTimeout = j["strategy"]["scout"].contains("timeout") ? j["strategy"]["scout"]["timeout"] : _scoutTimeout;
 		}
 	}
 	//load known enemy strategies
@@ -211,7 +214,9 @@ bool Config::Debug::Bases() { return ConfigModule::Instance()->DebugBases(); }
 bool Config::Debug::Resources() { return ConfigModule::Instance()->DebugResources(); }
 bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
+int Config::Strategy::MinArmySupply() { return ConfigModule::Instance()->MinArmySupply(); }
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
+int Config::Strategy::ArmySupplyIncrease() { return ConfigModule::Instance()->ArmySupplyIncrease(); }
 int Config::Strategy::MaxAttackTasks() { return ConfigModule::Instance()->MaxAttackTasks(); }
 int Config::Strategy::MaxScoutTasks() { return ConfigModule::Instance()->MaxScoutTasks(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
@@ -220,6 +225,7 @@ int Config::Strategy::BunkerWorkers() { return ConfigModule::Instance()->BunkerW
 int Config::Strategy::MaxTasksPerArea() { return ConfigModule::Instance()->MaxTasksPerArea(); }
 int Config::Strategy::ScoutTasksStart() { return ConfigModule::Instance()->ScoutTasksStart(); }
 int Config::Strategy::ScoutRushStart() { return ConfigModule::Instance()->ScoutRushStart(); }
+int Config::Strategy::ScoutTimeout() { return ConfigModule::Instance()->ScoutTimeout(); }
 
 namespace {
 	std::map<std::string, std::string> aliases{

@@ -51,7 +51,9 @@ namespace KasoBot {
 		bool _debugResources = false;
 		bool _debugEnemy = false;
 
-		int _maxArmySupply = 60;
+		int _minArmySupply = 60;
+		int _maxArmySupply = 120;
+		int _armySupplyIncrease = 8;
 		int _maxAttackTasks = 2;
 		int _maxScoutTasks = 1;
 		int _firstScoutSupply = 8;
@@ -60,6 +62,7 @@ namespace KasoBot {
 		int _maxTasksPerArea = 2;
 		int _scoutTasksStart = 4320; //3 minutes
 		int _scoutRushStart = 1400;
+		int _scoutTimeout = 700;
 
 	public:
 		static ConfigModule* Instance();
@@ -103,7 +106,9 @@ namespace KasoBot {
 		bool DebugResources() { return _debugResources; }
 		bool DebugEnemy() { return _debugEnemy; }
 
+		int MinArmySupply() { return _minArmySupply; }
 		int MaxArmySupply() { return _maxArmySupply; }
+		int ArmySupplyIncrease() { return _armySupplyIncrease; }
 		int MaxAttackTasks() { return _maxAttackTasks; }
 		int MaxScoutTasks() { return _maxScoutTasks; }
 		int FirstScoutSupply() { return _firstScoutSupply; }
@@ -112,6 +117,7 @@ namespace KasoBot {
 		int MaxTasksPerArea() { return _maxTasksPerArea; }
 		int ScoutTasksStart() { return _scoutTasksStart; }
 		int ScoutRushStart() { return _scoutRushStart; }
+		int ScoutTimeout() { return _scoutTimeout; }
 	};
 
 	namespace Config {
@@ -230,8 +236,14 @@ namespace KasoBot {
 
 		namespace Strategy {
 
-			//@return how much supply can be in one army
+			//@return how much supply can be in one army to start attack task, will be increased
+			int MinArmySupply();
+
+			//@return maximum amount of supply one army can reach after increasing of minArmySupply
 			int MaxArmySupply();
+
+			//@return supply addition to min army size when attacking army dies
+			int ArmySupplyIncrease();
 
 			//@return maximum number of attack tasks active in one moment
 			int MaxAttackTasks();
@@ -256,6 +268,9 @@ namespace KasoBot {
 
 			//@return frame when scouting for cannon rush should start
 			int ScoutRushStart();
+
+			//@return how many frames to wait between scouts when scout dies
+			int ScoutTimeout();
 		}
 
 		namespace Utils {

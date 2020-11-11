@@ -32,6 +32,8 @@ namespace KasoBot {
 
 		int _scoutTimeout; //frame until which scouting is stopped
 
+		int _armySupplyIncrease; //increase of min army supply because of lost fights
+
 		//cycle through tasks and try to assign each to an army
 		void AssignTasks();
 
@@ -108,6 +110,9 @@ namespace KasoBot {
 		//@return true if this unit is in range of any army
 		bool IsCloseToAnyArmy(BWAPI::Unit unit);
 
+		//increase army min supply
+		void AttackArmyKilled();
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }
@@ -116,7 +121,8 @@ namespace KasoBot {
 		Task* DefaultTask() const { return _defaultTask.get(); }
 		KasoBot::Unit* Bunker() const { return _bunker; }
 		void SetBunker(KasoBot::Unit* bunker) { _bunker = bunker; }
-		void SetScoutTimeout(int frame) {}
+		void SetScoutTimeout(int frame) { _scoutTimeout = frame; }
+		int ArmySupplyIncrease() { return _armySupplyIncrease; }
 	};
 }
 
