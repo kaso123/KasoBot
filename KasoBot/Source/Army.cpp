@@ -4,10 +4,12 @@
 #include "ArmyModule.h"
 #include "WorkersModule.h"
 #include "StrategyModule.h"
+#include "MapModule.h"
 #include "OwnStrategy.h"
 #include "EnemyArmy.h"
 #include "Worker.h"
 #include "Log.h"
+#include "BaseInfo.h"
 
 using namespace KasoBot;
 
@@ -67,10 +69,20 @@ Army::~Army()
 	if (_task)
 	{
 		if (_task->Type() == Tasks::Type::SCOUT)
+		{
 			ArmyModule::Instance()->SetScoutTimeout(BWAPI::Broodwar->getFrameCount() + Config::Strategy::ScoutTimeout());
+			
+			Log::Instance()->Assert(_task->Area(), "No area in scout task!");
+			for (auto& base : _task->Area()->Bases())
+			{
+				((BaseInfo*)base.Ptr())->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+			}
+		}
+			
 
 		if (_task->Type() == Tasks::Type::ATTACK)
 			ArmyModule::Instance()->AttackArmyKilled();
+
 		_task->Stop();
 	}
 }
