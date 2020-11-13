@@ -366,6 +366,8 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 		if (unit->getType().isResourceDepot())
 		{
 			((BaseInfo*)Map::GetStation(unit->getTilePosition())->getBWEMBase()->Ptr())->_owner = Base::Owner::ENEMY;
+			//reset attack tasks
+			ArmyModule::Instance()->ResetAttackTasks();
 		}
 	}
 
@@ -560,4 +562,25 @@ bool ScoutModule::EnemyCannonRush()
 			return true;
 	}
 	return false;
+}
+
+void ScoutModule::ScanBase(const BWEM::Base & base)
+{
+	int scanEnergy = 0;
+	BWAPI::Unit scan = nullptr;
+
+	auto it = ProductionModule::Instance()->Buildings().find(BWAPI::UnitTypes::Terran_Comsat_Station);
+	if (it == ProductionModule::Instance()->Buildings().end())
+		return;
+
+	for (auto& unit : it->second)
+	{
+		if (unit->GetPointer()->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyCost())
+			scan = unit->GetPointer();
+
+		scanEnergy += unit->GetPointer()->getEnergy();
+	}
+
+	if (scan && scanEnergy > Config::Strategy::ScanBaseEnergy())
+		scan->useTech(BWAPI::TechTypes::Scanner_Sweep, base.Center());
 }

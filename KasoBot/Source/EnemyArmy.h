@@ -44,6 +44,9 @@ namespace KasoBot {
 		//@return true if there are many workers in our base
 		bool IsWorkerRush();
 
+		//@return true if there are only observers / overlords in army
+		bool IsFlyingScout();
+
 		//@return true if all enemies in this army are flying
 		bool IsOnlyFlying();
 

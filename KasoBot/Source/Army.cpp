@@ -4,6 +4,7 @@
 #include "ArmyModule.h"
 #include "WorkersModule.h"
 #include "StrategyModule.h"
+#include "ScoutModule.h"
 #include "MapModule.h"
 #include "OwnStrategy.h"
 #include "EnemyArmy.h"
@@ -76,6 +77,9 @@ Army::~Army()
 			for (auto& base : _task->Area()->Bases())
 			{
 				((BaseInfo*)base.Ptr())->_lastSeenFrame = BWAPI::Broodwar->getFrameCount();
+				
+				//try to scan base
+				ScoutModule::Instance()->ScanBase(base);
 			}
 		}
 			

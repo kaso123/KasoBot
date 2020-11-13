@@ -144,6 +144,7 @@ void ConfigModule::Init()
 			_scoutTasksStart = j["strategy"]["scout"].contains("tasksStart") ? j["strategy"]["scout"]["tasksStart"] : _scoutTasksStart;
 			_scoutRushStart = j["strategy"]["scout"].contains("scoutRush") ? j["strategy"]["scout"]["scoutRush"] : _scoutRushStart;
 			_scoutTimeout = j["strategy"]["scout"].contains("timeout") ? j["strategy"]["scout"]["timeout"] : _scoutTimeout;
+			_scanBaseEnergy = j["strategy"]["scout"].contains("scanBaseEnergy") ? j["strategy"]["scout"]["scanBaseEnergy"] : _scanBaseEnergy;
 		}
 	}
 	//load known enemy strategies
@@ -226,6 +227,7 @@ int Config::Strategy::MaxTasksPerArea() { return ConfigModule::Instance()->MaxTa
 int Config::Strategy::ScoutTasksStart() { return ConfigModule::Instance()->ScoutTasksStart(); }
 int Config::Strategy::ScoutRushStart() { return ConfigModule::Instance()->ScoutRushStart(); }
 int Config::Strategy::ScoutTimeout() { return ConfigModule::Instance()->ScoutTimeout(); }
+int Config::Strategy::ScanBaseEnergy() { return ConfigModule::Instance()->ScanBaseEnergy(); }
 
 namespace {
 	std::map<std::string, std::string> aliases{

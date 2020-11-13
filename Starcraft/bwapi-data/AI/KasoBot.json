@@ -55,7 +55,8 @@
       "first": {"2starts": 7, "3starts": 7, "4starts": 6},
       "tasksStart": 4320,
       "scoutRush": 1400,
-      "timeout": 700
+      "timeout": 700,
+      "scanBaseEnergy": 150
     }
   },
   "openers": {

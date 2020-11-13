@@ -148,6 +148,9 @@ bool EnemyArmy::IsThreat()
 	if (IsCannonRush())
 		return true;
 
+	if (IsFlyingScout())
+		return false;
+
 	for (auto& type : ProductionModule::Instance()->Buildings())
 	{
 		Log::Instance()->Assert(type.first.isBuilding(),"Wrong type in building list!");
@@ -194,6 +197,17 @@ bool EnemyArmy::IsWorkerRush()
 			workersInBase--;
 	}
 	return workersInBase > 1;
+}
+
+bool EnemyArmy::IsFlyingScout()
+{
+	for (auto& enemy : _units)
+	{
+		if (enemy->_type != BWAPI::UnitTypes::Zerg_Overlord 
+			&& enemy->_type != BWAPI::UnitTypes::Protoss_Observer)
+			return false;
+	}
+	return true;
 }
 
 bool EnemyArmy::IsOnlyFlying()

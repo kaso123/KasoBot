@@ -3,6 +3,7 @@
 
 namespace BWEM {
 	class Area;
+	class Base;
 }
 
 namespace KasoBot {
@@ -102,6 +103,9 @@ namespace KasoBot {
 		//@return true if one of enemy armies looks like cannon rush
 		bool EnemyCannonRush();
 
+		//scan base if enough energy spared
+		void ScanBase(const BWEM::Base& base);
+		
 		//getters and setters
 
 		const std::unordered_map<BWAPI::UnitType, EnemyList, std::hash<int>>& GetEnemies() const { return _enemies; }

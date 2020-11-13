@@ -63,6 +63,7 @@ namespace KasoBot {
 		int _scoutTasksStart = 4320; //3 minutes
 		int _scoutRushStart = 1400;
 		int _scoutTimeout = 700;
+		int _scanBaseEnergy = 150;
 
 	public:
 		static ConfigModule* Instance();
@@ -118,6 +119,7 @@ namespace KasoBot {
 		int ScoutTasksStart() { return _scoutTasksStart; }
 		int ScoutRushStart() { return _scoutRushStart; }
 		int ScoutTimeout() { return _scoutTimeout; }
+		int ScanBaseEnergy() { return _scanBaseEnergy; }
 	};
 
 	namespace Config {
@@ -271,6 +273,9 @@ namespace KasoBot {
 
 			//@return how many frames to wait between scouts when scout dies
 			int ScoutTimeout();
+
+			//@return minimal saved energy on comsat stations to scan enemy bases
+			int ScanBaseEnergy();
 		}
 
 		namespace Utils {
