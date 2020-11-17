@@ -122,6 +122,9 @@ void ProductionModule::OnFrame()
 
 void ProductionModule::AddUnit(BWAPI::Unit unit)
 {
+	if (unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep)
+		return;
+
 	auto it = _unitList.find(unit->getType());
 	
 	if (it != _unitList.end())
@@ -163,6 +166,9 @@ void ProductionModule::AddBuilding(BWAPI::Unit unit)
 
 void ProductionModule::RemoveUnit(BWAPI::Unit unit)
 {
+	if (unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep)
+		return;
+
 	if (!unit->isCompleted())
 		return;
 

@@ -189,7 +189,7 @@ void StrategyModule::OnFrame()
 	}
 
 	//cycle through all macro stuff in order and try to build something
-	for (auto& item : _productionCycle)
+	for (auto& item : GetCycle())
 	{
 		if (item == Production::Type::SATURATION)
 		{
@@ -271,13 +271,13 @@ void StrategyModule::SetCycle(nlohmann::json & itemsArray)
 	for (auto& item : itemsArray)
 	{
 		Log::Instance()->Assert(item.is_string(), "Wrong json format in prod cycle item!");
-		if (item == "saturation")
+		if (item == "sat")
 			_productionCycle.emplace_back(Production::Type::SATURATION);
 		else if (item == "army")
 			_productionCycle.emplace_back(Production::Type::ARMY);
 		else if (item == "tech")
 			_productionCycle.emplace_back(Production::Type::TECH);
-		else if (item == "production")
+		else if (item == "prod")
 			_productionCycle.emplace_back(Production::Type::PRODUCTION);
 
 	}
@@ -331,7 +331,9 @@ void StrategyModule::NewOwnStrategy(nlohmann::json& strat)
 		data = std::move(strat["data"]);
 
 	OwnStrategy* strategy = _strategies.emplace(strat["name"].get<std::string>(), 
-		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), strat["opener"].get<std::string>(),data)).first->second.get();
+		std::make_unique<OwnStrategy>(strat["name"].get<std::string>(), 
+			strat["opener"].get<std::string>(),
+			data, strat.contains("cycle") ? strat["cycle"] : nlohmann::json::object())).first->second.get();
 	
 	if (strat.contains("units"))
 	{
@@ -362,6 +364,16 @@ const std::vector<std::unique_ptr<EnemyStrategy>>& StrategyModule::GetEnemyStrat
 		return _stratsP;
 
 	return _stratsZ;
+}
+
+const std::vector<Production::Type>& StrategyModule::GetCycle() const
+{
+	Log::Instance()->Assert(_activeStrat, "No strategy active!");
+
+	if (!_activeStrat->GetCycle().empty())
+		return _activeStrat->GetCycle();
+
+	return _productionCycle;
 }
 
 void StrategyModule::SwitchStrategy(OwnStrategy * newStrat, const std::string& name)

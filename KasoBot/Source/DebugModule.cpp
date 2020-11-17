@@ -227,6 +227,17 @@ void DebugModule::DrawProduction()
 		y += 10;
 	}
 
+	y += 10;
+	int x = 10;
+	//draw cycle
+
+	for (auto& item : StrategyModule::Instance()->GetCycle())
+	{
+		BWAPI::Broodwar->drawTextScreen(x, y, "%s", GetProductionTypeString(item));
+		x += 30;
+	}
+
+
 	//draw locked buildings
 	for (auto& type : ProductionModule::Instance()->Buildings())
 	{
@@ -457,6 +468,20 @@ const char* DebugModule::GetTaskString(Task * task)
 		if (task->Type() == Tasks::Type::FINISH)
 			return "Fin";
 	}
+
+	return "NaN";
+}
+
+const char * DebugModule::GetProductionTypeString(Production::Type type)
+{
+	if (type == Production::Type::ARMY)
+		return "Army";
+	if (type == Production::Type::PRODUCTION)
+		return "Prod";
+	if (type == Production::Type::TECH)
+		return "Tech";
+	if (type == Production::Type::SATURATION)
+		return "Sat";
 
 	return "NaN";
 }

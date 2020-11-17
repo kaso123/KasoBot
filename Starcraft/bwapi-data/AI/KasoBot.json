@@ -42,7 +42,7 @@
   },
   "strategy": {
     "default": {"t":"default_mech", "p": "default_mech_P", "z": "default_bio_vs_Z"},
-    "cycle": [ "saturation", "army", "tech", "production" ],
+    "cycle": [ "sat", "army", "tech", "prod" ],
     "minArmySupply": 30,
     "maxArmySupply": 50,
     "armySupplyIncrease": 4,
@@ -62,7 +62,7 @@
   "openers": {
     "test1": [ "scv $4", "depot", "scv $3", "barracks", "scv", "marine", "scv $2","marine", "refinery", "scv $2" ],
     "test2": [ "scv $5", "depot", "scv $3", "barracks", "scv $2", "marine", "refinery", "scv"],
-    "test3": [ "scv $4", "barracks", "scv", "depot", "scv $2", "marine", "refinery", "scv" ],
+    "test3": [ "scv $4", "barracks", "scv", "depot", "scv", "refinery", "scv", "marine", "scv", "marine", "factory" ],
     "anti_rush": [ "scv $4", "barracks", "scv","depot","scv $3","marine", "bunker","scv", "marine", "scv", "marine", "refinery" ],
     "fast_marines": [ "scv $4","barracks", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine", "scv $2", "marine" ]
   },
@@ -70,57 +70,57 @@
     {"name": "default_mech",
      "opener": "test2",
      "units": {"tank":4, "vulture":4, "goliath":4, "marine":1},
-      "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
+     "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
     },
     {"name": "default_mech_P",
      "opener": "test3",
      "units": {"tank":4, "vulture":4, "goliath":4, "marine":1},
-      "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
+     "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ],
+     "cycle": ["army","sat","tech","prod"]
     },
     {"name": "mech_air",
      "opener": "test2",
      "units": {"tank":2, "vulture":5, "goliath":1, "marine":1,"wraith": 1, "battlecruiser": 1},
-      "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
+     "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
      "units": {"tank":3, "vulture":2, "goliath":1, "marine":2,"wraith": 1},
-     "tech": ["siege","armory","vehicle_weapons","starport","comsat"]
+     "tech": ["siege","armory","vehicle_weapons","starport","comsat"],
+     "cycle": ["army","sat","tech","prod"]
     },
     {"name": "default_bio_vs_Z",
      "opener": "anti_rush",
      "data": {"minArmySupply": 13, "maxAttackTasks": 5},
      "units": {"marine":5, "medic":2, "firebat":2, "tank": 1},
-      "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
+     "tech": [ "u238", "comsat", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
     {"name": "default_bio_vs_P",
      "opener": "anti_rush",
      "units": {"marine":6, "medic":2, "tank":1},
-      "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
+     "tech": [ "u238", "stim", "engineering_bay", "infantry_weapons", "infantry_armor" ]
     },
-    {
-      "name": "bio_vs_muta",
-      "opener": "test1",
-      "units": { "marine": 6, "medic": 1, "valkyrie": 2, "wraith": 1},
-      "tech": ["u238","stim","starport"]
+    {"name": "bio_vs_muta",
+     "opener": "test1",
+     "units": { "marine": 6, "medic": 1, "valkyrie": 2, "wraith": 1},
+     "tech": ["u238","stim","starport"]
     },
     {"name": "bio_vessel",
      "opener": "test1",
      "data": {"minArmySupply": 20, "maxAttackTasks": 4},
      "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1, "tank": 1},
-      "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
+     "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
     },
     {"name": "rush_bc",
      "opener": "anti_rush",
      "units": {"marine":3, "battlecruiser":2, "tank":1, "vulture": 3 },
-      "tech": [ "starport", "armory", "control_tower", "ship_weapons", "science_facility", "physics_lab", "yamato" ]
+     "tech": [ "starport", "armory", "control_tower", "ship_weapons", "science_facility", "physics_lab", "yamato" ]
     },
-    {
-      "name": "cheese_grater",
-      "opener": "fast_marines",
-      "data":  {"minArmySupply": 8},
-      "units": { "marine": 1},
-      "tech": ["barracks"]
+    {"name": "cheese_grater",
+     "opener": "fast_marines",
+     "data":  {"minArmySupply": 8},
+     "units": { "marine": 1},
+     "tech": ["barracks"]
     }
   ],
   "enemyStrategies": {
@@ -153,7 +153,7 @@
       },
       {
         "name": "Protoss_Gateway",
-        "counters": ["default_mech"],
+        "counters": ["default_mech_P"],
         "types": [
          {"type": "zealot","include": true, "value": 75, "count": 5},
          {"type": "gateway", "include": true, "value": 75, "count": 3},

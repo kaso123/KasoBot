@@ -107,6 +107,9 @@ namespace KasoBot {
 		//return list of possible enemy strategies according to his race
 		const std::vector<std::unique_ptr<EnemyStrategy>>& GetEnemyStrategies();
 
+		//return current active cycle, either from strategy or default
+		const std::vector<Production::Type>& GetCycle() const;
+
 		//change used strategy, also check if everything in opener is done
 		void SwitchStrategy(OwnStrategy* newStrat, const std::string& name);
 

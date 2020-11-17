@@ -4,6 +4,7 @@
 #include "ArmyModule.h"
 #include "Config.h"
 #include "Unit.h"
+#include "Log.h"
 
 using namespace KasoBot;
 
@@ -105,9 +106,25 @@ Production::TechMacro OwnStrategy::GetMacroAfterTechPathDone() const
 	return Production::TechMacro(BWAPI::UnitTypes::None);
 }
 
-OwnStrategy::OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data)
+OwnStrategy::OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data, nlohmann::json& cycle)
 	:_name(name), _opener(opener), _data(std::move(data))
 {
+	_cycle.clear();
+	if (cycle.is_array())
+	{
+		for (auto& item : cycle)
+		{
+			Log::Instance()->Assert(item.is_string(), "Wrong json format in prod cycle item!");
+			if (item == "sat")
+				_cycle.emplace_back(Production::Type::SATURATION);
+			else if (item == "army")
+				_cycle.emplace_back(Production::Type::ARMY);
+			else if (item == "tech")
+				_cycle.emplace_back(Production::Type::TECH);
+			else if (item == "prod")
+				_cycle.emplace_back(Production::Type::PRODUCTION);
+		}
+	}
 }
 
 OwnStrategy::~OwnStrategy()

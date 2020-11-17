@@ -8,6 +8,7 @@ namespace KasoBot {
 
 	namespace Production {
 		struct TechMacro;
+		enum Type;
 	}
 
 	struct UnitItem {
@@ -25,6 +26,7 @@ namespace KasoBot {
 		std::vector<UnitItem> _units;
 		std::vector<UnitItem> _production;
 		std::vector<Production::TechMacro> _tech;
+		std::vector<Production::Type> _cycle;
 		std::string _opener;
 		nlohmann::json _data;
 
@@ -32,7 +34,7 @@ namespace KasoBot {
 		Production::TechMacro GetMacroAfterTechPathDone() const;
 
 	public:
-		OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data);
+		OwnStrategy(std::string& name, std::string& opener, nlohmann::json& data, nlohmann::json& cycle);
 		~OwnStrategy();
 
 		void AddUnit(BWAPI::UnitType type, int count);
@@ -58,6 +60,7 @@ namespace KasoBot {
 
 		//getters and setters
 
+		const std::vector<Production::Type>& GetCycle() const { return _cycle; }
 		const std::string& GetOpener() const { return _opener; }
 		const std::string& GetName() const { return _name; }
 		const std::vector<UnitItem>& GetUnitItems() const { return _units; }

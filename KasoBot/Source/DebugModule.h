@@ -9,6 +9,9 @@ namespace KasoBot {
 	namespace Units {
 		enum Role;
 	}
+	namespace Production {
+		enum Type;
+	}
 
 	class Worker;
 	class Task;
@@ -54,6 +57,9 @@ namespace KasoBot {
 
 		//@return string representation of task
 		const char* GetTaskString(Task* task);
+
+		//@return string representation of production cycle item
+		const char* GetProductionTypeString(Production::Type type);
 	
 	public:
 		static DebugModule* Instance();
