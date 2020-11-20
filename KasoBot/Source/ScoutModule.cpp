@@ -298,6 +298,39 @@ void ScoutModule::ScanEnemies()
 	}
 }
 
+void ScoutModule::ScanTech()
+{
+	if (_scanTimeoutTech > BWAPI::Broodwar->getFrameCount())
+		return;
+	if (!_enemyStart)
+		return;
+
+	if (ArmyModule::Instance()->IsWorkerScouting())
+		return;
+
+	int scanEnergy = 0;
+	BWAPI::Unit scan = nullptr;
+
+	auto it = ProductionModule::Instance()->Buildings().find(BWAPI::UnitTypes::Terran_Comsat_Station);
+	if (it == ProductionModule::Instance()->Buildings().end())
+		return;
+
+	for (auto& unit : it->second)
+	{
+		if (unit->GetPointer()->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyCost())
+			scan = unit->GetPointer();
+
+		scanEnergy += unit->GetPointer()->getEnergy();
+	}
+
+	if (scan && scanEnergy > Config::Strategy::ScanBaseEnergy())
+	{
+		scan->useTech(BWAPI::TechTypes::Scanner_Sweep, _enemyStart->Bases().front().Center());
+		_scanTimeoutTech = BWAPI::Broodwar->getFrameCount() + Config::Strategy::ScoutTimeout();
+		//TODO sometimes scan natural also
+	}
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
@@ -312,6 +345,7 @@ void ScoutModule::OnFrame()
 	MergeArmies();
 	CreateDefendTasks();
 	ScanEnemies();
+	ScanTech();
 
 	for (auto& army : _armies)
 	{

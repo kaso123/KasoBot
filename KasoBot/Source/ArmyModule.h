@@ -113,6 +113,9 @@ namespace KasoBot {
 		//increase army min supply
 		void AttackArmyKilled();
 
+		//@return true if worker has assigned scout role
+		bool IsWorkerScouting();
+
 		//getters and setters
 
 		const std::vector<std::unique_ptr<Army>>& Armies() const { return _armies; }

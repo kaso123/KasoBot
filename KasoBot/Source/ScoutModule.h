@@ -42,6 +42,7 @@ namespace KasoBot {
 		BWAPI::Race _enemyRace;
 
 		int _scanTimeout; //frame when next scan can be done
+		int _scanTimeoutTech; //frame when next techScan can be done
 
 		const BWEM::Area* _enemyStart; //enemy starting area
 		const BWEM::Area* _enemyNatural;
@@ -66,6 +67,9 @@ namespace KasoBot {
 
 		//check all scannable enemies and scan if needed
 		void ScanEnemies();
+
+		//if scout worker died, use scan to periodicaly scout enemy base
+		void ScanTech();
 
 	public:
 		static ScoutModule* Instance();
