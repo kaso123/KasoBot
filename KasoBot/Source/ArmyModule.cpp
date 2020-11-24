@@ -232,6 +232,31 @@ void ArmyModule::SplitArmyForScout(Task * task)
 	}
 }
 
+void ArmyModule::SetAirDefaultTask()
+{
+	if (_defaultAirTask->Type() != Tasks::Type::HOLD)
+	{
+		if (_defaultAirTask->FriendlyArmy() && _defaultAirTask->FriendlyArmy()->Task()->Type() != Tasks::Type::HOLD)
+			return;
+	}
+
+	if (_armies.size() < 1)
+		return;
+
+	for (auto& army : _armies)
+	{
+		if (army->IsAir())
+			continue;
+
+		if (army->Task()->Type() == Tasks::Type::SCOUT
+			|| army->Task()->Type() ==Tasks::Type::HOLD)
+			continue;
+
+		_defaultAirTask = std::make_unique<SupportArmyTask>(army.get());
+		return;
+	}
+}
+
 ArmyModule* ArmyModule::Instance()
 {
 	if (!_instance)
@@ -281,7 +306,7 @@ void ArmyModule::OnFrame()
 		}
 	}
 
-	//TODO check air default task, whether it needs new army
+	SetAirDefaultTask();
 	CreateAttackTasks();
 	CreateScoutTasks();
 	AssignTasks();
@@ -355,13 +380,9 @@ void ArmyModule::AddSoldier(KasoBot::Unit* unit)
 	}
 
 	auto& newArmy = _armies.emplace_back(std::make_unique<Army>(
-		unit->GetPointer()->getType().isFlyer() && !unit->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Science_Vessel ? true : false));
+		unit->GetPointer()->getType().isFlyer() && unit->GetPointer()->getType() != BWAPI::UnitTypes::Terran_Science_Vessel ? true : false));
 	auto log = newArmy->AddSoldier(unit);
 	Log::Instance()->Assert(log, "Wrong army created for unit!");
-
-	//update air default task if first army is created
-	if (_defaultAirTask->Type() == Tasks::Type::HOLD)
-		_defaultAirTask = std::make_unique<SupportArmyTask>(newArmy.get());
 }
 
 void ArmyModule::SoldierKilled(KasoBot::Unit* unit)

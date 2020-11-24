@@ -176,6 +176,10 @@ void DebugModule::DrawTasks()
 		{
 			BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->EnemyArmy()->BoundingBox()._center, BWAPI::Colors::White);
 		}
+		else if (army->Task()->Type() == Tasks::Type::SUPPORT)
+		{
+			BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->FriendlyArmy()->BoundingBox()._center, BWAPI::Colors::Yellow);
+		}
 	}
 }
 
@@ -471,6 +475,8 @@ const char* DebugModule::GetTaskString(Task * task)
 			return "Hrs";
 		if (task->Type() == Tasks::Type::HUNT)
 			return "Hnt";
+		if (task->Type() == Tasks::Type::SUPPORT)
+			return "Sup";
 	}
 
 	return "NaN";

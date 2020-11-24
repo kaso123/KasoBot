@@ -143,6 +143,14 @@ void Behaviour::FinishEnemy(KasoBot::Unit & unit, Army * army)
 	AttackMove(unit.GetPointer(), BWAPI::Position(pos) + BWAPI::Position(16,16));
 }
 
+void Behaviour::SupportArmy(KasoBot::Unit & unit, Army * army)
+{
+	Log::Instance()->Assert(army, "No army in behaviour task!");
+	auto targetArmy = army->Task()->FriendlyArmy();
+	Log::Instance()->Assert(targetArmy, "Missing army in support task!");
+	MoveToArmyCenter(unit, targetArmy->BoundingBox()._center);
+}
+
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)
 {
 	Log::Instance()->Assert(position.isValid(),"Invalid position in MoveToArmyCenter!");

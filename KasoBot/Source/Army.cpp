@@ -200,7 +200,7 @@ void Army::RemoveTask()
 
 Task * Army::Task()
 {
-	return _task ? _task : ArmyModule::Instance()->DefaultTask();
+	return _task ? _task : (_bAir ? ArmyModule::Instance()->DefaultAirTask() : ArmyModule::Instance()->DefaultTask());
 }
 
 KasoBot::Unit* Army::GetScoutSoldier()

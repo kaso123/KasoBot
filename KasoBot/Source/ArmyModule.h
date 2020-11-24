@@ -48,6 +48,9 @@ namespace KasoBot {
 		//find idle army and move one marine/vulture/wraith to another army and assign scout task to it
 		void SplitArmyForScout(Task* task);
 
+		//make support task for biggest army if default air task is hold
+		void SetAirDefaultTask();
+
 	public:
 		static ArmyModule* Instance();
 

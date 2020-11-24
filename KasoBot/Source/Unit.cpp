@@ -103,6 +103,10 @@ void Unit::Fight(Army* army)
 	{
 		_behaviour->FinishEnemy(*this, army);
 	}
+	else if (army->Task()->Type() == Tasks::Type::SUPPORT)
+	{
+		_behaviour->SupportArmy(*this, army);
+	}
 }
 
 void Unit::Scout()
