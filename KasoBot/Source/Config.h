@@ -53,6 +53,7 @@ namespace KasoBot {
 
 		int _minArmySupply = 60;
 		int _maxArmySupply = 120;
+		int _minAirArmySupply = 6;
 		int _armySupplyIncrease = 8;
 		int _maxAttackTasks = 2;
 		int _maxScoutTasks = 1;
@@ -109,6 +110,7 @@ namespace KasoBot {
 
 		int MinArmySupply() { return _minArmySupply; }
 		int MaxArmySupply() { return _maxArmySupply; }
+		int MinAirArmySupply() { return _minAirArmySupply; }
 		int ArmySupplyIncrease() { return _armySupplyIncrease; }
 		int MaxAttackTasks() { return _maxAttackTasks; }
 		int MaxScoutTasks() { return _maxScoutTasks; }
@@ -243,6 +245,9 @@ namespace KasoBot {
 
 			//@return maximum amount of supply one army can reach after increasing of minArmySupply
 			int MaxArmySupply();
+
+			//@return how much supply can be in one air army to start own tasks
+			int MinAirArmySupply();
 
 			//@return supply addition to min army size when attacking army dies
 			int ArmySupplyIncrease();

@@ -99,6 +99,7 @@ void ConfigModule::Init()
 	{
 		_minArmySupply = j["strategy"].contains("minArmySupply") ? j["strategy"]["minArmySupply"] * 2 : _minArmySupply;
 		_maxArmySupply = j["strategy"].contains("maxArmySupply") ? j["strategy"]["maxArmySupply"] * 2 : _maxArmySupply;
+		_minAirArmySupply = j["strategy"].contains("minAirArmySupply") ? j["strategy"]["minAirArmySupply"] * 2 : _minAirArmySupply;
 		_armySupplyIncrease = j["strategy"].contains("armySupplyIncrease") ? j["strategy"]["armySupplyIncrease"] * 2 : _armySupplyIncrease;
 		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
 		_maxScoutTasks = j["strategy"].contains("maxScoutTasks") ? j["strategy"]["maxScoutTasks"] : _maxScoutTasks;
@@ -217,6 +218,7 @@ bool Config::Debug::Enemy() { return ConfigModule::Instance()->DebugEnemy(); }
 
 int Config::Strategy::MinArmySupply() { return ConfigModule::Instance()->MinArmySupply(); }
 int Config::Strategy::MaxArmySupply() { return ConfigModule::Instance()->MaxArmySupply(); }
+int Config::Strategy::MinAirArmySupply() { return ConfigModule::Instance()->MinAirArmySupply(); }
 int Config::Strategy::ArmySupplyIncrease() { return ConfigModule::Instance()->ArmySupplyIncrease(); }
 int Config::Strategy::MaxAttackTasks() { return ConfigModule::Instance()->MaxAttackTasks(); }
 int Config::Strategy::MaxScoutTasks() { return ConfigModule::Instance()->MaxScoutTasks(); }

@@ -45,6 +45,7 @@
     "cycle": [ "sat", "army", "tech", "prod" ],
     "minArmySupply": 30,
     "maxArmySupply": 50,
+    "minAirArmySupply": 6,
     "armySupplyIncrease": 4,
     "maxAttackTasks": 3,
     "maxScoutTasks": 1,

@@ -21,6 +21,9 @@ namespace KasoBot {
 		Task* _task;
 		std::unique_ptr<Armies::Box> _box; //bounding box around all units
 
+		bool _bAir; //whether this is flying army
+		int _antiAir; //number of units that can shoot air
+
 		//calculate center point between all units
 		void CalculateCenter();
 
@@ -28,7 +31,7 @@ namespace KasoBot {
 		virtual void CheckTask();
 
 	public:
-		Army();
+		Army(bool air);
 		virtual ~Army();
 
 		virtual void OnFrame();
@@ -65,6 +68,8 @@ namespace KasoBot {
 
 		const Armies::Box& BoundingBox() { return *_box; }
 		const std::vector<KasoBot::Unit*>& Units() const { return _soldiers; }
+		bool IsAir() const { return _bAir; }
+		int AntiAirCount() const { return _antiAir; }
 	};
 
 	class WorkerArmy : public Army {

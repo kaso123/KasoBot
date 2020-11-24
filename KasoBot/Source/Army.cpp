@@ -56,8 +56,8 @@ void Army::CheckTask()
 	}
 }
 
-Army::Army()
-	:_task(nullptr)
+Army::Army(bool air)
+	:_task(nullptr), _bAir(air), _antiAir(0)
 {
 	_box = std::make_unique<Armies::Box>();
 	_box->_topLeft = BWAPI::Position(0, 0);
@@ -107,13 +107,32 @@ void Army::OnFrame()
 bool Army::AddSoldier(KasoBot::Unit* unit)
 {
 	if (_task 
-		&& (_task->Type() == Tasks::Type::ATTACK || _task->Type() == Tasks::Type::SCOUT))
+		&& (_task->Type() == Tasks::Type::ATTACK || _task->Type() == Tasks::Type::SCOUT || _task->Type() == Tasks::Type::HARASS || _task->Type() == Tasks::Type::HUNT))
 		return false;
 
-	if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > StrategyModule::Instance()->GetActiveStrat()->MinArmySupply())
-		return false;
+	if (unit->GetPointer()->getType().isFlyer() && unit->GetPointer()->getType() != BWAPI::UnitTypes::Terran_Science_Vessel) //air units
+	{
+		if (!_bAir)
+			return false;
+
+		if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > Config::Strategy::MinAirArmySupply())
+			return false;
+	}
+	else //ground units
+	{
+		if (_bAir)
+			return false;
+
+		if (GetSupply() + unit->GetPointer()->getType().supplyRequired() > StrategyModule::Instance()->GetActiveStrat()->MinArmySupply())
+			return false;
+	}
+
 
 	_soldiers.emplace_back(unit);
+
+	if (unit->GetPointer()->getType().airWeapon() != BWAPI::WeaponTypes::None)
+		_antiAir++;
+
 	return true;
 }
 
@@ -124,6 +143,9 @@ bool Army::SoldierKilled(KasoBot::Unit* unit)
 		if (*it == unit)
 		{
 			_soldiers.erase(it);
+			if (unit->GetPointer()->getType().airWeapon() != BWAPI::WeaponTypes::None)
+				_antiAir--;
+			Log::Instance()->Assert(_antiAir >= 0, "Error in counting anti air units!");
 			return true;
 		}
 	}
@@ -211,6 +233,7 @@ void WorkerArmy::CheckTask()
 }
 
 WorkerArmy::WorkerArmy()
+	:Army(false)
 {
 }
 

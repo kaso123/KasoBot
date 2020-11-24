@@ -222,7 +222,7 @@ void ArmyModule::SplitArmyForScout(Task * task)
 				continue;
 
 			army->SoldierKilled(soldier);
-			auto newArmy = _armies.emplace_back(std::make_unique<Army>()).get();
+			auto newArmy = _armies.emplace_back(std::make_unique<Army>(army->IsAir())).get();
 			Log::Instance()->Assert(newArmy != nullptr, "No army created for scout soldier!");
 			newArmy->AddSoldier(soldier);
 			newArmy->AssignTask(task);
@@ -352,8 +352,10 @@ void ArmyModule::AddSoldier(KasoBot::Unit* unit)
 		}
 	}
 
-	auto& newArmy = _armies.emplace_back(std::make_unique<Army>());
-	newArmy->AddSoldier(unit);
+	auto& newArmy = _armies.emplace_back(std::make_unique<Army>(
+		unit->GetPointer()->getType().isFlyer() && !unit->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Science_Vessel ? true : false));
+	auto log = newArmy->AddSoldier(unit);
+	Log::Instance()->Assert(log, "Wrong army created for unit!");
 }
 
 void ArmyModule::SoldierKilled(KasoBot::Unit* unit)

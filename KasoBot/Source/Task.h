@@ -14,6 +14,8 @@ namespace KasoBot {
 		enum Type { //the order is important for sorting tasks
 			DEFEND,
 			ATTACK,
+			HARASS,
+			HUNT,
 			FINISH,
 			SCOUT,
 			HOLD
@@ -86,7 +88,7 @@ namespace KasoBot {
 		DefendArmyTask(KasoBot::EnemyArmy* army);
 		~DefendArmyTask() {};
 
-		bool IsArmySuitable(Army& army) override { return true; }
+		bool IsArmySuitable(Army& army) override;
 
 		bool IsFinished() override;
 
@@ -118,7 +120,7 @@ namespace KasoBot {
 		FinishEnemyTask();
 		~FinishEnemyTask() {};
 
-		bool IsArmySuitable(Army& army) override { return true; };
+		bool IsArmySuitable(Army& army) override;
 		bool IsFinished() override { return false; };
 
 		BWAPI::TilePosition Next() override;

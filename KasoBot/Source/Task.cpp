@@ -28,6 +28,9 @@ AttackAreaTask::AttackAreaTask(const BWEM::Area * area)
 
 bool AttackAreaTask::IsArmySuitable(Army & army)
 {
+	if (army.IsAir())
+		return false;
+
 	if (army.GetSupply() < StrategyModule::Instance()->GetActiveStrat()->MinArmySupply())
 		return  false;
 	return true;
@@ -66,6 +69,11 @@ DefendArmyTask::DefendArmyTask(KasoBot::EnemyArmy * army)
 {
 }
 
+bool DefendArmyTask::IsArmySuitable(Army& army)
+{
+	return !army.IsAir() && !(_army->IsOnlyFlying() && army.AntiAirCount() <= 0);
+}
+
 bool DefendArmyTask::IsFinished()
 {
 	return !_army->IsThreat();
@@ -102,6 +110,11 @@ bool ScoutAreaTask::IsFinished()
 FinishEnemyTask::FinishEnemyTask()
 	: Task(Tasks::Type::FINISH), _nextPos(BWAPI::TilePositions::Invalid)
 {
+}
+
+bool FinishEnemyTask::IsArmySuitable(Army& army)
+{
+	return !army.IsAir();
 }
 
 BWAPI::TilePosition FinishEnemyTask::Next()

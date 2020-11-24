@@ -467,6 +467,10 @@ const char* DebugModule::GetTaskString(Task * task)
 			return "Sct";
 		if (task->Type() == Tasks::Type::FINISH)
 			return "Fin";
+		if (task->Type() == Tasks::Type::HARASS)
+			return "Hrs";
+		if (task->Type() == Tasks::Type::HUNT)
+			return "Hnt";
 	}
 
 	return "NaN";
