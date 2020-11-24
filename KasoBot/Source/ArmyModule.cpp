@@ -21,6 +21,7 @@ ArmyModule::ArmyModule()
 	:_bunker(nullptr), _scoutTimeout(0), _armySupplyIncrease(0)
 {
 	_defaultTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
+	_defaultAirTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 	_workers = std::make_unique<KasoBot::WorkerArmy>();
 }
 
@@ -280,6 +281,7 @@ void ArmyModule::OnFrame()
 		}
 	}
 
+	//TODO check air default task, whether it needs new army
 	CreateAttackTasks();
 	CreateScoutTasks();
 	AssignTasks();
@@ -356,6 +358,10 @@ void ArmyModule::AddSoldier(KasoBot::Unit* unit)
 		unit->GetPointer()->getType().isFlyer() && !unit->GetPointer()->getType() == BWAPI::UnitTypes::Terran_Science_Vessel ? true : false));
 	auto log = newArmy->AddSoldier(unit);
 	Log::Instance()->Assert(log, "Wrong army created for unit!");
+
+	//update air default task if first army is created
+	if (_defaultAirTask->Type() == Tasks::Type::HOLD)
+		_defaultAirTask = std::make_unique<SupportArmyTask>(newArmy.get());
 }
 
 void ArmyModule::SoldierKilled(KasoBot::Unit* unit)
@@ -535,6 +541,11 @@ void ArmyModule::ResetDefaultTask()
 		ProductionModule::Instance()->BuildBuilding(BWAPI::UnitTypes::Terran_Bunker);
 	}
 		
+}
+
+void ArmyModule::ResetDefaultAirTask()
+{
+	_defaultAirTask = std::make_unique<HoldPositionTask>(Map::DefaultTaskPosition());
 }
 
 void ArmyModule::StartWorkerDefence(Task * task, size_t count)

@@ -89,6 +89,9 @@ Army::~Army()
 
 		_task->Stop();
 	}
+
+	if (ArmyModule::Instance()->DefaultAirTask()->FriendlyArmy() == this)
+		ArmyModule::Instance()->ResetDefaultAirTask();
 }
 
 void Army::OnFrame()

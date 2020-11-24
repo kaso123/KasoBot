@@ -136,3 +136,18 @@ BWAPI::TilePosition FinishEnemyTask::Next()
 	Log::Instance()->Assert(_nextPos.isValid(), "invalid random position for finish task!");
 	return _nextPos;
 }
+
+SupportArmyTask::SupportArmyTask(Army* army)
+	: Task(Tasks::Type::SUPPORT), _army(army)
+{
+}
+
+bool SupportArmyTask::IsArmySuitable(Army& army)
+{
+	return army.IsAir();
+}
+
+bool SupportArmyTask::IsFinished()
+{
+	return _army->GetSupply() <= 0;
+}

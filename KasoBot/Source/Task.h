@@ -18,6 +18,7 @@ namespace KasoBot {
 			HUNT,
 			FINISH,
 			SCOUT,
+			SUPPORT,
 			HOLD
 		};
 	}
@@ -44,9 +45,10 @@ namespace KasoBot {
 		void Start() { _inProgress = true; }
 		void Stop() { _inProgress = false; }
 		Tasks::Type Type() const { return _type; }
-		virtual BWAPI::Position Position() const { return BWAPI::Positions::Invalid; };
-		virtual const BWEM::Area* Area() const { return nullptr; };
+		virtual BWAPI::Position Position() const { return BWAPI::Positions::Invalid; }
+		virtual const BWEM::Area* Area() const { return nullptr; }
 		virtual EnemyArmy* EnemyArmy() const { return nullptr; }
+		virtual Army* FriendlyArmy() const { return nullptr; }
 		virtual BWAPI::TilePosition Next() { return BWAPI::TilePositions::Invalid; }
 		
 		bool InProgress() { return _inProgress; }
@@ -124,5 +126,18 @@ namespace KasoBot {
 		bool IsFinished() override { return false; };
 
 		BWAPI::TilePosition Next() override;
+	};
+
+	class SupportArmyTask : public Task {
+	private:
+		Army* _army;
+	public:
+		SupportArmyTask(KasoBot::Army* army);
+		~SupportArmyTask() {};
+
+		bool IsArmySuitable(KasoBot::Army& army) override;
+		bool IsFinished() override;
+
+		Army* FriendlyArmy() const override { return _army; }
 	};
 }

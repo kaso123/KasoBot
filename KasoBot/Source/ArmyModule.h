@@ -28,6 +28,8 @@ namespace KasoBot {
 
 		std::unique_ptr<Task> _defaultTask; //task that army does when it can't do other tasks
 
+		std::unique_ptr<Task> _defaultAirTask; //task that air army does when it can't do other tasks 
+
 		KasoBot::Unit* _bunker;
 
 		int _scoutTimeout; //frame until which scouting is stopped
@@ -100,6 +102,9 @@ namespace KasoBot {
 		//check if default task should be changed
 		void ResetDefaultTask();
 
+		//set default air task to hold, called from army destructor only
+		void ResetDefaultAirTask();
+
 		//assign this task to workers and get workers from WorkersModule
 		//@param count = how many workers should be defending
 		void StartWorkerDefence(Task* task, size_t count);
@@ -122,6 +127,7 @@ namespace KasoBot {
 		const std::unique_ptr<WorkerArmy>& WorkerArmy() const { return _workers; }
 		const std::vector<std::unique_ptr<Task>>& Tasks() const { return _tasks; }
 		Task* DefaultTask() const { return _defaultTask.get(); }
+		Task* DefaultAirTask() const { return _defaultAirTask.get(); }
 		KasoBot::Unit* Bunker() const { return _bunker; }
 		void SetBunker(KasoBot::Unit* bunker) { _bunker = bunker; }
 		void SetScoutTimeout(int frame) { _scoutTimeout = frame; }
