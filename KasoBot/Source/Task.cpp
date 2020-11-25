@@ -151,3 +151,45 @@ bool SupportArmyTask::IsFinished()
 {
 	return _army->GetSupply() <= 0;
 }
+
+HarassAreaTask::HarassAreaTask(const BWEM::Area * area)
+	: Task(Tasks::Type::HARASS), _area(area), _cp(false)
+{
+}
+
+void HarassAreaTask::Start()
+{
+	_cp = false;
+	Task::Start();
+}
+
+bool HarassAreaTask::IsArmySuitable(Army & army)
+{
+	if (army.CanHarass())
+		return true;
+
+	return false;
+}
+
+bool HarassAreaTask::IsFinished()
+{
+	if (_finished)
+		return true;
+
+	Log::Instance()->Assert(_area, "No area in harass task!");
+
+	if (_area->Bases().empty())
+	{
+		_finished = true;
+		return true;
+	}
+
+	for (auto& base : _area->Bases()) //if all bases in area are ours or empty, finish task
+	{
+		if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+			|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+			return false;
+	}
+	_finished = true;
+	return true;
+}

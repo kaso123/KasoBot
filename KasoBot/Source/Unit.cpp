@@ -3,6 +3,7 @@
 #include "BehaviourMedic.h"
 #include "BehaviourVessel.h"
 #include "BehaviourMarine.h"
+#include "BehaviourWraith.h"
 #include "ArmyModule.h"
 #include "MapModule.h"
 #include "ScoutModule.h"
@@ -33,6 +34,11 @@ namespace {
 		if (type == BWAPI::UnitTypes::Terran_Science_Vessel)
 		{
 			outBehaviour = std::make_unique<BehaviourVessel>();
+			return;
+		}
+		if (type == BWAPI::UnitTypes::Terran_Wraith)
+		{
+			outBehaviour = std::make_unique<BehaviourWraith>();
 			return;
 		}
 		
@@ -75,7 +81,7 @@ void Unit::Fight(Army* army)
 	//TODO do priority things (in close combat)
 
 	//move to center of army
-	if (army->Task()->Type() == Tasks::Type::ATTACK && BWAPI::Broodwar->isWalkable((BWAPI::WalkPosition)army->BoundingBox()._center)
+	if ((army->Task()->Type() == Tasks::Type::ATTACK || army->Task()->Type() == Tasks::Type::HARASS) && BWAPI::Broodwar->isWalkable((BWAPI::WalkPosition)army->BoundingBox()._center)
 		&& _pointer->getPosition().getDistance(army->BoundingBox()._center) > Config::Units::ArmyRange() * TILE_SIZE) //different value for our armies
 	{
 		_behaviour->MoveToArmyCenter(*this, army->BoundingBox()._center);
@@ -106,6 +112,10 @@ void Unit::Fight(Army* army)
 	else if (army->Task()->Type() == Tasks::Type::SUPPORT)
 	{
 		_behaviour->SupportArmy(*this, army);
+	}
+	else if (army->Task()->Type() == Tasks::Type::HARASS)
+	{
+		_behaviour->HarassArea(*this, army);
 	}
 }
 

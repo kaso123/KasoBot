@@ -55,5 +55,11 @@ namespace KasoBot
 
 		//@return true if area is accessible by land from our main
 		bool CanAccess(const BWEM::Area* area);
+
+		//@return contact point for harassing this base
+		BWAPI::Position GetHarassContactPoint(const BWEM::Base* base);
+
+		//@return checkpoint for wraith harass route
+		BWAPI::Position GetHarassCheckpoint(const BWEM::Base* base);
 	}
 }

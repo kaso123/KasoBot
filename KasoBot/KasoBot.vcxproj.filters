@@ -84,6 +84,7 @@
     <ClCompile Include="Source\BehaviourVessel.cpp" />
     <ClCompile Include="Source\BehaviourMarine.cpp" />
     <ClCompile Include="Source\Log.cpp" />
+    <ClCompile Include="Source\BehaviourWraith.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainModule.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Source\BehaviourVessel.h" />
     <ClInclude Include="Source\BehaviourMarine.h" />
     <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\BehaviourWraith.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libs">

@@ -64,6 +64,7 @@ void Behaviour::AttackArea(KasoBot::Unit & unit, Army* army)
 			|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
 		{
 			AttackMove(unit.GetPointer(),base.Center());
+			break;
 		}
 	}
 }
@@ -84,6 +85,7 @@ void Behaviour::ScoutArea(KasoBot::Unit & unit, Army * army)
 				AttackMove(unit.GetPointer(), base.Center());
 			}
 			else Move(unit.GetPointer(), base.Center());
+			break;
 		}
 	}
 }
@@ -149,6 +151,13 @@ void Behaviour::SupportArmy(KasoBot::Unit & unit, Army * army)
 	auto targetArmy = army->Task()->FriendlyArmy();
 	Log::Instance()->Assert(targetArmy, "Missing army in support task!");
 	MoveToArmyCenter(unit, targetArmy->BoundingBox()._center);
+}
+
+void Behaviour::HarassArea(KasoBot::Unit & unit, Army * army)
+{
+	//default behaviour for harass is not needed
+	//only wraiths and vultures do harass and they have their own behaviour
+	AttackArea(unit, army);
 }
 
 void Behaviour::MoveToArmyCenter(KasoBot::Unit & unit, BWAPI::Position position)

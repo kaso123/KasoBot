@@ -41,6 +41,9 @@ namespace KasoBot {
 
 		//check if we have enough attack tasks and create more if not
 		void CreateAttackTasks();
+
+		//check if we have enough harass tasks
+		void CreateHarassTasks();
 		
 		//check if we have enough scout tasks and create more if not
 		void CreateScoutTasks();
@@ -95,6 +98,9 @@ namespace KasoBot {
 
 		//create new scoutArea task if it doesn't exist already
 		bool AddScoutTask(const BWEM::Area* area);
+
+		//create new HarassArea task if it doesn't exist already
+		bool AddHarassTask(const BWEM::Area* area);
 
 		//create new FinishEnemy task if it doesn't exist already
 		bool AddFinishTask();

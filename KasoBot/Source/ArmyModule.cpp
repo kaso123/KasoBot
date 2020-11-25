@@ -66,7 +66,7 @@ void ArmyModule::AssignTasks()
 
 		for (auto& army : _armies)
 		{
-			if (army->Task() != _defaultTask.get())
+			if (army->Task() != _defaultTask.get() && army->Task() != _defaultAirTask.get())
 				continue;
 
 			if (!task->IsArmySuitable(*army))
@@ -152,6 +152,63 @@ void ArmyModule::CreateAttackTasks()
 
 	//no attack task could be created, create finish task if not already
 	AddFinishTask();
+}
+
+void ArmyModule::CreateHarassTasks()
+{
+	//count current harass tasks
+	int count = 0;
+
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::HARASS)
+			count++;
+	}
+
+	if (count >= Config::Strategy::MaxHarassTasks())
+		return;
+
+	if (!ScoutModule::Instance()->EnemyNatural()) //we don't know where enemy's natural is yet
+		return;
+
+	auto& enemyNat = ScoutModule::Instance()->EnemyNatural()->Bases().front();
+
+	std::vector<std::pair<const BWEM::Base*, int>> enemyBases;
+	//find next area where enemies are
+	for (auto& area : BWEM::Map::Instance().Areas())
+	{
+		if (!Map::CanAccess(&area))
+			continue;
+
+		for (auto& base : area.Bases())
+		{
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY)
+			{
+				int dist = base.Center().getApproxDistance(enemyNat.Center());
+				if (&area == ScoutModule::Instance()->EnemyStart())
+					dist = 1;
+				if (&area == ScoutModule::Instance()->EnemyNatural())
+					dist = 0;
+
+				enemyBases.emplace_back(std::make_pair(&base, dist));
+				break;
+			}
+		}
+	}
+
+	//start with the base furthest from enemy natural, then main then natural
+	std::sort(std::begin(enemyBases), std::end(enemyBases),
+		[](const std::pair<const BWEM::Base*, int>& a, const std::pair<const BWEM::Base*, int>&  b)
+		{
+			return a.second > b.second;
+		});
+
+	//find next area where enemies are
+	for (auto& base : enemyBases)
+	{
+		if (AddHarassTask(base.first->GetArea()))
+			return;
+	}
 }
 
 void ArmyModule::CreateScoutTasks()
@@ -309,6 +366,7 @@ void ArmyModule::OnFrame()
 	SetAirDefaultTask();
 	CreateAttackTasks();
 	CreateScoutTasks();
+	CreateHarassTasks();
 	AssignTasks();
 
 	_workers->OnFrame();
@@ -509,6 +567,19 @@ bool ArmyModule::AddScoutTask(const BWEM::Area * area)
 	return true;
 }
 
+bool ArmyModule::AddHarassTask(const BWEM::Area * area)
+{
+	Log::Instance()->Assert(area, "Harass task area doesn't exist!");
+
+	for (auto& task : _tasks)
+	{
+		if (task->Type() == Tasks::Type::HARASS && task->Area() == area)
+			return false;
+	}
+	_tasks.emplace_back(std::make_unique<HarassAreaTask>(area));
+	return true;
+}
+
 bool ArmyModule::AddFinishTask()
 {
 	if (GetArmySupply() < 100) //TODO configurable?
@@ -594,11 +665,11 @@ void ArmyModule::StartWorkerDefence(Task * task, size_t count)
 
 void ArmyModule::ResetAttackTasks()
 {
-	//remove unassigned attack tasks
+	//remove unassigned attack and harass tasks
 	_tasks.erase(std::remove_if(std::begin(_tasks), std::end(_tasks),
 		[](auto& x)
 		{
-			return x->Type() == Tasks::Type::ATTACK && !x->InProgress();
+			return (x->Type() == Tasks::Type::ATTACK || x->Type() == Tasks::Type::HARASS) && !x->InProgress();
 		}
 	), std::end(_tasks));
 }

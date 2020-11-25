@@ -222,6 +222,41 @@ BWAPI::Unit Army::GetRepairTarget()
 	return nullptr;
 }
 
+bool Army::CanHarass()
+{
+	if (_bAir)
+	{
+		//wait for full army
+		if (GetSupply() < Config::Strategy::MinAirArmySupply())
+			return false;
+
+		//if we have anything other than wraiths -> don't use for harass
+		for (auto& unit : _soldiers)
+		{
+			if (unit->GetPointer()->getType() != BWAPI::UnitTypes::Terran_Wraith)
+				return false;
+		}
+		return true;
+	}
+	else
+	{
+		//TODO make separate config value for how much supply the harass army should have
+		//wait for full army
+		if (GetSupply() < Config::Strategy::MinAirArmySupply())
+			return false;
+
+		//if we have anything other than vultures -> don't use for harass
+		for (auto& unit : _soldiers)
+		{
+			if (unit->GetPointer()->getType() != BWAPI::UnitTypes::Terran_Vulture)
+				return false;
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void WorkerArmy::CheckTask()
 {
 	if (!_task)

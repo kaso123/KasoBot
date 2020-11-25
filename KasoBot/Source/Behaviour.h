@@ -34,6 +34,8 @@ namespace KasoBot {
 
 		virtual void SupportArmy(KasoBot::Unit& unit, Army* army);
 
+		virtual void HarassArea(KasoBot::Unit& unit, Army* army);
+
 		virtual void MoveToArmyCenter(KasoBot::Unit& unit, BWAPI::Position position);
 
 		virtual void Work(KasoBot::Worker& unit) { return; }

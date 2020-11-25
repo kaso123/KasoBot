@@ -106,6 +106,7 @@
     <ClCompile Include="Source\BehaviourMedic.cpp" />
     <ClCompile Include="Source\BehaviourVessel.cpp" />
     <ClCompile Include="Source\BehaviourWorker.cpp" />
+    <ClCompile Include="Source\BehaviourWraith.cpp" />
     <ClCompile Include="Source\Config.cpp" />
     <ClCompile Include="Source\DebugModule.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Source\BehaviourMedic.h" />
     <ClInclude Include="Source\BehaviourVessel.h" />
     <ClInclude Include="Source\BehaviourWorker.h" />
+    <ClInclude Include="Source\BehaviourWraith.h" />
     <ClInclude Include="Source\Config.h" />
     <ClInclude Include="Source\DebugModule.h" />
     <ClInclude Include="Source\EnemyArmy.h" />

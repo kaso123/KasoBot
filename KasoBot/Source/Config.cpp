@@ -103,6 +103,7 @@ void ConfigModule::Init()
 		_armySupplyIncrease = j["strategy"].contains("armySupplyIncrease") ? j["strategy"]["armySupplyIncrease"] * 2 : _armySupplyIncrease;
 		_maxAttackTasks = j["strategy"].contains("maxAttackTasks") ? j["strategy"]["maxAttackTasks"] : _maxAttackTasks;
 		_maxScoutTasks = j["strategy"].contains("maxScoutTasks") ? j["strategy"]["maxScoutTasks"] : _maxScoutTasks;
+		_maxHarassTasks = j["strategy"].contains("maxHarassTasks") ? j["strategy"]["maxHarassTasks"] : _maxHarassTasks;
 		_skipOpenerAt = j["strategy"].contains("skipOpenerAtFrame") ? j["strategy"]["skipOpenerAtFrame"] : _skipOpenerAt;
 		_bunkerWorkers = j["strategy"].contains("bunkerWorkers") ? j["strategy"]["bunkerWorkers"] : _bunkerWorkers;
 		_maxTasksPerArea = j["strategy"].contains("maxTasksPerArea") ? j["strategy"]["maxTasksPerArea"] : _maxTasksPerArea;
@@ -222,6 +223,7 @@ int Config::Strategy::MinAirArmySupply() { return ConfigModule::Instance()->MinA
 int Config::Strategy::ArmySupplyIncrease() { return ConfigModule::Instance()->ArmySupplyIncrease(); }
 int Config::Strategy::MaxAttackTasks() { return ConfigModule::Instance()->MaxAttackTasks(); }
 int Config::Strategy::MaxScoutTasks() { return ConfigModule::Instance()->MaxScoutTasks(); }
+int Config::Strategy::MaxHarassTasks() { return ConfigModule::Instance()->MaxHarassTasks(); }
 int Config::Strategy::FirstScoutSupply() { return ConfigModule::Instance()->FirstScoutSupply(); }
 int Config::Strategy::SkipOpenerAt() { return ConfigModule::Instance()->SkipOpenerAt(); }
 int Config::Strategy::BunkerWorkers() { return ConfigModule::Instance()->BunkerWorkers(); }

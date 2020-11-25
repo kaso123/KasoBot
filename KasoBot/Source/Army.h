@@ -64,6 +64,9 @@ namespace KasoBot {
 		//@return unit that should be repaired by SCVs
 		virtual BWAPI::Unit GetRepairTarget();
 
+		//@return true if unit composition is good for harassing (couple of wraiths or vultures)
+		virtual bool CanHarass();
+
 		//getters and setters
 
 		const Armies::Box& BoundingBox() { return *_box; }
@@ -96,6 +99,8 @@ namespace KasoBot {
 		void RemoveTask() override;
 
 		BWAPI::Unit GetRepairTarget() override;
+
+		bool CanHarass() override { return false; }
 
 		//getters and setters
 

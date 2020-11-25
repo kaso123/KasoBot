@@ -42,7 +42,7 @@ namespace KasoBot {
 
 		//getters and setters
 
-		void Start() { _inProgress = true; }
+		virtual void Start() { _inProgress = true; }
 		void Stop() { _inProgress = false; }
 		Tasks::Type Type() const { return _type; }
 		virtual BWAPI::Position Position() const { return BWAPI::Positions::Invalid; }
@@ -50,7 +50,10 @@ namespace KasoBot {
 		virtual EnemyArmy* EnemyArmy() const { return nullptr; }
 		virtual Army* FriendlyArmy() const { return nullptr; }
 		virtual BWAPI::TilePosition Next() { return BWAPI::TilePositions::Invalid; }
-		
+
+		virtual bool IsCheckpointDone() const { return true; }
+		virtual void SetCheckpointDone() {};
+
 		bool InProgress() { return _inProgress; }
 	};
 
@@ -139,5 +142,23 @@ namespace KasoBot {
 		bool IsFinished() override;
 
 		Army* FriendlyArmy() const override { return _army; }
+	};
+
+	class HarassAreaTask : public Task {
+	private:
+		const BWEM::Area* _area;
+		bool _cp;
+	public:
+		HarassAreaTask(const BWEM::Area* area);
+		~HarassAreaTask() {};
+
+		void Start() override;
+
+		void SetCheckpointDone() override { _cp = true; }
+		bool IsArmySuitable(Army& army) override;
+		bool IsFinished() override;
+
+		bool IsCheckpointDone() const override { return _cp; }
+		const BWEM::Area* Area() const override { return _area; }
 	};
 }

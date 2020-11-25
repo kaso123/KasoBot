@@ -49,6 +49,7 @@
     "armySupplyIncrease": 4,
     "maxAttackTasks": 3,
     "maxScoutTasks": 1,
+    "maxHarassTasks": 2,
     "skipOpenerAtFrame": 4320,
     "bunkerWorkers": 4,
     "maxTasksPerArea": 2,
@@ -70,7 +71,7 @@
   "strategies": [
     {"name": "default_mech",
      "opener": "test2",
-     "units": {"tank":4, "vulture":4, "goliath":4, "marine":1},
+     "units": {"tank":4, "vulture":5, "goliath":3, "marine":1, "wraith": 3},
      "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
     },
     {"name": "default_mech_P",
@@ -81,12 +82,12 @@
     },
     {"name": "mech_air",
      "opener": "test2",
-     "units": {"tank":2, "vulture":5, "goliath":1, "marine":1,"wraith": 1, "battlecruiser": 1},
+     "units": {"tank":2, "vulture":6, "goliath":1, "marine":1,"wraith": 2, "battlecruiser": 1},
      "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
-     "units": {"tank":3, "vulture":2, "goliath":1, "marine":2,"wraith": 1},
+     "units": {"tank":3, "vulture":3, "goliath":1, "marine":2,"wraith": 2},
      "tech": ["siege","armory","vehicle_weapons","starport","comsat"],
      "cycle": ["army","sat","tech","prod"]
     },

@@ -180,6 +180,26 @@ void DebugModule::DrawTasks()
 		{
 			BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, army->Task()->FriendlyArmy()->BoundingBox()._center, BWAPI::Colors::Yellow);
 		}
+		else if (army->Task()->Type() == Tasks::Type::HARASS)
+		{
+			for (auto& base : army->Task()->Area()->Bases())
+			{
+
+				if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+					|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+				{
+					if (army->Task()->IsCheckpointDone())
+					{
+						BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, Map::GetHarassContactPoint(&base), BWAPI::Colors::White);
+					}
+					else
+					{
+						BWAPI::Broodwar->drawLineMap(army->BoundingBox()._center, Map::GetHarassCheckpoint(&base), BWAPI::Colors::White);
+					}
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -211,6 +231,22 @@ void DebugModule::DrawSingleTask(const Task & task)
 	else if (task.Type() == Tasks::Type::DEFEND)
 	{
 		BWAPI::Broodwar->drawCircleMap(task.EnemyArmy()->BoundingBox()._center, 100, BWAPI::Colors::Purple, false);
+	}
+	else if (task.Type() == Tasks::Type::HARASS)
+	{
+		for (auto& base : task.Area()->Bases())
+		{
+
+			if (((BaseInfo*)base.Ptr())->_owner == Base::Owner::ENEMY
+				|| ((BaseInfo*)base.Ptr())->_owner == Base::Owner::UNKNOWN)
+			{
+				BWAPI::Position contact = Map::GetHarassContactPoint(&base);
+				BWAPI::Broodwar->drawCircleMap(contact, 50, BWAPI::Colors::Orange, false);
+				BWAPI::Broodwar->drawLineMap(contact, Map::GetHarassCheckpoint(&base), BWAPI::Colors::Orange);
+				break;
+			}
+				
+		}
 	}
 }
 

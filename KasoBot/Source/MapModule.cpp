@@ -99,6 +99,14 @@ namespace {
 		//couldn't find suitable point, just move towards base
 		return base;	
 	}
+
+	BWAPI::Position ClipIntoMap(BWAPI::Position pos)
+	{
+		return BWAPI::Position(
+			std::clamp(pos.x, 1, BWAPI::Broodwar->mapWidth() * 32 - 1),
+			std::clamp(pos.y, 1, BWAPI::Broodwar->mapHeight() * 32 - 1)
+		);
+	}
 }
 
 BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
@@ -531,6 +539,82 @@ bool Map::CanAccess(const BWEM::Area * area)
 	if (area->AccessibleFrom(BWEB::Map::getMainArea()))
 		return true;
 	return false;
+}
+
+BWAPI::Position Map::GetHarassContactPoint(const BWEM::Base * base)
+{
+	//return position of first mineral in base (base itself when no minerals)
+	if (base->Minerals().empty())
+		return base->Center();
+
+	if (!base->Minerals().front()->Unit())
+		return base->Center();
+
+	if (!base->Minerals().front()->Unit()->getInitialPosition().isValid())
+		return base->Center();
+
+	return base->Minerals().front()->Unit()->getInitialPosition();
+}
+
+BWAPI::Position Map::GetHarassCheckpoint(const BWEM::Base * base)
+{
+	//closer to us
+	if (!ScoutModule::Instance()->EnemyNatural() || base->GetArea() == ScoutModule::Instance()->EnemyNatural()
+		|| base->Center().getApproxDistance(BWEB::Map::getMainPosition()) < base->Center().getApproxDistance(ScoutModule::Instance()->EnemyNatural()->Bases().front().Center()))
+	{
+		//vector
+		BWAPI::Position vectorInt = base->Center() - BWEB::Map::getMainPosition();
+
+		//normal vector
+		std::pair<float, float> normal = { (float)vectorInt.y, -(float)vectorInt.x };
+
+		//normalize normal vector (sqrt(x^2+y^2))
+		float length = sqrt(normal.first * normal.first + normal.second * normal.second);
+		normal.first = normal.first / length;
+		normal.second = normal.second / length;
+
+		BWAPI::Position left = base->Center();
+		BWAPI::Position right = base->Center();
+		//move points until hitting end of map
+		while (true)
+		{
+			//left
+			left = left + BWAPI::Position(int(normal.first * 10), int(normal.second * 10));
+			if (!left.isValid())
+			{
+				return ClipIntoMap(left);
+			}
+
+			//right
+			right = right + BWAPI::Position(int(normal.first * -10), int(normal.second * -10));
+			if (!right.isValid())
+			{
+				return ClipIntoMap(right);
+			}
+		}
+	}
+	else //closer to enemy
+	{
+		//line from enemy main to base
+		BWAPI::Position vectorInt = base->Center() - ScoutModule::Instance()->EnemyNatural()->Bases().front().Center();
+
+		std::pair<float, float> vector = { (float)vectorInt.x, (float)vectorInt.y };
+
+		//normalize normal vector (sqrt(x^2+y^2))
+		float length = sqrt(vector.first * vector.first + vector.second * vector.second);
+		vector.first = vector.first / length;
+		vector.second = vector.second / length;
+
+		BWAPI::Position point = base->Center();
+		//ending is the point
+		while (true)
+		{
+			point = point + BWAPI::Position(int(vector.first * 30), int(vector.second * 30));
+
+			if (!point.isValid())
+				return ClipIntoMap(point);
+		}
+	}
 }
 
 void Map::Global::Initialize()

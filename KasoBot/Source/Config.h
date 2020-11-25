@@ -57,6 +57,7 @@ namespace KasoBot {
 		int _armySupplyIncrease = 8;
 		int _maxAttackTasks = 2;
 		int _maxScoutTasks = 1;
+		int _maxHarassTasks = 1;
 		int _firstScoutSupply = 8;
 		int _skipOpenerAt = 4320; //3 minutes
 		int _bunkerWorkers = 3;
@@ -114,6 +115,7 @@ namespace KasoBot {
 		int ArmySupplyIncrease() { return _armySupplyIncrease; }
 		int MaxAttackTasks() { return _maxAttackTasks; }
 		int MaxScoutTasks() { return _maxScoutTasks; }
+		int MaxHarassTasks() { return _maxHarassTasks; }
 		int FirstScoutSupply() { return _firstScoutSupply; }
 		int SkipOpenerAt() { return _skipOpenerAt; }
 		int BunkerWorkers() { return _bunkerWorkers; }
@@ -257,6 +259,9 @@ namespace KasoBot {
 
 			//@return maximum number of scout tasks active in one moment
 			int MaxScoutTasks();
+
+			//@return maximum number of harass tasks active in one moment
+			int MaxHarassTasks();
 
 			//@return number of workers when first scout should start
 			int FirstScoutSupply();
