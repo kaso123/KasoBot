@@ -36,7 +36,9 @@ namespace BWEB::Blocks
 					return { Piece::Medium, Piece::Medium };
 			}
 			else if (height == 3) {
-				if (width == 5)
+                if (width == 4)
+                    return { Piece::Large };
+                if (width == 6)
 					return { Piece::Large, Piece::Addon };
 			}
 			else if (height == 4) {

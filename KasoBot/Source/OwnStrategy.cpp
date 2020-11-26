@@ -2,8 +2,10 @@
 #include "StrategyModule.h"
 #include "ProductionModule.h"
 #include "ArmyModule.h"
+#include "Army.h"
 #include "Config.h"
 #include "Unit.h"
+#include "Task.h"
 #include "Log.h"
 
 using namespace KasoBot;
@@ -193,6 +195,25 @@ std::vector<BWAPI::UnitType> OwnStrategy::GetMacroArmyTypes()
 		else item._proportion = -1.0f;
 	}
 
+	//get count of units in attacking armies
+	std::map<BWAPI::UnitType, int> attackingUnits;
+
+	for (auto& army : ArmyModule::Instance()->Armies())
+	{
+		if (!army->Task() 
+			|| (army->Task()->Type() != Tasks::Type::ATTACK && army->Task()->Type() != Tasks::Type::HARASS))
+			continue;
+
+		for (auto& soldier : army->Units())
+		{
+			if (attackingUnits.find(soldier->GetPointer()->getType()) == attackingUnits.end())
+				attackingUnits[soldier->GetPointer()->getType()] = 0;
+
+			attackingUnits[soldier->GetPointer()->getType()] += 1;
+			totalArmy--; //remove also from total count considered
+		}
+	}
+
 	//calculate ratio for each type
 	for (auto& item : _units)
 	{
@@ -200,7 +221,14 @@ std::vector<BWAPI::UnitType> OwnStrategy::GetMacroArmyTypes()
 			continue;
 
 		int typeCount = ProductionModule::Instance()->GetCountOf(item._type);
-		//TODO also add inProgress units
+
+		//subtract units in attacking armies
+		if (attackingUnits.find(item._type) != attackingUnits.end())
+		{
+			typeCount -= attackingUnits[item._type];
+			Log::Instance()->Assert(typeCount >= 0, "Negative number of unit type found!");
+		}
+		
 		if (totalArmy <= 0 || typeCount <= 0)
 		{
 			continue; //if no unit exists, keep proportion to 0
