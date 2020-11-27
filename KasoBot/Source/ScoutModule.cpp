@@ -195,6 +195,12 @@ void ScoutModule::CheckEnemyEvolution(BWAPI::Unit unit)
 		RemoveByID(unit->getID(), BWAPI::UnitTypes::Protoss_High_Templar);
 	else if (unit->getType() == BWAPI::UnitTypes::Protoss_Dark_Archon)
 		RemoveByID(unit->getID(), BWAPI::UnitTypes::Protoss_Dark_Templar);
+	//terran
+	else if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
+	else if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+		RemoveByID(unit->getID(), BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+
 }
 
 void ScoutModule::MergeArmies()
