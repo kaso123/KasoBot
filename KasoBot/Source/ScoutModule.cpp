@@ -331,6 +331,20 @@ void ScoutModule::ScanTech()
 	}
 }
 
+bool ScoutModule::IsDefenceBuilding(BWAPI::UnitType type)
+{
+	if (!type.isBuilding())
+		return false;
+
+	if (type.canAttack())
+		return true;
+
+	if (type == BWAPI::UnitTypes::Terran_Bunker)
+		return true;
+
+	return false;
+}
+
 ScoutModule* ScoutModule::Instance()
 {
 	if (!_instance)
@@ -365,7 +379,7 @@ void ScoutModule::EnemyDiscovered(BWAPI::Unit unit)
 	if (!unit->getPlayer() || !unit->getPlayer()->isEnemy(BWAPI::Broodwar->self()))
 		return;
 
-	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg || unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine 
+	if (unit->getType() == BWAPI::UnitTypes::Zerg_Egg 
 		|| unit->getType() == BWAPI::UnitTypes::Spell_Scanner_Sweep || unit->getType() == BWAPI::UnitTypes::Zerg_Larva
 		|| unit->getType() == BWAPI::UnitTypes::Zerg_Cocoon || unit->getType() == BWAPI::UnitTypes::Zerg_Lurker_Egg)
 		return;
@@ -561,7 +575,8 @@ void ScoutModule::AssignToArmy(EnemyUnit * enemy)
 		auto area = BWEM::Map::Instance().GetNearestArea(enemy->_lastPos);
 		if (!area || (area != BWEB::Map::getMainArea() 
 			&& area != BWEB::Map::getNaturalArea() 
-			&& (BWAPI::Position(enemy->_lastPos)).getDistance((BWAPI::Position)BWEB::Map::getNaturalChoke()->Center()) > 120)) //TODO configurable
+			&& (BWAPI::Position(enemy->_lastPos)).getDistance((BWAPI::Position)BWEB::Map::getNaturalChoke()->Center()) > 120) //TODO configurable
+			&& (!IsDefenceBuilding(enemy->_type))) //don't skip buildings that can attack
 			return;
 	}
 

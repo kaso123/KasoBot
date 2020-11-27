@@ -99,14 +99,6 @@ namespace {
 		//couldn't find suitable point, just move towards base
 		return base;	
 	}
-
-	BWAPI::Position ClipIntoMap(BWAPI::Position pos)
-	{
-		return BWAPI::Position(
-			std::clamp(pos.x, 1, BWAPI::Broodwar->mapWidth() * 32 - 1),
-			std::clamp(pos.y, 1, BWAPI::Broodwar->mapHeight() * 32 - 1)
-		);
-	}
 }
 
 BWEB::Station* Map::GetStation(BWAPI::TilePosition pos)
@@ -615,6 +607,14 @@ BWAPI::Position Map::GetHarassCheckpoint(const BWEM::Base * base)
 				return ClipIntoMap(point);
 		}
 	}
+}
+
+BWAPI::Position Map::ClipIntoMap(BWAPI::Position pos)
+{
+	return BWAPI::Position(
+		std::clamp(pos.x, 1, BWAPI::Broodwar->mapWidth() * 32 - 1),
+		std::clamp(pos.y, 1, BWAPI::Broodwar->mapHeight() * 32 - 1)
+	);
 }
 
 void Map::Global::Initialize()

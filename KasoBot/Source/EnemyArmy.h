@@ -12,6 +12,8 @@ namespace KasoBot {
 		std::unique_ptr<Armies::Box> _box;
 		std::vector<EnemyUnit*> _units;
 
+		int _antiAir; //number of units that can shoot air
+
 		//calculate center point between all units
 		void CalculateCenter();
 
@@ -57,6 +59,7 @@ namespace KasoBot {
 
 		const Armies::Box& BoundingBox() { return *_box; }
 		const std::vector<EnemyUnit*>& Units() const { return _units; }
+		int AntiAirCount() const { return _antiAir; }
 	};
 }
 

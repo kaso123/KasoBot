@@ -61,5 +61,7 @@ namespace KasoBot
 
 		//@return checkpoint for wraith harass route
 		BWAPI::Position GetHarassCheckpoint(const BWEM::Base* base);
+
+		BWAPI::Position ClipIntoMap(BWAPI::Position pos);
 	}
 }

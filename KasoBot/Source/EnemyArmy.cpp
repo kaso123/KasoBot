@@ -71,6 +71,7 @@ void EnemyArmy::CheckUnits()
 }
 
 EnemyArmy::EnemyArmy()
+	:_antiAir(0)
 {
 	_box = std::make_unique<Armies::Box>();
 	_box->_topLeft = BWAPI::Position(0, 0);
@@ -96,6 +97,9 @@ void EnemyArmy::AddEnemy(EnemyUnit * unit)
 	unit->_army = this;
 	if (_units.size() == 1) //calculate initial center of army, later only calculate once per frame
 		CalculateCenter();
+
+	if (unit->_type.airWeapon() != BWAPI::WeaponTypes::None)
+		_antiAir++;
 }
 
 void EnemyArmy::RemoveEnemy(EnemyUnit * unit)
@@ -106,6 +110,13 @@ void EnemyArmy::RemoveEnemy(EnemyUnit * unit)
 		{
 			_units.erase(it);
 			unit->_army = nullptr;
+			
+			if (unit->_type.airWeapon() != BWAPI::WeaponTypes::None)
+			{
+				_antiAir--;
+				Log::Instance()->Assert(_antiAir >= 0, "Negative anti air unit count in enemy army!");
+			}
+				
 			return;
 		}
 	}
@@ -130,6 +141,7 @@ bool EnemyArmy::Join(EnemyArmy * toJoin)
 void EnemyArmy::ClearUnits()
 {
 	_units.clear();
+	_antiAir = 0;
 }
 
 bool EnemyArmy::IsThreat()
@@ -227,8 +239,12 @@ int EnemyArmy::Supply()
 	{
 		if (unit->_type == BWAPI::UnitTypes::Protoss_Photon_Cannon)
 			total += 6;
-		if (unit->_type == BWAPI::UnitTypes::Protoss_Pylon)
+		else if (unit->_type == BWAPI::UnitTypes::Protoss_Pylon)
 			total += 4;
+		else if (unit->_type == BWAPI::UnitTypes::Terran_Bunker)
+			total += 10;
+		else if (unit->_type.isBuilding() && unit->_type.canAttack())
+			total += 6;
 
 		total += unit->_type.supplyRequired();
 	}

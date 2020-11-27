@@ -71,6 +71,9 @@ namespace KasoBot {
 		//if scout worker died, use scan to periodicaly scout enemy base
 		void ScanTech();
 
+		//@return true if this type is defensive structure (these buildings are added to armies)
+		bool IsDefenceBuilding(BWAPI::UnitType type);
+
 	public:
 		static ScoutModule* Instance();
 

@@ -71,8 +71,8 @@
   "strategies": [
     {"name": "default_mech",
      "opener": "test2",
-     "units": {"tank":4, "vulture":5, "goliath":3, "marine":1, "wraith": 3},
-     "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "science_facility" ]
+     "units": {"tank":4, "vulture":6, "goliath":3, "marine":1, "wraith": 2},
+      "tech": [ "siege", "mines", "comsat", "armory", "vehicle_weapons", "armory", "vehicle_plating", "starport", "cloaking_field", "science_facility" ]
     },
     {"name": "default_mech_P",
      "opener": "test3",
@@ -82,13 +82,13 @@
     },
     {"name": "mech_air",
      "opener": "test2",
-     "units": {"tank":2, "vulture":6, "goliath":1, "marine":1,"wraith": 2, "battlecruiser": 1},
-     "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "armory", "ship_weapons", "science_facility" ]
+     "units": {"tank":2, "vulture":4, "goliath":1, "marine":3,"wraith": 2, "battlecruiser": 1},
+     "tech": [ "comsat", "siege", "armory", "vehicle_weapons", "starport", "cloaking_field", "armory", "ship_weapons", "science_facility" ]
     },
     {"name": "mech_bunker",
      "opener": "anti_rush",
      "units": {"tank":3, "vulture":3, "goliath":1, "marine":2,"wraith": 2},
-     "tech": ["siege","armory","vehicle_weapons","starport","comsat"],
+     "tech": ["siege","armory","vehicle_weapons","starport","comsat","cloaking_field"],
      "cycle": ["army","sat","tech","prod"]
     },
     {"name": "default_bio_vs_Z",
@@ -105,13 +105,13 @@
     {"name": "bio_vs_muta",
      "opener": "test1",
      "units": { "marine": 6, "medic": 1, "valkyrie": 2, "wraith": 1},
-     "tech": ["u238","stim","starport"]
+     "tech": ["u238","stim","starport","cloaking_field"]
     },
     {"name": "bio_vessel",
      "opener": "test1",
      "data": {"minArmySupply": 20, "maxAttackTasks": 4},
      "units": {"marine":5, "medic":1, "firebat":1, "science_vessel": 1, "tank": 1},
-     "tech": [ "stim", "comsat", "engineering_bay", "infantry_weapons", "u238", "infantry_armor"]
+      "tech": [ "comsat", "stim", "engineering_bay", "infantry_weapons", "u238", "infantry_armor" ]
     },
     {"name": "rush_bc",
      "opener": "anti_rush",
